@@ -1,0 +1,60 @@
+import { Field, ErrorMessage } from 'formik';
+import classNames from 'classnames';
+
+type Props = {
+  name: string;
+  placeholder: string;
+  label: string;
+  type: string;
+  isError: boolean;
+  icon?: JSX.Element;
+  iconFn?: () => void;
+};
+
+export default function AuthFormInput({
+  name,
+  placeholder,
+  label,
+  type,
+  isError,
+  icon,
+  iconFn,
+}: Props) {
+  return (
+    <>
+      <label className='mb-1 font-medium text-zinc-600' htmlFor={name}>
+        {label}
+      </label>
+      <div className='relative flex w-full items-center'>
+        <Field
+          type={type}
+          id={name}
+          name={name}
+          placeholder={placeholder}
+          className={classNames(
+            icon ? 'pr-12' : '',
+            isError ? 'border-red-500' : '',
+            'h-10 w-full rounded-md border border-slate-200 px-2 focus:border-inherit focus:outline-offset-0 focus:outline-secondary focus:ring-0'
+          )}
+        />{' '}
+        {icon ? (
+          <button
+            onClick={() => {
+              if (!iconFn) return;
+              iconFn();
+            }}
+            type='button'
+            className='absolute right-0 mr-4'
+          >
+            {icon}
+          </button>
+        ) : null}
+      </div>
+      <ErrorMessage
+        name={name}
+        component='div'
+        className='ml-2 mt-1 text-sm text-red-400'
+      />
+    </>
+  );
+}

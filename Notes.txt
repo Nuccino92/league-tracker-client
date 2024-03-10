@@ -1,0 +1,5 @@
+
+Make current season numbers . So, season1, season 2.
+
+Could have a primary set color that changes certain things, example the nav bar and header banner background etc.
+
