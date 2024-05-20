@@ -1,13 +1,27 @@
 const ROUTES = {
-  LOGIN: "/login",
-  GAME: "/game",
-  TEAMS: "/teams",
-  PLAYERS: "/players",
-  STANDINGS: "/standings",
-  PLAYER: "/player",
-  REGISTER: "/register",
-  LEAGUE: "/league",
-  ABOUT: "/about",
+  LOGIN: '/login',
+  GAME: '/game',
+  GAMES: '/games',
+  TEAMS: '/teams',
+  PLAYERS: '/players',
+  STANDINGS: '/standings',
+  PLAYER: '/player',
+  REGISTER: '/register',
+  LEAGUE: '/league',
+  ABOUT: '/about',
+  PROFILE: '/profile',
+  PROFILE_SUBROUTES: {
+    LEAGUES_ORGS: '/league-and-organizations',
+  },
+  CONTROL_PANEL: '/control-panel',
+  CONTROL_PANEL_SUBROUTES: {
+    MEMBERS: '/members',
+    CALENDAR: '/calendar',
+    PAYMENTS: '/payments',
+    PLAYERS: '/players',
+    TEAMS: '/teams',
+    NEWS: '/news',
+  },
 };
 
 export default ROUTES;

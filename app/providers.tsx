@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { SessionProvider } from 'next-auth/react';
 import { Session } from 'next-auth';
+
 import GlobalContextProvider from './GlobalContext';
 
 export default function Providers({

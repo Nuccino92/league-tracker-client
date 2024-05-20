@@ -12,8 +12,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: any;
 }) {
   return (
     <div>

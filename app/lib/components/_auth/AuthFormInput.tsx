@@ -1,5 +1,6 @@
 import { Field, ErrorMessage } from 'formik';
 import classNames from 'classnames';
+import { inputClasses } from '../../constants/styles';
 
 type Props = {
   name: string;
@@ -34,7 +35,7 @@ export default function AuthFormInput({
           className={classNames(
             icon ? 'pr-12' : '',
             isError ? 'border-red-500' : '',
-            'h-10 w-full rounded-md border border-slate-200 px-2 focus:border-inherit focus:outline-offset-0 focus:outline-secondary focus:ring-0'
+            inputClasses
           )}
         />{' '}
         {icon ? (

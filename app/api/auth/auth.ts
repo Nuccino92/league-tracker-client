@@ -69,6 +69,7 @@ export const authOptions: NextAuthOptions = {
         email: string;
         email_verified_at: string | null;
         token: string;
+        trial_ends_at: string;
       };
 
       const response = await authRequest(sessionData.token);
@@ -83,6 +84,7 @@ export const authOptions: NextAuthOptions = {
         sessionData.name = result.name as any;
         sessionData.email = result.email as any;
         sessionData.email_verified_at = result.email_verified_at as any;
+        sessionData.trial_ends_at = result.trial_ends_at as any;
       }
 
       session.user = sessionData as any;

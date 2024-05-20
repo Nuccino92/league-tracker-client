@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { z } from 'zod';
 import { Formik, Form } from 'formik';
@@ -8,11 +8,14 @@ import { toFormikValidate } from 'zod-formik-adapter';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import AuthFormInput from '../lib/components/AuthFormInput';
-import AuthFormButton from '../lib/components/AuthFormButton';
-import AuthContainer from '../lib/components/AuthContainer';
+import AuthFormInput from '../lib/components/_auth/AuthFormInput';
+import AuthFormButton from '../lib/components/_auth/AuthFormButton';
+import AuthContainer from '../lib/components/_auth/AuthContainer';
 import { useAuth } from '../GlobalContext';
 import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
+import classNames from 'classnames';
+import Checkbox from '../lib/components/Checkbox';
+import { inputContainerClasses } from '../lib/constants/styles';
 
 const Schema = z.object({
   email: z.string().email(),
@@ -23,16 +26,8 @@ const Schema = z.object({
 
 export default function Login() {
   const router = useRouter();
-  const [rememberMe, setRememberMe] = useState<boolean>(
-    typeof window !== 'undefined'
-      ? localStorage.getItem('email')
-        ? true
-        : false
-      : false
-  );
-  const [savedEmail, setSavedEmail] = useState(
-    typeof window !== 'undefined' ? localStorage.getItem('email') ?? '' : ''
-  );
+
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [backendValidationError, setBackendValidationError] = useState<{
     isError: boolean;
@@ -43,8 +38,18 @@ export default function Login() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
 
   const { status } = useAuth();
+
+  useEffect(() => {
+    /**
+     * @description
+     * must be done inside use effect to prevent it executing on the server thus preventing an error
+     */
+
+    setRememberMe(localStorage.getItem('email') ? true : false);
+  }, []);
 
   if (status === 'authenticated') return router.push('/');
 
@@ -57,16 +62,21 @@ export default function Login() {
         <Formik
           validate={toFormikValidate(Schema)}
           initialValues={{
-            email: savedEmail,
+            email:
+              typeof window !== 'undefined'
+                ? localStorage?.getItem('email') ?? ''
+                : '',
             password: '',
           }}
           onSubmit={async (values) => {
             rememberMe && localStorage.setItem('email', values.email);
+            setIsAwaitingResponse(true);
             await signIn('credentials', {
               email: values.email,
               password: values.password,
               redirect: false,
             }).then((res) => {
+              setIsAwaitingResponse(false);
               if (res?.error) {
                 return setBackendValidationError({
                   isError: true,
@@ -82,7 +92,7 @@ export default function Login() {
         >
           {(props) => (
             <Form
-              className='flex flex-col space-y-3'
+              className={inputContainerClasses}
               onChange={() =>
                 backendValidationError.isError &&
                 setBackendValidationError({
@@ -117,16 +127,12 @@ export default function Login() {
                 </div>
               ) : null}
               <div className='flex items-center justify-between'>
-                <div className='space-x-2'>
-                  <input
-                    type='checkbox'
-                    id='rememberMe'
-                    name='rememberMe'
-                    value=''
-                    className='h-4 w-4 rounded-sm border-slate-400 text-secondary focus:ring-secondary'
-                    checked={rememberMe}
-                    onChange={() => setRememberMe((prev) => !prev)}
+                <div className='flex items-center space-x-2'>
+                  <Checkbox
+                    isChecked={rememberMe}
+                    onClick={() => setRememberMe((prev) => !prev)}
                   />
+
                   <span>
                     <label
                       className='w-full pr-2 text-sm font-medium text-zinc-600'
@@ -143,7 +149,11 @@ export default function Login() {
                   Forgot password?
                 </Link>
               </div>
-              <AuthFormButton label='Log In' />
+              <AuthFormButton
+                label='Log In'
+                isLoadingRequest={isAwaitingResponse}
+                disabled={isAwaitingResponse}
+              />
             </Form>
           )}
         </Formik>

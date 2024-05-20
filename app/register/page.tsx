@@ -10,12 +10,13 @@ import { useRouter } from 'next/navigation';
 import { toFormikValidate } from 'zod-formik-adapter';
 
 import logo from '../assets/logo.png';
-import AuthFormInput from '../lib/components/AuthFormInput';
-import AuthFormButton from '../lib/components/AuthFormButton';
-import AuthContainer from '../lib/components/AuthContainer';
+import AuthFormInput from '../lib/components/_auth/AuthFormInput';
+import AuthFormButton from '../lib/components/_auth/AuthFormButton';
+import AuthContainer from '../lib/components/_auth/AuthContainer';
 import { useAuth } from '../GlobalContext';
 import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
 import { registerRequest } from '@/app/lib/requests/auth';
+import { inputContainerClasses } from '../lib/constants/styles';
 
 const Schema = z
   .object({
@@ -41,6 +42,7 @@ export default function Register() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
 
   const [backendRegistrationError, setBackendRegistrationError] = useState<{
     isError: boolean;
@@ -75,6 +77,7 @@ export default function Register() {
             confirmPassword: '',
           }}
           onSubmit={async (values, { setErrors }) => {
+            setIsAwaitingResponse(true);
             try {
               const response = await registerRequest({
                 name: values.name,
@@ -104,18 +107,17 @@ export default function Register() {
                   redirect: false, //TODO: redirect to validate
                 });
               }
-
-            
             } catch (error) {
               console.log(`Registration error: ${error}`);
             }
+            setIsAwaitingResponse(false);
           }}
           validateOnBlur={false}
           validateOnChange={false}
         >
           {(props) => (
             <Form
-              className='flex flex-col space-y-3'
+              className={inputContainerClasses}
               onChange={() =>
                 backendRegistrationError.isError &&
                 setBackendRegistrationError({
@@ -156,7 +158,7 @@ export default function Register() {
               </div>
               <div className='flex flex-col'>
                 <AuthFormInput
-                  placeholder='Retype Password'
+                  placeholder='Re-type Password'
                   name='confirmPassword'
                   label='Confirm Password'
                   type={showConfirmPassword ? 'text' : 'password'}
@@ -171,7 +173,10 @@ export default function Register() {
                   {backendRegistrationError.message}
                 </div>
               ) : null}
-              <AuthFormButton label='Create an Account' />
+              <AuthFormButton
+                label='Create an Account'
+                isLoadingRequest={isAwaitingResponse}
+              />
             </Form>
           )}
         </Formik>

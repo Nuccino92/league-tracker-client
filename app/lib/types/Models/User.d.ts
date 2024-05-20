@@ -1,7 +1,7 @@
-export type User = {
+export interface User {
   id: number;
   name: string;
   email: string;
   email_verified_at: string | null;
   token: string;
-};
+}

@@ -1,10 +1,10 @@
 export default function AboutLeague() {
   return (
-    <div className="w-full flex items-center justify-center py-44 flex-col space-y-8">
-      <h1 className="text-3xl font-bold w-full max-w-[40%]">
+    <div className='flex w-full flex-col items-center justify-center space-y-8 py-44'>
+      <h1 className='w-full max-w-[40%] text-3xl font-bold'>
         {aboutData.header}
       </h1>
-      <p className="max-w-[40%]">{aboutData.description}</p>
+      <p className='max-w-[40%]'>{aboutData.description}</p>
     </div>
   );
 }

@@ -1,8 +1,24 @@
 'use client';
 
-import { ReactNode, createContext, useContext } from 'react';
-import { User } from './lib/types/Models/User';
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
+import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
+
+import { User } from './lib/types/Models/User';
+
+const CreateLeagueModal = dynamic(
+  () => import('@/app/lib/components/CreateLeagueModal'),
+  {
+    loading: () => <></>,
+  }
+);
 
 export default function GlobalContextProvider({
   children,
@@ -10,6 +26,8 @@ export default function GlobalContextProvider({
   children: ReactNode;
 }) {
   const { status, data, update } = useSession();
+
+  const [showCreateLeaugueModal, setShowCreateLeagueModal] = useState(false);
 
   const isUserLoggedIn = status === 'authenticated' ? true : false;
 
@@ -22,12 +40,15 @@ export default function GlobalContextProvider({
       value={{
         expires: isUserLoggedIn ? data!.expires : (null as unknown as string),
         user: user,
-        token: user?.token ?? null,
+        token: user?.token ?? '',
         status,
         update,
+        showCreateLeaugueModal,
+        setShowCreateLeagueModal,
       }}
     >
       {children}
+      <CreateLeagueModal />
     </GlobalContext.Provider>
   );
 }
@@ -35,11 +56,32 @@ export default function GlobalContextProvider({
 export const GlobalContext = createContext({
   expires: '',
   user: null as any | null,
-  token: null as string | null,
+  token: '' as string,
   status: 'loading' as 'authenticated' | 'loading' | 'unauthenticated',
   update: (() => {}) as any,
+  showCreateLeaugueModal: false,
+  setShowCreateLeagueModal: (() => {}) as Dispatch<SetStateAction<boolean>>,
 });
 
 export function useAuth() {
   return useContext(GlobalContext);
+}
+
+export function useIsFreeTrialAvailable() {
+  const { user, status } = useContext(GlobalContext);
+  if (status === 'unauthenticated') return false;
+
+  const { trial_ends_at } = user;
+
+  if (!trial_ends_at) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function useCreateLeague() {
+  const { showCreateLeaugueModal, setShowCreateLeagueModal } =
+    useContext(GlobalContext);
+  return { showCreateLeaugueModal, setShowCreateLeagueModal };
 }

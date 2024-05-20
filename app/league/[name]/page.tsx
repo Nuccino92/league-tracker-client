@@ -10,7 +10,6 @@ import HomeGraphic from '../_components/HomeGraphic';
 import LeagueLeaders from '../_components/LeagueLeaders';
 import PowerRanking from '../_components/PowerRanking';
 import classNames from 'classnames';
-import { useAuth } from '@/app/GlobalContext';
 
 // subscribe for updates
 // the right -> power rankings
@@ -19,10 +18,6 @@ import { useAuth } from '@/app/GlobalContext';
 // -- Season highs
 
 export default function League() {
-  const auth = useAuth();
-
-  console.log(auth);
-
   const [selectedTab, setSelectedTab] = useState<
     'power-rankings' | 'league-leaders'
   >('power-rankings');

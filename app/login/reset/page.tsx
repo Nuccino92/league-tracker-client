@@ -2,12 +2,12 @@
 
 import { z } from 'zod';
 
-import AuthFormInput from '@/app/lib/components/AuthFormInput';
+import AuthFormInput from '@/app/lib/components/_auth/AuthFormInput';
 import { Formik, Form } from 'formik';
 import { toFormikValidate } from 'zod-formik-adapter';
-import AuthFormButton from '@/app/lib/components/AuthFormButton';
+import AuthFormButton from '@/app/lib/components/_auth/AuthFormButton';
 import Link from 'next/link';
-import AuthContainer from '@/app/lib/components/AuthContainer';
+import AuthContainer from '@/app/lib/components/_auth/AuthContainer';
 
 const Schema = z.object({
   email: z.string().min(1, { message: 'Please enter an email' }).email(),

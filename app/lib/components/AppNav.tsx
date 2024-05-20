@@ -2,37 +2,23 @@
 
 // News, Scores, Schedule, Players, Standings
 
-import { Fragment } from 'react';
 import Link from 'next/link';
-import { Menu, Transition } from '@headlessui/react';
-import ROUTES from '@/app/lib/routesConfig';
 import classNames from 'classnames';
 import { usePathname } from 'next/navigation';
+
+import ROUTES from '@/app/lib/routesConfig';
 import { useAuth } from '@/app/GlobalContext';
-import { signOut } from 'next-auth/react';
-import logOut from '@/app/lib/utils/logOut';
+import UserDropdown from '@/app/lib/components/UserDropdown';
 
 const leagueOwnerId = 'arandomuserid';
 
-type UserType = {
-  id: string;
-  firstName: string;
-  lastName: string;
-} | null;
-
-// const user: UserType = {
-//   id: "arandomuserid",
-//   firstName: "Anthony",
-//   lastName: "Nucci",
-// };
-const user: UserType = null;
 const leageLogo = null;
 
 export default function AppNav() {
   const leagueID = 'aleagueid'; // get this from provider
   const pathname = usePathname();
 
-  const { status, token } = useAuth();
+  const { status, token, user } = useAuth();
 
   return (
     <div className='flex w-full items-center justify-between bg-primary px-4 py-3'>
@@ -51,11 +37,15 @@ export default function AppNav() {
           <Link className='transition-all hover:text-secondary' href='#'>
             News
           </Link>
-          <Link className='transition-all hover:text-secondary' href='#'>
-            Scores
-          </Link>
-          <Link className='transition-all hover:text-secondary' href='#'>
-            Schedule
+          <Link
+            className={classNames(
+              pathname === `${ROUTES.LEAGUE}/${leagueID}${ROUTES.GAMES}` &&
+                'text-secondary',
+              'transition-all hover:text-secondary'
+            )}
+            href={`${ROUTES.LEAGUE}/${leagueID}${ROUTES.GAMES}`}
+          >
+            Games
           </Link>
           <Link
             className={classNames(
@@ -101,62 +91,23 @@ export default function AppNav() {
       </div>
 
       <div>
-        {user ? (
+        {status === 'authenticated' ? (
           <div className='flex items-center space-x-4'>
-            {user.id === leagueOwnerId ? (
+            {/* {user.id === leagueOwnerId ? (
               <span className='text-sm font-medium text-white'>
                 ( League Owner )
               </span>
-            ) : null}
-            <Menu as='div' className='relative'>
-              <Menu.Button className='flex items-center space-x-2 rounded-md border bg-white p-2 text-sm font-medium text-primary'>
-                <span> {user.firstName}</span>
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-95'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-95'
-              >
-                <div className='absolute right-0 mt-2 divide-y divide-gray-100 overflow-hidden rounded-md bg-white py-2 text-center shadow-lg'>
-                  <Menu.Items>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <Link
-                          className={`whitespace-nowrap p-4 text-sm font-medium ${
-                            active && 'bg-secondary text-white transition-all'
-                          }`}
-                          href={`/profile/${user.id}`}
-                        >
-                          View Profile
-                        </Link>
-                      )}
-                    </Menu.Item>
-                  </Menu.Items>{' '}
-                </div>
-              </Transition>
-            </Menu>
+            ) : null} */}
+            <UserDropdown />
           </div>
         ) : (
           <>
-            {status === 'authenticated' ? (
-              <button
-                className='flex items-center space-x-2 rounded-md border bg-white p-2 text-sm font-medium text-primary transition-all hover:text-secondary'
-                onClick={() => logOut(token)}
-              >
-                Sign Out
-              </button>
-            ) : (
-              <Link
-                className='flex items-center space-x-2 rounded-md border bg-white p-2 text-sm font-medium text-primary transition-all hover:text-secondary'
-                href='/login'
-              >
-                Sign In
-              </Link>
-            )}
+            <Link
+              className='flex items-center space-x-2 rounded-md border bg-white p-2 text-sm font-medium text-primary transition-all hover:text-secondary'
+              href='/login'
+            >
+              Sign In
+            </Link>
           </>
         )}
       </div>

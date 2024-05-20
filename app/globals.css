@@ -37,3 +37,29 @@
   transform: rotate(-45deg);
   transform-origin: 0% 0%;
 }
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+.swatches-picker {
+  scrollbar-width: thin;
+  scrollbar-color: #00337c #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+.swatches-picker::-webkit-scrollbar {
+  width: 5px;
+}
+
+.swatches-picker::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.swatches-picker::-webkit-scrollbar-thumb {
+  background-color: #00337c;
+  border-radius: 2px;
+  border: 3px none #ffffff;
+}
+
+.swatches-picker::-webkit-scrollbar-button {
+  display: none;
+}

@@ -12,8 +12,17 @@ export default function Home() {
         <Link href='/login' className='text-secondary'>
           Login
         </Link>
-        <Link href='/league/NBA' className='text-secondary'>
+        <Link href='/league/NBA' className='text-primary'>
           league
+        </Link>
+        <Link href='/profile' className='text-secondary'>
+          Profile
+        </Link>
+        <Link
+          href='/control-panel/league/a-new-test-league'
+          className='text-primary'
+        >
+          Control Panel
         </Link>
       </div>
     </main>
