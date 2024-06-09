@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import leagueLogo from "@/app/assets/fake-logo.png";
-import Carousel from "react-multi-carousel";
-import cryptoRandomString from "crypto-random-string";
-import Link from "next/link";
-import ROUTES from "@/app/lib/routesConfig";
-import { usePathname } from "next/navigation";
+import Image from 'next/image';
+import leagueLogo from '@/app/assets/fake-logo.png';
+import Carousel from 'react-multi-carousel';
+import cryptoRandomString from 'crypto-random-string';
+import Link from 'next/link';
+import ROUTES from '@/app/lib/globals/routes';
+import { usePathname } from 'next/navigation';
 
 const responsive = {
   any: {
@@ -19,44 +19,44 @@ export default function HomeGraphic() {
   const pathname = usePathname();
 
   return (
-    <div className="border border-violet-100 rounded p-4 shadow-md max-w-[700px]">
-      <div className="pb-10">
+    <div className='max-w-[700px] rounded border border-violet-100 p-4 shadow-md'>
+      <div className='pb-10'>
         <>
-          <div className="h-[400px] flex items-center justify-center">
-            <div className="bg-primary h-full w-full rounded-md flex items-center justify-center pb-8">
-              <div className="flex flex-col items-center space-y-4">
+          <div className='flex h-[400px] items-center justify-center'>
+            <div className='flex h-full w-full items-center justify-center rounded-md bg-primary pb-8'>
+              <div className='flex flex-col items-center space-y-4'>
                 <div>
                   {graphicData.logo ? (
                     <Image
                       height={100}
                       width={100}
                       src={graphicData.logo}
-                      alt={graphicData.leagueName + "Logo"}
+                      alt={graphicData.leagueName + 'Logo'}
                     />
                   ) : null}
                 </div>
-                <div className="text-5xl font-bold text-white text-center">
+                <div className='text-center text-5xl font-bold text-white'>
                   {graphicData.leagueName}
                 </div>
               </div>
             </div>
           </div>
-          <div className="py-4">
-            <div className="flex flex-col">
-              <span className="font-medium text-slate-600 text-sm">
+          <div className='py-4'>
+            <div className='flex flex-col'>
+              <span className='text-sm font-medium text-slate-600'>
                 {graphicData.date}
               </span>
               <Link
                 href={`${pathname}/${ROUTES.ABOUT}`}
-                className="text-3xl font-bold hover:underline transition-all mt-2 mb-4"
+                className='mb-4 mt-2 text-3xl font-bold transition-all hover:underline'
               >
                 {graphicData.headline}
               </Link>
-              <div className="text-sm text-slate-600 ">
-                {graphicData.description}{" "}
+              <div className='text-sm text-slate-600 '>
+                {graphicData.description}{' '}
                 <Link
                   href={`${pathname}/${ROUTES.ABOUT}`}
-                  className="text-primary font-medium hover:underline"
+                  className='font-medium text-primary hover:underline'
                 >
                   Click here to read more.
                 </Link>
@@ -74,11 +74,11 @@ export default function HomeGraphic() {
 const graphicData = {
   logo: leagueLogo,
   leagueName: "Anthony's Basketball League", // //TODO get from useLeague() hook
-  date: "July 31 2023",
+  date: 'July 31 2023',
   headline: "Anthony's Basketball League",
   description:
     "Anthony's Basketball League is a basketball league that was created on July 31, 2023. The league has 14 teams and it's current owner is John Smith.",
-  type: "league",
+  type: 'league',
 };
 // {
 //   logo: leagueLogo,

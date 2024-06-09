@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import classNames from 'classnames';
 
 import NotFound from '@/app/lib/components/NotFound';
-import ROUTES from '@/app/lib/routesConfig';
+import ROUTES from '@/app/lib/globals/routes';
 import { useAuth } from '@/app/GlobalContext';
 
 export default function Error({

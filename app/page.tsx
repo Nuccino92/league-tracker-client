@@ -19,7 +19,7 @@ export default function Home() {
           Profile
         </Link>
         <Link
-          href='/control-panel/league/a-new-test-league'
+          href='/control-panel/league/oh-mah-gawd'
           className='text-primary'
         >
           Control Panel

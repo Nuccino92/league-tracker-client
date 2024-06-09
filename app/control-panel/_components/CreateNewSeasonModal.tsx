@@ -7,7 +7,7 @@ import Checkbox from '@/app/lib/components/Checkbox';
 import Modal from '@/app/lib/components/Modal';
 import { ModalType } from '@/app/types';
 import { SeasonType } from '@/app/lib/types/Season/Season';
-import { inputClasses } from '@/app/lib/constants/styles';
+import { inputClasses } from '@/app/lib/globals/styles';
 
 const newSeasonNameSchema = z
   .string()

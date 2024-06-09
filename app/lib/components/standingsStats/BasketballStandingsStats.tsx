@@ -1,8 +1,8 @@
 // TODO:look to create a model from API call and use it from there
 
-import classNames from "classnames";
-import Link from "next/link";
-import ROUTES from "../../routesConfig";
+import classNames from 'classnames';
+import Link from 'next/link';
+import ROUTES from '../../globals/routes';
 
 type Data = {
   id: string;
@@ -34,29 +34,29 @@ export default function BasketballStandingsStats({ data, leagueName }: Props) {
             <tr
               key={team.id}
               className={classNames(
-                index % 2 === 0 && "bg-slate-50",
-                "flex items-center text-sm font-medium h-[60px] hover:bg-slate-200 transition duration-75"
+                index % 2 === 0 && 'bg-slate-50',
+                'flex h-[60px] items-center text-sm font-medium transition duration-75 hover:bg-slate-200'
               )}
             >
-              <td className="w-20 text-center font-normal">{team.rank}</td>
-              <td className="w-[150px] text-center border-r h-full flex items-center justify-center">
+              <td className='w-20 text-center font-normal'>{team.rank}</td>
+              <td className='flex h-full w-[150px] items-center justify-center border-r text-center'>
                 <Link
-                  className="hover:text-secondary transition-all truncate"
+                  className='truncate transition-all hover:text-secondary'
                   href={`${ROUTES.LEAGUE}/${leagueName}/${ROUTES.TEAMS}/${team.id}`}
                 >
                   {team.team}
                 </Link>
               </td>
 
-              <td className="w-[45px] text-center">{team.games}</td>
-              <td className="w-[45px] text-center">{team.wins}</td>
-              <td className="w-[45px] text-center">{team.losses}</td>
-              <td className="w-[45px] text-center">{team.draws}</td>
-              <td className="w-[45px] text-center">{team.winpct}</td>
-              <td className="w-[45px] text-center">{team.pf}</td>
-              <td className="w-[45px] text-center">{team.pa}</td>
-              <td className="w-[45px] text-center">{team.plusminus}</td>
-              <td className="w-[45px] text-center">{team.streak}</td>
+              <td className='w-[45px] text-center'>{team.games}</td>
+              <td className='w-[45px] text-center'>{team.wins}</td>
+              <td className='w-[45px] text-center'>{team.losses}</td>
+              <td className='w-[45px] text-center'>{team.draws}</td>
+              <td className='w-[45px] text-center'>{team.winpct}</td>
+              <td className='w-[45px] text-center'>{team.pf}</td>
+              <td className='w-[45px] text-center'>{team.pa}</td>
+              <td className='w-[45px] text-center'>{team.plusminus}</td>
+              <td className='w-[45px] text-center'>{team.streak}</td>
             </tr>
           );
         })}

@@ -20,9 +20,9 @@ import {
 } from '@/app/GlobalContext';
 import Modal from './Modal';
 import { SportType } from '../types/sport.types';
-import { inputClasses, inputContainerClasses } from '../constants/styles';
+import { inputClasses, inputContainerClasses } from '../globals/styles';
 import FileUpload from '@/app/lib/components/FileUpload';
-import { deleteIcon } from '../SVGs';
+import { DeleteIcon } from '../SVGs';
 import ColorPicker from '@/app/lib/components/ColorPicker';
 import {
   LeagueInformationResource,
@@ -30,6 +30,7 @@ import {
 } from '../types/Resources/CreateLeagueResource';
 import { organizationInformationSchema } from '../types/Resources/CreateOrganizationResource';
 import { useCreateLeague as useCreateLeagueHook } from '../hooks/api/league';
+import { DefaultColors } from '../enums';
 // import { checkIfSlugIsUnique } from '../requests/slugs';
 
 const CheckoutForm = dynamic(() => import('./CheckoutForm'), {
@@ -554,7 +555,7 @@ function CreationForm({
                 className='absolute right-0 m-2 transition-colors hover:text-red-500'
                 type='button'
               >
-                {deleteIcon}
+                <DeleteIcon width={24} height={24} />
               </button>
             </div>
           ) : (
@@ -953,8 +954,8 @@ const defaultLeagueInformation: LeagueInformationResource = {
   logo: null,
   // slug: '',
   description: null,
-  primary_color: '#00337C',
-  secondary_color: '#03C988',
+  primary_color: DefaultColors.Primary,
+  secondary_color: DefaultColors.Secondary,
 };
 
 const defaultOrganizationInformation: any = {

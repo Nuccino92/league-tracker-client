@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import NotFound from '../lib/components/NotFound';
-import ROUTES from '../lib/routesConfig';
+import ROUTES from '../lib/globals/routes';
 import classNames from 'classnames';
 
 export default function Error({

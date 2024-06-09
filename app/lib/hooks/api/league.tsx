@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import ROUTES from '@/app/lib/routesConfig';
+import ROUTES from '@/app/lib/globals/routes';
 import {
   useAuth,
   useCreateLeague as createLeagueContext,

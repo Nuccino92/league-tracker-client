@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import { useAuth, useCreateLeague } from '@/app/GlobalContext';
 import { downChevronIcon } from '@/app/lib/SVGs';
-import ROUTES from '../routesConfig';
+import ROUTES from '../globals/routes';
 import logOut from '../utils/logOut';
 
 type Props = {

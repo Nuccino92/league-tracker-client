@@ -1,6 +1,6 @@
 import { Field, ErrorMessage } from 'formik';
 import classNames from 'classnames';
-import { inputClasses } from '../../constants/styles';
+import { inputClasses } from '../../globals/styles';
 
 type Props = {
   name: string;

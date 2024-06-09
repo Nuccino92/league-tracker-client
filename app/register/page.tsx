@@ -16,7 +16,7 @@ import AuthContainer from '../lib/components/_auth/AuthContainer';
 import { useAuth } from '../GlobalContext';
 import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
 import { registerRequest } from '@/app/lib/requests/auth';
-import { inputContainerClasses } from '../lib/constants/styles';
+import { inputContainerClasses } from '../lib/globals/styles';
 
 const Schema = z
   .object({

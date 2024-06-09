@@ -37,8 +37,8 @@ export default function ConcludeSeasonModal({
         </h4>
 
         <p className='text-sm'>
-          Concludling a season prevents games from being submitted until another
-          season is activated
+          Concludling a season prevents games from being submitted & numerous
+          other actions until another season is activated.
         </p>
 
         <div className='space-x-2 font-medium text-white'>
@@ -46,12 +46,7 @@ export default function ConcludeSeasonModal({
             onClick={() => {
               try {
                 //TODO: send request to conclude the season
-                formikProps.handleChange({
-                  target: {
-                    name: 'active_season',
-                    value: null,
-                  },
-                });
+                formikProps.setFieldValue('active_season', null);
 
                 close();
               } catch (error) {

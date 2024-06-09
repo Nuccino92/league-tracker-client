@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import getInitials from '@/app/lib/utils/getInitials';
 import Link from 'next/link';
-import ROUTES from '@/app/lib/routesConfig';
+import ROUTES from '@/app/lib/globals/routes';
 import { useState } from 'react';
 import classNames from 'classnames';
 

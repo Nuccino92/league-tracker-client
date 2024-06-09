@@ -5,9 +5,10 @@ import { useParams, usePathname } from 'next/navigation';
 import classNames from 'classnames';
 import Link from 'next/link';
 
-import ROUTES from '@/app/lib/routesConfig';
+import ROUTES from '@/app/lib/globals/routes';
 import { ProfileViewType } from '@/app/lib/types/profile.types';
 import { useLeagueControlPanel } from './LeagueControlPanelProvider';
+import generateNavLinkWithParams from '@/app/lib/utils/generateNavLinkWithParams';
 
 // Have to get features from backend (maybe not depending on business model)
 
@@ -16,6 +17,8 @@ export default function Sidebar({ view }: { view: ProfileViewType }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 
   const { leagueData } = useLeagueControlPanel(); //TODO: conditionally get league or org data
+
+  //TODO: maybe create a hook to apply the current season filter to each url route!!!
 
   return (
     <div
@@ -63,8 +66,9 @@ function ControlPanelRoutes({
 }: ControlPanelTypes) {
   const params = useParams();
 
-  const baseRoute =
-    ROUTES.CONTROL_PANEL + '/' + view + '/' + params['league-name'];
+  const { leagueData } = useLeagueControlPanel();
+
+  const baseRoute = ROUTES.CONTROL_PANEL + '/' + view + '/' + params['slug'];
   return (
     <>
       <li
@@ -127,7 +131,10 @@ function ControlPanelRoutes({
         )}
       >
         <Link
-          href={baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.TEAMS}
+          href={generateNavLinkWithParams(
+            baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.TEAMS,
+            { season: leagueData.seasons.active_season_id }
+          )}
           className={classNames(
             isSidebarExpanded ? 'justify-start' : '',
             'flex items-center space-x-3 px-6 py-2'
@@ -146,7 +153,10 @@ function ControlPanelRoutes({
         )}
       >
         <Link
-          href={baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PLAYERS}
+          href={generateNavLinkWithParams(
+            baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PLAYERS,
+            { season: leagueData.seasons.active_season_id }
+          )}
           className={classNames(
             isSidebarExpanded ? 'justify-start' : '',
             'flex items-center space-x-3 px-6 py-2'

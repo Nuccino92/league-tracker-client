@@ -1,10 +1,10 @@
-import ROUTES from '@/app/lib/routesConfig';
+import ROUTES from '@/app/lib/globals/routes';
 import {
   ControlPanelInformation,
+  ControlPanelListTeam,
   ErrorType,
 } from '@/app/lib/types/Responses/control-panel.types';
 
-//region - league
 export async function leagueControlPanelInformationRequest({
   token,
   slug,

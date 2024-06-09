@@ -1,4 +1,4 @@
-import ROUTES from '../routesConfig';
+import ROUTES from '../globals/routes';
 import { League } from '../types/Models/League';
 import { LeagueInformationResource } from '../types/Resources/CreateLeagueResource';
 import { SubscriptionInformationSchema } from '../types/Resources/SubscriptionResource';

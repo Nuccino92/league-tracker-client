@@ -1,4 +1,4 @@
-import ROUTES from "@/app/lib/routesConfig";
+import ROUTES from '@/app/lib/globals/routes';
 
 type LinkProps = {
   name: string;
@@ -13,11 +13,11 @@ type TeamLinksProps = {
 export function getPlayersLinks({ name }: LinkProps) {
   return [
     {
-      label: "Home",
+      label: 'Home',
       href: `${ROUTES.LEAGUE}/${name}`,
     },
     {
-      label: "Players",
+      label: 'Players',
       href: `${ROUTES.LEAGUE}/${name}/${ROUTES.PLAYERS}`,
     },
   ];
@@ -26,11 +26,11 @@ export function getPlayersLinks({ name }: LinkProps) {
 export function getStandingsLinks({ name }: LinkProps) {
   return [
     {
-      label: "Home",
+      label: 'Home',
       href: `${ROUTES.LEAGUE}/${name}`,
     },
     {
-      label: "Standings",
+      label: 'Standings',
       href: `${ROUTES.LEAGUE}/${name}/${ROUTES.STANDINGS}`,
     },
   ];
@@ -39,7 +39,7 @@ export function getStandingsLinks({ name }: LinkProps) {
 export function getTeamLinks({ name, team, id }: TeamLinksProps) {
   return [
     {
-      label: "Home",
+      label: 'Home',
       href: `${ROUTES.LEAGUE}/${name}`,
     },
     {
@@ -52,11 +52,11 @@ export function getTeamLinks({ name, team, id }: TeamLinksProps) {
 export function getTeamsLinks({ name }: LinkProps) {
   return [
     {
-      label: "Home",
+      label: 'Home',
       href: `${ROUTES.LEAGUE}/${name}`,
     },
     {
-      label: "Teams",
+      label: 'Teams',
       href: `${ROUTES.LEAGUE}/${name}/${ROUTES.TEAMS}`,
     },
   ];

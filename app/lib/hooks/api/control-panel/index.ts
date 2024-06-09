@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/app/GlobalContext';
 import { leagueControlPanelInformationRequest } from '@/app/lib/requests/control-panel';
+import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 
-//region - league
 export function useLeague(slug: string) {
   const { token } = useAuth();
 
   const { data, status, error } = useQuery({
-    queryKey: ['league-control-panel', slug],
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.LEAGUE, slug],
     queryFn: () => leagueControlPanelInformationRequest({ token, slug }),
     retry: false,
     staleTime: 30000,
@@ -20,5 +20,3 @@ export function useLeague(slug: string) {
 
   return { data, status, error: error as NotOk };
 }
-
-//endregion

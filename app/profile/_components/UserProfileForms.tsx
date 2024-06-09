@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { useAuth } from '@/app/GlobalContext';
 import AuthFormInput from '@/app/lib/components/_auth/AuthFormInput';
 import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
-import { inputClasses, inputContainerClasses } from '@/app/lib/constants/styles';
+import { inputClasses, inputContainerClasses } from '@/app/lib/globals/styles';
 
 const AccountInformationSchema = z.object({
   name: z.string().min(1, { message: 'A name is required' }),
@@ -162,7 +162,6 @@ export default function UserProfileForms() {
     </div>
   );
 }
-
 
 function FormLabel({ name, htmlFor }: { name: string; htmlFor: string }) {
   return (

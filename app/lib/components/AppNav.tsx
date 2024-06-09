@@ -6,7 +6,7 @@ import Link from 'next/link';
 import classNames from 'classnames';
 import { usePathname } from 'next/navigation';
 
-import ROUTES from '@/app/lib/routesConfig';
+import ROUTES from '@/app/lib/globals/routes';
 import { useAuth } from '@/app/GlobalContext';
 import UserDropdown from '@/app/lib/components/UserDropdown';
 
