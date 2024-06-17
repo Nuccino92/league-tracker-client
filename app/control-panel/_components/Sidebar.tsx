@@ -9,6 +9,7 @@ import ROUTES from '@/app/lib/globals/routes';
 import { ProfileViewType } from '@/app/lib/types/profile.types';
 import { useLeagueControlPanel } from './LeagueControlPanelProvider';
 import generateNavLinkWithParams from '@/app/lib/utils/generateNavLinkWithParams';
+import { sidebarLinkClasses } from '@/app/lib/globals/styles';
 
 // Have to get features from backend (maybe not depending on business model)
 
@@ -24,7 +25,7 @@ export default function Sidebar({ view }: { view: ProfileViewType }) {
     <div
       className={classNames(
         isSidebarExpanded ? 'w-[300px]' : 'w-[76px]',
-        'fixed top-0 z-20 h-screen border-r bg-primary lg:sticky lg:-mt-20'
+        'fixed top-0 z-50 h-screen border-r bg-primary lg:sticky lg:-mt-20'
       )}
     >
       <div className='flex h-20 items-center justify-center space-x-4 px-6 text-center text-xl font-bold text-white'>
@@ -69,160 +70,86 @@ function ControlPanelRoutes({
   const { leagueData } = useLeagueControlPanel();
 
   const baseRoute = ROUTES.CONTROL_PANEL + '/' + view + '/' + params['slug'];
+
+  const navigationLinks = [
+    {
+      href: baseRoute,
+      label: 'Home',
+      icon: homeIcon,
+      withSeasonParam: false,
+    },
+    {
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.MEMBERS,
+      label: 'Members',
+      icon: membersIcon,
+      withSeasonParam: false,
+    },
+    {
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS,
+      label: 'Seasons',
+      icon: seasonsIcon,
+      withSeasonParam: true,
+    },
+    {
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.TEAMS,
+      label: 'Teams',
+      icon: teamIcon,
+      withSeasonParam: true,
+    },
+    {
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PLAYERS,
+      label: 'Players',
+      icon: playerIcon,
+      withSeasonParam: true,
+    },
+    {
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.CALENDAR,
+      label: 'Calendar',
+      icon: calendarIcon,
+      withSeasonParam: true,
+    },
+    {
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PAYMENTS,
+      label: 'Payments',
+      icon: paymentsIcon,
+      withSeasonParam: true,
+    },
+    {
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.NEWS,
+      label: 'News',
+      icon: newsIcon,
+      withSeasonParam: true,
+    },
+  ];
+
   return (
     <>
-      <li
-        className={classNames(pathname === baseRoute ? 'bg-secondary' : '', '')}
-      >
-        <Link
-          href={baseRoute}
+      {navigationLinks.map((link) => (
+        <li
+          key={link.label}
           className={classNames(
-            isSidebarExpanded ? 'justify-start' : '',
-            'flex items-center space-x-3 px-6 py-2'
-          )}
-        >
-          <span>{homeIcon}</span> {isSidebarExpanded ? <span>Home</span> : null}
-        </Link>
-      </li>
-      <li
-        className={classNames(
-          pathname === baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.MEMBERS
-            ? 'bg-secondary'
-            : '',
-          ''
-        )}
-      >
-        <Link
-          href={baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.MEMBERS}
-          className={classNames(
-            isSidebarExpanded ? 'justify-start' : '',
-            'flex items-center space-x-3 px-6 py-2'
-          )}
-        >
-          <span>{membersIcon}</span>{' '}
-          {isSidebarExpanded ? <span>Members</span> : null}
-        </Link>
-      </li>
-      {/* <li
-          className={classNames(
-            pathname === ROUTES.CONTROL_PANEL + '/divisions'
-              ? 'bg-secondary'
-              : '',
+            pathname === link.href ? 'bg-secondary' : '',
             ''
           )}
         >
           <Link
-            href={`${ROUTES.CONTROL_PANEL}/divisions`}
+            href={
+              link.withSeasonParam
+                ? generateNavLinkWithParams(link.href, {
+                    season: leagueData.seasons.active_season_id,
+                  })
+                : link.href
+            }
             className={classNames(
               isSidebarExpanded ? 'justify-start' : '',
-              'flex items-center space-x-3 px-6 py-2'
+              sidebarLinkClasses
             )}
           >
-            <span>{divisonIcon}</span>{' '}
-            {isSidebarExpanded ? <span>Divisions</span> : null}
+            <span>{link.icon}</span>{' '}
+            {isSidebarExpanded ? <span>{link.label}</span> : null}
           </Link>
-        </li> */}
-      <li
-        className={classNames(
-          pathname === baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.TEAMS
-            ? 'bg-secondary'
-            : '',
-          ''
-        )}
-      >
-        <Link
-          href={generateNavLinkWithParams(
-            baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.TEAMS,
-            { season: leagueData.seasons.active_season_id }
-          )}
-          className={classNames(
-            isSidebarExpanded ? 'justify-start' : '',
-            'flex items-center space-x-3 px-6 py-2'
-          )}
-        >
-          <span>{teamIcon}</span>{' '}
-          {isSidebarExpanded ? <span>Teams</span> : null}
-        </Link>
-      </li>
-      <li
-        className={classNames(
-          pathname === baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PLAYERS
-            ? 'bg-secondary'
-            : '',
-          ''
-        )}
-      >
-        <Link
-          href={generateNavLinkWithParams(
-            baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PLAYERS,
-            { season: leagueData.seasons.active_season_id }
-          )}
-          className={classNames(
-            isSidebarExpanded ? 'justify-start' : '',
-            'flex items-center space-x-3 px-6 py-2'
-          )}
-        >
-          <span>{playerIcon}</span>{' '}
-          {isSidebarExpanded ? <span>Players</span> : null}
-        </Link>
-      </li>
-      <li
-        className={classNames(
-          pathname === baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.CALENDAR
-            ? 'bg-secondary'
-            : '',
-          ''
-        )}
-      >
-        <Link
-          href={baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.CALENDAR}
-          className={classNames(
-            isSidebarExpanded ? 'justify-start' : '',
-            'flex items-center space-x-3 px-6 py-2'
-          )}
-        >
-          <span>{calendarIcon}</span>{' '}
-          {isSidebarExpanded ? <span>Calendar</span> : null}
-        </Link>
-      </li>
-      <li
-        className={classNames(
-          pathname === baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PAYMENTS
-            ? 'bg-secondary'
-            : '',
-          ''
-        )}
-      >
-        <Link
-          href={baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PAYMENTS}
-          className={classNames(
-            isSidebarExpanded ? 'justify-start' : '',
-            'flex items-center space-x-3 px-6 py-2'
-          )}
-        >
-          <span>{paymentsIcon}</span>{' '}
-          {isSidebarExpanded ? <span>Payments</span> : null}
-        </Link>
-      </li>
-
-      <li
-        className={classNames(
-          pathname === baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PAYMENTS
-            ? 'bg-secondary'
-            : '',
-          ''
-        )}
-      >
-        <Link
-          href={baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.NEWS}
-          className={classNames(
-            isSidebarExpanded ? 'justify-start' : '',
-            'flex items-center space-x-3 px-6 py-2'
-          )}
-        >
-          <span>{newsIcon}</span> {isSidebarExpanded ? <span>News</span> : null}
-        </Link>
-      </li>
+        </li>
+      ))}
     </>
   );
 }
@@ -325,7 +252,7 @@ const membersIcon = (
   </svg>
 );
 
-const divisonIcon = (
+const seasonsIcon = (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     fill='none'

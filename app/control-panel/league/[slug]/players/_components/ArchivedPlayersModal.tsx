@@ -1,0 +1,202 @@
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+
+import { ModalType } from '@/app/types';
+import Modal from '@/app/lib/components/Modal';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
+import useDebounce from '@/app/lib/hooks/useDebounce';
+import SearchBar from '@/app/lib/components/SearchBar';
+import {
+  ControlPanelArchivedPlayer,
+  ControlPanelArchivedTeam,
+} from '@/app/lib/types/Responses/control-panel.types';
+import { EmptyListIcon, IconBackupRestore, Spinner } from '@/app/lib/SVGs';
+import MissingList from '@/app/control-panel/_components/MissingList';
+import { useArchivedPlayers } from '@/app/lib/hooks/api/control-panel/players';
+
+// TODO: change to proper archived players!
+
+export default function AchivedPlayersModal({ isOpen, close }: ModalType) {
+  const { leagueData } = useLeagueControlPanel();
+  const [searchInputValue, setSearchInputValue] = useState('');
+
+  const debouncedSearch = useDebounce(searchInputValue, 750);
+  const [page, setPage] = useState(1);
+
+  const { data, status } = useArchivedPlayers({
+    slug: leagueData.league_info.slug,
+    page,
+    query: debouncedSearch,
+  });
+
+  return (
+    <Modal panelClasses='sm:w-[640px] w-full' isOpen={isOpen} close={close}>
+      <div className='space-y-6'>
+        <h4 className='text-2xl font-bold'>Restore Archived Players</h4>
+        <div className='flex items-center justify-between space-x-2'>
+          <span className='max-w-[66%] break-words font-medium'>
+            {leagueData.league_info.name}
+          </span>
+          <SearchBar
+            containerClasses='border'
+            inputValue={searchInputValue}
+            setInputValue={setSearchInputValue}
+            placeholder='Search for a team...'
+            searchIconSize={22}
+            closeIconSize={18}
+          />
+        </div>
+
+        <main className='swatches-picker max-h-[500px] space-y-2 overflow-y-auto rounded border bg-slate-100 p-2 sm:h-[500px] sm:min-h-[500px]'>
+          {data && status === 'success' ? (
+            <>
+              {data.length > 0 ? (
+                data.map((player, index) => (
+                  <div key={player.id + index}>
+                    <TeamCard player={player} />
+                  </div>
+                ))
+              ) : (
+                <MissingList
+                  text='No Archived Teams'
+                  icon={
+                    <EmptyListIcon className='w-full' height={55} width={55} />
+                  }
+                />
+              )}
+            </>
+          ) : null}
+
+          {status === 'loading' ? (
+            <div className='flex h-full w-full items-center justify-center'>
+              <Spinner width={50} height={50} />
+            </div>
+          ) : null}
+        </main>
+      </div>
+    </Modal>
+  );
+}
+
+function TeamCard({ player }: { player: ControlPanelArchivedPlayer }) {
+  return (
+    <div className='flex w-full items-center justify-between rounded border bg-white p-3'>
+      <div className='flex items-center space-x-2'>
+        {player.avatar ? (
+          <div className='relative h-8 w-8 rounded border'>
+            <Image
+              src={player.avatar}
+              alt={`${player.name} logo`}
+              fill
+              style={{ objectFit: 'contain', position: 'absolute' }}
+              sizes='(max-width: 50px) 100vw'
+            />
+          </div>
+        ) : (
+          <div className='flex h-8 w-8 items-center justify-center rounded border bg-primary text-xs font-medium text-white'>
+            N/A
+          </div>
+        )}
+        <span className='font-medium'>{player.name}</span>
+      </div>
+
+      <button
+        type='button'
+        onClick={() => {
+          /**
+           *  TODO: send mutation request to restore team
+           *  invalidate QUERY_KEYS.TEAMS
+           *  mutate the current archived team list
+           */
+          console.log('restoring:', player);
+        }}
+      >
+        <IconBackupRestore
+          height={24}
+          width={24}
+          className='transition-colors duration-100 ease-out hover:text-secondary'
+        />
+      </button>
+    </div>
+  );
+}
+
+const mockTeamList = [
+  {
+    id: 1,
+    name: 'Toronto Raptors',
+    logo: null,
+  },
+  {
+    id: 2,
+    name: 'Charleotte Hornets',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+  },
+  {
+    id: 3,
+    name: 'Denver Nuggies',
+    logo: null,
+  },
+  {
+    id: 4,
+    name: 'Miami Heat',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+  },
+  {
+    id: 5,
+    name: 'Los Angeles Lakers',
+    logo: null,
+  },
+  {
+    id: 6,
+    name: 'Toronto Raptors',
+    logo: null,
+  },
+  {
+    id: 7,
+    name: 'Charleotte Hornets',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+  },
+  {
+    id: 8,
+    name: 'Denver Nuggies',
+    logo: null,
+  },
+  {
+    id: 9,
+    name: 'Miami Heat',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+  },
+  {
+    id: 10,
+    name: 'Los Angeles Lakers',
+    logo: null,
+  },
+  {
+    id: 11,
+    name: 'Toronto Raptors',
+    logo: null,
+  },
+  {
+    id: 12,
+    name: 'Charleotte Hornets',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+  },
+  {
+    id: 13,
+    name: 'Denver Nuggies',
+    logo: null,
+  },
+  {
+    id: 14,
+    name: 'Miami Heat',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+  },
+  {
+    id: 15,
+    name: 'Los Angeles Lakers',
+    logo: null,
+  },
+];

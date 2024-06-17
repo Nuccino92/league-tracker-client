@@ -117,7 +117,7 @@ export default function FileUpload({
             ) : (
               <>
                 {' '}
-                <span className='font-medium'>CLICK TO UPLOAD A LOGO</span>
+                <span className='font-medium'>CLICK TO UPLOAD IMAGE</span>
                 <div className='flex flex-col items-center'>
                   <span className='text-xs'>Maximum size allowed: (500KB)</span>
                   <span className='text-xs'>

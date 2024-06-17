@@ -11,15 +11,15 @@ export default function Container({
   view,
 }: PropsWithChildren & { view: ProfileViewType }) {
   return (
-    <div className='relative'>
-      <div className='sticky top-0 z-10 w-full bg-white'>
+    <div className='relative h-screen max-h-screen min-h-screen pt-20'>
+      <div className='absolute top-0 z-10 w-full bg-white'>
         <Header />
       </div>
 
-      <div className='flex'>
+      <div className='flex h-full'>
         <Sidebar view={view} />
 
-        <div className='ml-[76px] w-full bg-slate-100 p-2 sm:p-6 lg:ml-0'>
+        <div className='relative ml-[76px] h-full max-h-full w-full overflow-y-auto bg-slate-100 p-2 sm:p-6 lg:ml-0'>
           {children}
         </div>
       </div>

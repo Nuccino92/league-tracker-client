@@ -6,7 +6,7 @@ import Link from 'next/link';
 import classNames from 'classnames';
 
 import { useAuth, useCreateLeague } from '@/app/GlobalContext';
-import { downChevronIcon } from '@/app/lib/SVGs';
+import { DownChevronIcon } from '@/app/lib/SVGs';
 import ROUTES from '../globals/routes';
 import logOut from '../utils/logOut';
 
@@ -36,7 +36,7 @@ export default function UserDropdown({
         )}
       >
         <span className='w-[120px] truncate'>{user.name}</span>{' '}
-        <span>{downChevronIcon}</span>
+        <DownChevronIcon height={22} width={22} />
       </Menu.Button>
       <Transition
         as={Fragment}

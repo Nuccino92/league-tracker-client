@@ -5,7 +5,6 @@ import {
   IconEllipsisVertical,
   IconPlus,
   IconSearch,
-  downChevronIcon,
 } from '@/app/lib/SVGs';
 import classNames from 'classnames';
 

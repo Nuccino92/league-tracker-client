@@ -9,6 +9,7 @@
  * app\login\page.tsx
  * app\lib\components\CreateLeagueModal.tsx
  * app\control-panel\league\[slug]\teams\_components\TeamForm.tsx
+ * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
  */
 
 export const inputContainerClasses = `flex flex-col space-y-3`;
@@ -24,6 +25,7 @@ export const inputContainerClasses = `flex flex-col space-y-3`;
  * app\profile\control-panel\_components\CreateNewSeasonModal.tsx
  * app\lib\components\CreateLeagueModal.tsx
  * app\control-panel\league\[slug]\teams\_components\TeamForm.tsx
+ * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
  */
 
 export const inputClasses =
@@ -35,6 +37,16 @@ export const inputClasses =
  *
  * @locations
  * app\control-panel\league\[slug]\teams\_components\TeamForm.tsx,
+ * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
  */
 
 export const skeletonClass = `animate-pulse bg-zinc-200 rounded`;
+
+/**
+ * @description
+ * Classes for the sidebar Link.
+ *
+ * @locations
+ * app\control-panel\_components\Sidebar.tsx
+ */
+export const sidebarLinkClasses = `flex items-center space-x-3 px-6 py-2 hover:bg-secondary/10`;

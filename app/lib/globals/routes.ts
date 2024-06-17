@@ -16,6 +16,7 @@ const ROUTES = {
   CONTROL_PANEL: '/control-panel',
   CONTROL_PANEL_SUBROUTES: {
     MEMBERS: '/members',
+    SEASONS: '/seasons',
     CALENDAR: '/calendar',
     PAYMENTS: '/payments',
     PLAYERS: '/players',

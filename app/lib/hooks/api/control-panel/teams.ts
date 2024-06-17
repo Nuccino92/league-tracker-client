@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/app/GlobalContext';
 import {
@@ -6,6 +6,7 @@ import {
   fetchControlPanelTeam,
   fetchControlPanelTeamsForManagement,
   fetchControlPanelArchivedTeams,
+  fetchControlPanelTeamsForDropdown,
 } from '@/app/lib/requests/control-panel/teams';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import useQueryString from '@/app/lib/hooks/useQueryString';
@@ -13,6 +14,7 @@ import { DefaultColors } from '@/app/lib/enums';
 import { Team } from '@/app/lib/types/Models/Team';
 import { Filter } from '@/app/lib/types/filters.types';
 import { createQueryString } from '@/app/lib/utils/createQueryString';
+import { useParams } from 'next/navigation';
 
 export function useTeams(slug: string) {
   const { token } = useAuth();
@@ -55,6 +57,24 @@ export function useTeam({ slug, teamId }: { slug: string; teamId?: number }) {
   return { team, status };
 }
 
+export function useAddTeam() {
+  /**
+   * Invalidate
+   * [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params]
+   * [QUERY_KEYS.CONTROL_PANEL.TEAMS_FOR_DROPDOWN, slug]
+   */
+  // return useMutation()
+}
+
+export function useUpdateTeam() {
+  /**
+   * Invalidate
+   * [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params]
+   * [QUERY_KEYS.CONTROL_PANEL.TEAMS_FOR_DROPDOWN, slug]
+   */
+  // return useMutation()
+}
+
 export function useTeamsForManagement({
   slug,
   page,
@@ -62,8 +82,6 @@ export function useTeamsForManagement({
 }: { slug: string } & Filter) {
   const { token } = useAuth();
   const { getFullQueryString } = useQueryString();
-
-  console.log('inside hook...');
 
   const params = createQueryString({ page: page?.toString(), query });
 
@@ -87,11 +105,34 @@ export function useArchivedTeams({
   const params = createQueryString({ page: page?.toString(), query });
 
   const { data, status } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params],
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.ARCHIVED_TEAMS, slug, params],
     queryFn: () => fetchControlPanelArchivedTeams({ token, slug, params }),
     retry: false,
     staleTime: 30000,
   });
 
   return { data, status };
+}
+
+export function useRestoreArchivedTeam() {
+  /**
+   * Invalidate
+   * [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params]
+   * [QUERY_KEYS.CONTROL_PANEL.TEAMS_FOR_DROPDOWN, slug]
+   */
+  // return useMutation()
+}
+
+// TODO: needs to be invalidated when creating/updating/deleting a team
+export function useControlPanelTeamsForDropdown({ slug }: { slug: string }) {
+  const { token } = useAuth();
+
+  const { data: teamsDropdownList, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS_FOR_DROPDOWN, slug],
+    queryFn: () => fetchControlPanelTeamsForDropdown({ token, slug }),
+    retry: 2,
+    staleTime: Infinity,
+  });
+
+  return { teamsDropdownList, status };
 }

@@ -1,7 +1,11 @@
-import { League } from '../Models/League';
-import { BasePlayer } from '../Models/Player';
-import { BaseTeam } from '../Models/Team';
-import { LeagueInformationResource } from '../Resources/CreateLeagueResource';
+import { z } from 'zod';
+
+import { League } from '@/app/lib/types/Models/League';
+import { basePlayerSchema } from '@/app/lib/types/Models/Player';
+import { baseTeamSchema } from '@/app/lib/types/Models/Team';
+import { LeagueInformationResource } from '@/app/lib/types/Resources/CreateLeagueResource';
+
+// TODO: possibly seperate each region into its own file, follow the requests/control-panel folder structure
 
 export type ControlPanelInformation = {
   league_info: League;
@@ -13,26 +17,68 @@ export type Seasons = {
   active_season_id: number | null;
 };
 
-// region - teams
-
 // TODO: possibly add can_remove property
-export type ControlPanelListTeam = {
-  league_id: number;
-} & BaseTeam;
 
-export type ControlPanelManageTeam = BaseTeam & {
-  is_in_active_season: boolean;
-  can_remove: boolean;
-};
+// ----region - teams
+export const controlPanelListTeamSchema = baseTeamSchema.merge(
+  z.object({
+    league_id: z.number(),
+  })
+);
+export const controlPanelManageTeamSchema = baseTeamSchema.merge(
+  z.object({
+    is_in_active_season: z.boolean(),
+    can_remove: z.boolean(),
+  })
+);
+export const controlPanelArchivedTeamSchema = baseTeamSchema;
+export const controlPaneListTeamForDropdownSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
 
-export type ControlPanelArchivedTeam = BaseTeam & {};
+export type ControlPanelListTeam = z.infer<typeof controlPanelListTeamSchema>;
+export type ControlPanelManageTeam = z.infer<
+  typeof controlPanelManageTeamSchema
+>;
+export type ControlPanelArchivedTeam = z.infer<
+  typeof controlPanelArchivedTeamSchema
+>;
+export type ControlPanelListTeamForDropdown = z.infer<
+  typeof controlPaneListTeamForDropdownSchema
+>;
 
-// endregion - teams
+// ---- endregion
 
-// region - players
+// ---- region - players
+export const controlPanelListPlayerSchema = basePlayerSchema.merge(
+  z.object({ team: z.string().nullable() })
+);
+export const controlPanelArchivedPlayerSchema = basePlayerSchema;
 
-export type ControlPanelPlayer = {} & BasePlayer;
-
-// endregion - players
+export type ControlPanelListPlayer = z.infer<
+  typeof controlPanelListPlayerSchema
+>;
+export type ControlPanelArchivedPlayer = z.infer<
+  typeof controlPanelArchivedPlayerSchema
+>;
+// ---- endregion
 
 export type ErrorType = 'inactive' | 'unauthorized';
+
+export const organizationInformationSchema = z.object({
+  name: z
+    .string()
+    .min(5, { message: 'League name must be at least 5 characters' })
+    .max(50, { message: 'Length must not exceed 50 characters' }),
+  logo: z.string().url({ message: 'The logo must be a URL' }).nullable(),
+  description: z
+    .string()
+    .min(20, { message: 'Description must be at least 20 characters' })
+    .max(300, { message: 'Description must not exceed 300 characters' })
+    .nullable(),
+});
+
+export type OrganizationInformationFormSchema = z.infer<
+  typeof organizationInformationSchema
+>;

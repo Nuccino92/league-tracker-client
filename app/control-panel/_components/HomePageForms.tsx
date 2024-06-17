@@ -23,7 +23,7 @@ import {
 } from '@/app/lib/components/Tooltip';
 import ColorPicker from '@/app/lib/components/ColorPicker';
 import ConcludeSeasonModal from './ConcludeSeasonModal';
-import { DeleteIcon, ToolTipIcon, downChevronIcon } from '@/app/lib/SVGs';
+import { DeleteIcon, DownChevronIcon, ToolTipIcon } from '@/app/lib/SVGs';
 import { inputClasses, inputContainerClasses } from '@/app/lib/globals/styles';
 import {
   LeagueInformationResource,
@@ -128,13 +128,7 @@ export default function HomePageForms() {
                              * TODO:
                              * await delete from s3
                              */
-
-                            props.handleChange({
-                              target: {
-                                name: 'logo',
-                                value: null,
-                              },
-                            });
+                            props.setFieldValue('logo', null);
                           }}
                           className='absolute right-0 m-2 transition-colors hover:text-red-500'
                           type='button'
@@ -148,19 +142,11 @@ export default function HomePageForms() {
                         view='control-panel'
                         maxFileSize={500 * 1024}
                         changeEvent={(value) =>
-                          props.handleChange({
-                            target: {
-                              name: 'logo',
-                              value: value,
-                            },
-                          })
+                          props.setFieldValue('logo', value)
                         }
-                        errorEvent={(message) => {
-                          return props.setErrors({
-                            ...props.errors,
-                            logo: message,
-                          });
-                        }}
+                        errorEvent={(message) =>
+                          props.setFieldError('logo', message)
+                        }
                       />
                     )}
                     <ControlPanelTooltip
@@ -259,12 +245,7 @@ export default function HomePageForms() {
                         color={props.values.primary_color}
                         buttonClasses='w-[100px]'
                         saveColor={(color: string) =>
-                          props.handleChange({
-                            target: {
-                              name: 'primary_color',
-                              value: color,
-                            },
-                          })
+                          props.setFieldValue('primary_color', color)
                         }
                       />
                       {props.values.primary_color !== DefaultColors.Primary ? (
@@ -272,12 +253,10 @@ export default function HomePageForms() {
                           type='button'
                           className='text-s, h-10 rounded bg-red-500 px-2 text-sm font-medium text-white ring-secondary transition-all duration-100 hover:ring-1'
                           onClick={() =>
-                            props.handleChange({
-                              target: {
-                                name: 'primary_color',
-                                value: DefaultColors.Primary,
-                              },
-                            })
+                            props.setFieldValue(
+                              'primary_color',
+                              DefaultColors.Primary
+                            )
                           }
                         >
                           Reset to Default
@@ -306,12 +285,7 @@ export default function HomePageForms() {
                         color={props.values.secondary_color}
                         buttonClasses='w-[100px]'
                         saveColor={(color: string) =>
-                          props.handleChange({
-                            target: {
-                              name: 'secondary_color',
-                              value: color,
-                            },
-                          })
+                          props.setFieldValue('secondary_color', color)
                         }
                       />
 
@@ -321,12 +295,10 @@ export default function HomePageForms() {
                           type='button'
                           className='text-s, h-10 rounded bg-red-500 px-2 text-sm font-medium text-white ring-secondary transition-all duration-100 hover:ring-1'
                           onClick={() =>
-                            props.handleChange({
-                              target: {
-                                name: 'secondary_color',
-                                value: DefaultColors.Secondary,
-                              },
-                            })
+                            props.setFieldValue(
+                              'secondary_color',
+                              DefaultColors.Secondary
+                            )
                           }
                         >
                           Reset to Default
@@ -398,7 +370,7 @@ export default function HomePageForms() {
                                   season.id === props.values.active_season
                               )?.name ?? 'Select from dropdown to activate'}
                             </span>
-                            <span>{downChevronIcon}</span>
+                            <DownChevronIcon height={22} width={22} />
                           </Listbox.Button>
 
                           <Transition
@@ -418,13 +390,10 @@ export default function HomePageForms() {
                                       try {
                                         // TODO: add api call to set this as the active season
                                         // TODO: give prompt telling them that this will activate this older season
-                                        props.handleChange({
-                                          target: {
-                                            name: 'active_season',
-                                            value: season.id,
-                                          },
-                                        });
-                                        console.log(season);
+                                        props.setFieldValue(
+                                          'active_season',
+                                          season.id
+                                        );
                                       } catch (error) {
                                         console.log(error);
                                       }

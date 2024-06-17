@@ -10,74 +10,110 @@ import {
 } from 'next/navigation';
 import { Listbox, Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
+import dynamic from 'next/dynamic';
 
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import useDebounce from '@/app/lib/hooks/useDebounce';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import {
   DeleteIcon,
+  DownChevronIcon,
   EditIcon,
   EmptyListIcon,
-  IconAppstoreAdd,
   IconBackupRestore,
   IconEllipsisVertical,
   IconListAdd,
   IconOptionsOutline,
-  downChevronIcon,
+  Spinner,
 } from '@/app/lib/SVGs';
 import SearchBar from '@/app/lib/components/SearchBar';
 import { usePlayers } from '@/app/lib/hooks/api/control-panel/players';
-import { ControlPanelPlayer } from '@/app/lib/types/Responses/control-panel.types';
+import { ControlPanelListPlayer } from '@/app/lib/types/Responses/control-panel.types';
 import MissingList from '@/app/control-panel/_components/MissingList';
+import { useControlPanelTeamsForDropdown } from '@/app/lib/hooks/api/control-panel/teams';
+import AchivedPlayersModal from './ArchivedPlayersModal';
+import DeletePlayerModal from './DeletePlayerModal';
 
 const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
 
+const PlayerForm = dynamic(
+  () =>
+    import('@/app/control-panel/league/[slug]/players/_components/PlayerForm')
+);
+
 export default function Players({ slug }: { slug: string }) {
   const params = useParams();
-  const { data, status } = usePlayers(slug);
-
-  console.log('player data', data, status);
+  const { data, status, isLoading } = usePlayers(slug);
 
   const [showCreatePlayerModal, setShowCreatePlayerModal] = useState(false);
+  const [showArchivedPlayersModal, setShowArchivedPlayersModal] =
+    useState(false);
   const [page, setPage] = useState(
     params?.page ? parseInt(params?.page as string) : 1
   );
 
-  return (
-    <main className='space-y-4'>
-      <PlayersHeader setShowCreatePlayerModal={setShowCreatePlayerModal} />
+  const shouldDisplayContent = status === 'success' && data;
 
-      {status === 'success' && data ? (
+  return (
+    <main className='h-full space-y-4'>
+      <PlayersHeader
+        setShowCreatePlayerModal={setShowCreatePlayerModal}
+        setShowArchivedPlayersModal={setShowArchivedPlayersModal}
+        slug={slug}
+      />
+
+      {shouldDisplayContent ? (
         <>
-          <div className='space-y-6'>
-            {data.length > 0 ? (
-              data.map((player) => (
-                <PlayerCard player={player} key={player.id} />
-              ))
-            ) : (
-              <MissingList
-                text='There are no Players'
-                icon={
-                  <EmptyListIcon className='w-full' height={55} width={55} />
-                }
-              />
-            )}
+          <div className='h-full max-h-full'>
+            <div className='swatches-picker h-[95%] max-h-[95%] space-y-3 overflow-y-auto'>
+              {data.length > 0 ? (
+                data.map((player) => (
+                  <PlayerCard player={player} key={player.id} />
+                ))
+              ) : (
+                <MissingList
+                  text='There are no Players'
+                  icon={
+                    <EmptyListIcon className='w-full' height={55} width={55} />
+                  }
+                />
+              )}
+            </div>{' '}
+            <div className='w-full py-4 text-center'>paginate the teams</div>
           </div>
-          <div>paginate the teams</div>
+
+          {showCreatePlayerModal ? (
+            <PlayerForm
+              isOpen={showCreatePlayerModal}
+              close={() => setShowCreatePlayerModal(false)}
+            />
+          ) : null}
+
+          {showArchivedPlayersModal ? (
+            <AchivedPlayersModal
+              isOpen={showArchivedPlayersModal}
+              close={() => setShowArchivedPlayersModal(false)}
+            />
+          ) : null}
         </>
+      ) : null}
+      {status === 'loading' ? (
+        <div className='flex h-full w-full items-center justify-center py-12'>
+          <Spinner width={50} height={50} />
+        </div>
       ) : null}
     </main>
   );
 }
 
 function PlayersHeader({
-  // setShowAddToSeasonModal,
   setShowCreatePlayerModal,
-  //   setShowArchivedTeamsModal,
+  setShowArchivedPlayersModal,
+  slug,
 }: {
-  //   setShowAddToSeasonModal: Dispatch<SetStateAction<boolean>>;
   setShowCreatePlayerModal: Dispatch<SetStateAction<boolean>>;
-  //   setShowArchivedTeamsModal: Dispatch<SetStateAction<boolean>>;
+  setShowArchivedPlayersModal: Dispatch<SetStateAction<boolean>>;
+  slug: string;
 }) {
   const { leagueData } = useLeagueControlPanel();
   const { seasons } = leagueData;
@@ -85,8 +121,16 @@ function PlayersHeader({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const { teamsDropdownList, status } = useControlPanelTeamsForDropdown({
+    slug,
+  });
+
   const selectedSeason = searchParams.get('season')
     ? parseInt(searchParams.get('season') as string)
+    : null;
+
+  const selectedTeam = searchParams.get('team')
+    ? parseInt(searchParams.get('team') as string)
     : null;
 
   const [searchInputValue, setSearchInputValue] = useState(
@@ -100,9 +144,12 @@ function PlayersHeader({
     router.push(pathname + '?' + createQueryString('search', debouncedSearch));
   }, [createQueryString, debouncedSearch, pathname, router]);
 
+  const hasFinishedFetching = status === 'success' && teamsDropdownList;
+
   return (
     <div className='flex w-full items-center justify-between'>
       <div className='flex items-center space-x-6'>
+        {/* Season dropdown */}
         <Listbox
           as={'div'}
           className={'relative min-w-[200px]'}
@@ -122,9 +169,9 @@ function PlayersHeader({
             <span>
               {seasons.all_seasons.find(
                 (season) => season.id === selectedSeason
-              )?.name ?? 'All Teams'}
+              )?.name ?? 'All Seasons'}
             </span>
-            <span>{downChevronIcon}</span>
+            <DownChevronIcon height={22} width={22} />
           </Listbox.Button>
 
           <Transition
@@ -141,9 +188,12 @@ function PlayersHeader({
                 as='li'
                 key={'all teams no season'}
                 value={null}
-                className=' cursor-pointer px-2 py-2 hover:bg-secondary hover:text-white'
+                className={classNames(
+                  selectedSeason === null ? 'bg-primary text-white' : '',
+                  'flex cursor-pointer items-center space-x-2 px-2 py-2 hover:bg-secondary hover:text-white'
+                )}
               >
-                All Teams
+                All Seasons
               </Listbox.Option>
               {seasons.all_seasons.map((season) => (
                 <Listbox.Option
@@ -161,6 +211,78 @@ function PlayersHeader({
                   ) : null}
                 </Listbox.Option>
               ))}
+            </Listbox.Options>
+          </Transition>
+        </Listbox>
+
+        {/* Team dropdown */}
+        <Listbox
+          as={'div'}
+          className={'relative min-w-[200px]'}
+          value={selectedTeam}
+          onChange={(value) =>
+            router.push(
+              pathname + '?' + createQueryString('team', value?.toString())
+            )
+          }
+        >
+          <Listbox.Button
+            type='button'
+            className={
+              'flex w-full items-center justify-between space-x-2 rounded bg-white p-2 text-sm font-medium shadow-sm'
+            }
+          >
+            <span>
+              {teamsDropdownList?.find((team) => team.id === selectedTeam)
+                ?.name ?? 'All Teams'}
+            </span>
+            <DownChevronIcon height={22} width={22} />
+          </Listbox.Button>
+
+          <Transition
+            as={Fragment}
+            leave='transition ease-in duration-100'
+            leaveFrom='opacity-100'
+            leaveTo='opacity-0'
+          >
+            <Listbox.Options
+              as='ul'
+              className='absolute z-10 mt-1 w-max min-w-full overflow-auto rounded-md border border-violet-100 bg-white text-sm font-medium shadow-sm'
+            >
+              {hasFinishedFetching ? (
+                <>
+                  <Listbox.Option
+                    as='li'
+                    key={'all teams no season'}
+                    value={null}
+                    className={classNames(
+                      selectedTeam === null ? 'bg-primary text-white' : '',
+                      'flex cursor-pointer items-center space-x-2 px-2 py-2 hover:bg-secondary hover:text-white'
+                    )}
+                  >
+                    All Teams
+                  </Listbox.Option>
+                  {teamsDropdownList?.map((team) => (
+                    <Listbox.Option
+                      as='li'
+                      key={team.id + team.name}
+                      value={team.id}
+                      className={classNames(
+                        selectedTeam === team.id ? 'bg-primary text-white' : '',
+                        'flex cursor-pointer items-center space-x-2 px-2 py-2 hover:bg-secondary hover:text-white'
+                      )}
+                    >
+                      <span>{team.name}</span>{' '}
+                    </Listbox.Option>
+                  ))}
+                </>
+              ) : null}
+
+              {status === 'loading' ? (
+                <div className='flex items-center justify-center py-4'>
+                  <Spinner height={14} width={14} />
+                </div>
+              ) : null}
             </Listbox.Options>
           </Transition>
         </Listbox>
@@ -217,26 +339,12 @@ function PlayersHeader({
                     <span>
                       <IconListAdd height={20} width={20} />
                     </span>
-                    <span>Create Team</span>
+                    <span>Create Player</span>
                   </Menu.Item>
-                  {/* <Menu.Item
+                  <Menu.Item
                     as={'button'}
                     type='button'
-                    onClick={() => setShowAddToSeasonModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <IconAppstoreAdd height={20} width={20} />
-                    </span>
-                    <span>Manage Active Season</span>
-                  </Menu.Item> */}
-                  {/* <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowArchivedTeamsModal(true)}
+                    onClick={() => setShowArchivedPlayersModal(true)}
                     className={classNames(
                       'flex items-center space-x-2',
                       menuItemClasses
@@ -245,8 +353,8 @@ function PlayersHeader({
                     <span>
                       <IconBackupRestore height={20} width={20} />
                     </span>
-                    <span>Archived Teams</span>
-                  </Menu.Item> */}
+                    <span>Archived Players</span>
+                  </Menu.Item>
                 </Menu.Items>
               </Transition>
             </>
@@ -257,7 +365,7 @@ function PlayersHeader({
   );
 }
 
-function PlayerCard({ player }: { player: ControlPanelPlayer }) {
+function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
   const [showPlayerEditModal, setShowPlayerEditModal] = useState(false);
   const [showPlayerDeleteModal, setShowPlayerDeleteModal] = useState(false);
 
@@ -285,7 +393,19 @@ function PlayerCard({ player }: { player: ControlPanelPlayer }) {
               N/A
             </div>
           )}
-          <span className='font-medium'>{player.name}</span>
+          <div className='flex flex-col'>
+            <span className='text-lg font-medium'>{player.name}</span>
+            <span className='text-sm italic text-zinc-900'>
+              <span className='font-medium'>Team:</span>{' '}
+              <span
+                className={classNames(
+                  player.team ? 'font-bold' : 'text-gray-400 '
+                )}
+              >
+                {player.team ? player.team : 'None'}
+              </span>
+            </span>
+          </div>
         </div>
 
         <Menu as={'div'} className={'relative'}>
@@ -350,21 +470,21 @@ function PlayerCard({ player }: { player: ControlPanelPlayer }) {
         </Menu>
       </div>
 
-      {/* {showPlayerEditModal ? (
+      {showPlayerEditModal ? (
         <PlayerForm
-          isOpen={showTeamEditModal}
+          isOpen={showPlayerEditModal}
           close={() => setShowPlayerEditModal(false)}
-          teamId={team.id}
+          playerId={player.id}
         />
-      ) : null} */}
+      ) : null}
 
-      {/* {showPlayerDeleteModal ? (
+      {showPlayerDeleteModal ? (
         <DeletePlayerModal
-          isOpen={showTeamDeleteModal}
+          isOpen={showPlayerDeleteModal}
           close={() => setShowPlayerDeleteModal(false)}
-          teamId={team.id}
+          playerId={player.id}
         />
-      ) : null} */}
+      ) : null}
     </>
   );
 }

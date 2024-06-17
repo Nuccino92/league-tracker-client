@@ -5,3 +5,20 @@ TeamForm -Add expand/close animation to hide/show options button
 Refactor all page client components into server components
 
 set fixed width on sidebar
+
+refactor the response types into zod schema's that then act as types
+
+make fetch requests no-cache
+
+fix SIDEBAR RE OPENING ON PAGE CHANGE
+
+create another seasons tab
+
+CONTROL-PANEL
+POSSIBLY RESET CONTROL PANEL CACHE EVERY X NUMBER OF MINUTES
+
+    Players: 
+        create/edit player form
+        figure out dropdowns
+        delete modal
+        flush out how i want actions to effect things

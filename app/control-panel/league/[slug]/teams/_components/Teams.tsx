@@ -16,12 +16,13 @@ import {
   IconPlus,
   IconSearch,
   DeleteIcon,
-  downChevronIcon,
   IconAppstoreAdd,
   EditIcon,
   IconOptionsOutline,
   IconBackupRestore,
   EmptyListIcon,
+  DownChevronIcon,
+  Spinner,
 } from '@/app/lib/SVGs';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import useDebounce from '@/app/lib/hooks/useDebounce';
@@ -36,7 +37,9 @@ import DeleteTeamModal from './DeleteTeamModal';
 import AchivedTeamsModal from './ArchivedTeamsModal';
 import MissingList from '@/app/control-panel/_components/MissingList';
 
-const TeamForm = dynamic(() => import('../_components/TeamForm'));
+const TeamForm = dynamic(
+  () => import('@/app/control-panel/league/[slug]/teams/_components/TeamForm')
+);
 //import EditTeamForm from './_components/EditTeamForm';
 
 const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
@@ -56,7 +59,7 @@ export default function Teams({ slug }: { slug: string }) {
   );
 
   return (
-    <main className='space-y-4'>
+    <main className='h-full space-y-4 '>
       <TeamsHeader
         setShowAddToSeasonModal={setShowAddToSeasonModal}
         setShowCreateTeamModal={setShowCreateTeamModal}
@@ -65,19 +68,21 @@ export default function Teams({ slug }: { slug: string }) {
 
       {status === 'success' && data ? (
         <>
-          <div className='space-y-6'>
-            {data.length > 0 ? (
-              data.map((team) => <TeamCard team={team} key={team.id} />)
-            ) : (
-              <MissingList
-                text='There are no Teams'
-                icon={
-                  <EmptyListIcon className='w-full' height={55} width={55} />
-                }
-              />
-            )}
+          <div className='h-full max-h-full'>
+            <div className='swatches-picker h-[95%] max-h-[95%] space-y-6 overflow-y-auto'>
+              {data.length > 0 ? (
+                data.map((team) => <TeamCard team={team} key={team.id} />)
+              ) : (
+                <MissingList
+                  text='There are no Teams'
+                  icon={
+                    <EmptyListIcon className='w-full' height={55} width={55} />
+                  }
+                />
+              )}
+            </div>
+            <div className='w-full py-4 text-center'>paginate the teams</div>
           </div>
-          <div>paginate the teams</div>
 
           {showCreateTeamModal ? (
             <TeamForm
@@ -103,6 +108,12 @@ export default function Teams({ slug }: { slug: string }) {
             />
           ) : null}
         </>
+      ) : null}
+
+      {status === 'loading' ? (
+        <div className='flex h-full w-full items-center justify-center py-12'>
+          <Spinner width={50} height={50} />
+        </div>
       ) : null}
     </main>
   );
@@ -162,9 +173,9 @@ function TeamsHeader({
             <span>
               {seasons.all_seasons.find(
                 (season) => season.id === selectedSeason
-              )?.name ?? 'All Teams'}
+              )?.name ?? 'All Seasons'}
             </span>
-            <span>{downChevronIcon}</span>
+            <DownChevronIcon height={22} width={22} />
           </Listbox.Button>
 
           <Transition
@@ -181,9 +192,12 @@ function TeamsHeader({
                 as='li'
                 key={'all teams no season'}
                 value={null}
-                className=' cursor-pointer px-2 py-2 hover:bg-secondary hover:text-white'
+                className={classNames(
+                  selectedSeason === null ? 'bg-primary text-white' : '',
+                  'cursor-pointer px-2 py-2 hover:bg-secondary hover:text-white'
+                )}
               >
-                All Teams
+                All Seasons
               </Listbox.Option>
               {seasons.all_seasons.map((season) => (
                 <Listbox.Option
@@ -368,6 +382,7 @@ function TeamCard({ team }: { team: ControlPanelListTeam }) {
                     </span>
                     <span>Edit</span>
                   </Menu.Item>
+
                   {/* this is a soft delete, i guess on the backend we will have an additional property */}
                   <Menu.Item
                     as={'button'}

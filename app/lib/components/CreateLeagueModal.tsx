@@ -979,6 +979,7 @@ const defaultErrors = {
 
 type X = z.infer<typeof organizationInformationSchema>;
 
+// TODO: move icons to svg file
 function IconCube(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
