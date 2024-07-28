@@ -1,6 +1,6 @@
 import Container from '@/app/control-panel/_components/Container';
-import PageHeader from '@/app/control-panel/_components/PageHeader';
-import Players from '@/app/control-panel/league/[slug]/players/_components/Players';
+import Seasons from '@/app/control-panel/league/[slug]/seasons/_components/Seasons';
+import SeasonContent from '@/app/control-panel/league/[slug]/seasons/_components/SeasonContent';
 
 export default async function SeasonsPage({
   params,
@@ -23,7 +23,10 @@ export default async function SeasonsPage({
 
   return (
     <Container view='league'>
-      <div className='h-[calc(100%-104px)] space-y-4'>Content</div>
+      <div className='h-[calc(100%-104px)] space-y-4'>
+        <Seasons slug={params['slug']} />
+        <SeasonContent slug={params['slug']} />
+      </div>
     </Container>
   );
 }

@@ -8,7 +8,10 @@ export default function FormLabel({
   required?: boolean;
 }) {
   return (
-    <label htmlFor={htmlFor} className='font-bold text-zinc-600'>
+    <label
+      htmlFor={htmlFor}
+      className='whitespace-nowrap font-bold text-zinc-600'
+    >
       <span>{label}</span>{' '}
       {required ? <span className='text-red-500'>*</span> : null}
     </label>

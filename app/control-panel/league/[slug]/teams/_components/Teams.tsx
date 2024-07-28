@@ -30,6 +30,7 @@ import { ControlPanelListTeam } from '@/app/lib/types/Responses/control-panel.ty
 import DeleteTeamModal from './DeleteTeamModal';
 import AchivedTeamsModal from './ArchivedTeamsModal';
 import MissingList from '@/app/control-panel/_components/MissingList';
+import DropdownMenu from '@/app/lib/components/DropdownMenu';
 
 const TeamForm = dynamic(
   () => import('@/app/control-panel/league/[slug]/teams/_components/TeamForm')
@@ -134,9 +135,39 @@ function TeamsHeader({
     router.push(pathname + '?' + createQueryString('search', debouncedSearch));
   }, [createQueryString, debouncedSearch, pathname, router]);
 
+  const pageOptions = [
+    {
+      label: 'Create Team',
+      action: () => setShowCreateTeamModal(true),
+      icon: <IconListAdd height={20} width={20} />,
+    },
+    {
+      label: 'Archived Teams',
+      action: () => setShowArchivedTeamsModal(true),
+      icon: <IconBackupRestore height={20} width={20} />,
+    },
+  ];
+
   return (
     <div className='flex w-full items-center justify-between'>
+      <div className='flex items-center space-x-4'>
+        <PageHeader text='League Teams' />
+
+        <DropdownMenu
+          items={pageOptions}
+          itemClasses='p-2'
+          buttonIcon={(open) => (
+            <IconOptionsOutline
+              height={24}
+              width={24}
+              color={open ? 'white' : 'currentColor'}
+            />
+          )}
+        />
+      </div>
+
       <div className='flex items-center space-x-6'>
+        <span className='-mr-2 text-sm font-medium italic'>Filters:</span>
         <Listbox
           as={'div'}
           className={'relative min-w-[200px]'}
@@ -201,9 +232,6 @@ function TeamsHeader({
             </Listbox.Options>
           </Transition>
         </Listbox>
-      </div>
-
-      <div className='flex items-center space-x-6'>
         <SearchBar
           inputValue={searchInputValue}
           setInputValue={setSearchInputValue}
@@ -211,70 +239,6 @@ function TeamsHeader({
           searchIconSize={22}
           closeIconSize={20}
         />
-
-        <Menu as={'div'} className={'relative'}>
-          {({ open }) => (
-            <>
-              <Menu.Button
-                type='button'
-                className={classNames(
-                  open ? 'bg-primary' : 'bg-white',
-                  'fil-red-500 rounded border p-2 transition-colors duration-100 ease-out hover:border-primary hover:bg-primary hover:text-white'
-                )}
-              >
-                <IconOptionsOutline
-                  height={24}
-                  width={24}
-                  color={open ? 'white' : 'currentColor'}
-                />
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-100'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-100'
-              >
-                <Menu.Items
-                  className={classNames(
-                    'absolute right-0 z-10 mt-2 w-[225px] divide-y divide-gray-100 overflow-hidden rounded bg-white p-0 text-start text-sm font-medium shadow-lg'
-                  )}
-                >
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowCreateTeamModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <IconListAdd height={20} width={20} />
-                    </span>
-                    <span>Create Team</span>
-                  </Menu.Item>
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowArchivedTeamsModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <IconBackupRestore height={20} width={20} />
-                    </span>
-                    <span>Archived Teams</span>
-                  </Menu.Item>
-                </Menu.Items>
-              </Transition>
-            </>
-          )}
-        </Menu>
       </div>
     </div>
   );
@@ -283,6 +247,19 @@ function TeamsHeader({
 function TeamCard({ team }: { team: ControlPanelListTeam }) {
   const [showTeamEditModal, setShowTeamEditModal] = useState(false);
   const [showTeamDeleteModal, setShowTeamDeleteModal] = useState(false);
+
+  const dropdownOption = [
+    {
+      label: 'Edit',
+      action: () => setShowTeamEditModal(true),
+      icon: <EditIcon width={20} height={20} />,
+    },
+    {
+      label: 'Delete',
+      action: () => setShowTeamDeleteModal(true),
+      icon: <DeleteIcon width={20} height={20} />,
+    },
+  ];
 
   return (
     <>
@@ -311,67 +288,14 @@ function TeamCard({ team }: { team: ControlPanelListTeam }) {
           <span className='font-medium'>{team.name}</span>
         </div>
 
-        <Menu as={'div'} className={'relative'}>
-          {({ open }) => (
-            <>
-              <Menu.Button
-                type='button'
-                className={classNames(
-                  open ? 'border-primary bg-primary' : '',
-                  'fil-red-500 rounded border border-violet-100 p-2 transition-colors duration-100 ease-out hover:border-primary hover:bg-primary hover:text-white'
-                )}
-              >
-                <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-100'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-100'
-              >
-                <Menu.Items
-                  className={classNames(
-                    'absolute right-0 z-10 mt-2 w-[150px] divide-y divide-gray-100 overflow-hidden rounded border border-gray-100 bg-white p-0 text-start text-sm font-medium shadow-lg'
-                  )}
-                >
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowTeamEditModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <EditIcon width={20} height={20} />
-                    </span>
-                    <span>Edit</span>
-                  </Menu.Item>
-
-                  {/* this is a soft delete, i guess on the backend we will have an additional property */}
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowTeamDeleteModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <DeleteIcon width={20} height={20} />
-                    </span>
-                    <span>Delete</span>
-                  </Menu.Item>
-                </Menu.Items>
-              </Transition>
-            </>
+        <DropdownMenu
+          items={dropdownOption}
+          buttonIcon={(open) => (
+            <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
           )}
-        </Menu>
+          itemContainerClasses='!left-[-11rem]'
+          itemClasses={`${menuItemClasses}`}
+        />
       </div>
 
       {showTeamEditModal ? (

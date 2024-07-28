@@ -330,6 +330,21 @@ export const EmptyListIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
     </svg>
   );
 };
+
+export const IconUserAdd: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 1024 1024'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M678.3 642.4c24.2-13 51.9-20.4 81.4-20.4h.1c3 0 4.4-3.6 2.2-5.6a371.67 371.67 0 00-103.7-65.8c-.4-.2-.8-.3-1.2-.5C719.2 505 759.6 431.7 759.6 349c0-137-110.8-248-247.5-248S264.7 212 264.7 349c0 82.7 40.4 156 102.6 201.1-.4.2-.8.3-1.2.5-44.7 18.9-84.8 46-119.3 80.6a373.42 373.42 0 00-80.4 119.5A373.6 373.6 0 00137 888.8a8 8 0 008 8.2h59.9c4.3 0 7.9-3.5 8-7.8 2-77.2 32.9-149.5 87.6-204.3C357 628.2 432.2 597 512.2 597c56.7 0 111.1 15.7 158 45.1a8.1 8.1 0 008.1.3zM512.2 521c-45.8 0-88.9-17.9-121.4-50.4A171.2 171.2 0 01340.5 349c0-45.9 17.9-89.1 50.3-121.6S466.3 177 512.2 177s88.9 17.9 121.4 50.4A171.2 171.2 0 01683.9 349c0 45.9-17.9 89.1-50.3 121.6C601.1 503.1 558 521 512.2 521zM880 759h-84v-84c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v84h-84c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h84v84c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-84h84c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8z' />
+    </svg>
+  );
+};
+
 export const IconUsergroupAdd: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
@@ -340,6 +355,128 @@ export const IconUsergroupAdd: FC<SVGProps<SVGSVGElement>> = (props) => {
       {...props}
     >
       <path d='M892 772h-80v-80c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v80h-80c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h80v80c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-80h80c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8zM373.5 498.4c-.9-8.7-1.4-17.5-1.4-26.4 0-15.9 1.5-31.4 4.3-46.5.7-3.6-1.2-7.3-4.5-8.8-13.6-6.1-26.1-14.5-36.9-25.1a127.54 127.54 0 01-38.7-95.4c.9-32.1 13.8-62.6 36.3-85.6 24.7-25.3 57.9-39.1 93.2-38.7 31.9.3 62.7 12.6 86 34.4 7.9 7.4 14.7 15.6 20.4 24.4 2 3.1 5.9 4.4 9.3 3.2 17.6-6.1 36.2-10.4 55.3-12.4 5.6-.6 8.8-6.6 6.3-11.6-32.5-64.3-98.9-108.7-175.7-109.9-110.8-1.7-203.2 89.2-203.2 200 0 62.8 28.9 118.8 74.2 155.5-31.8 14.7-61.1 35-86.5 60.4-54.8 54.7-85.8 126.9-87.8 204a8 8 0 008 8.2h56.1c4.3 0 7.9-3.4 8-7.7 1.9-58 25.4-112.3 66.7-153.5 29.4-29.4 65.4-49.8 104.7-59.7 3.8-1.1 6.4-4.8 5.9-8.8zM824 472c0-109.4-87.9-198.3-196.9-200C516.3 270.3 424 361.2 424 472c0 62.8 29 118.8 74.2 155.5a300.95 300.95 0 00-86.4 60.4C357 742.6 326 814.8 324 891.8a8 8 0 008 8.2h56c4.3 0 7.9-3.4 8-7.7 1.9-58 25.4-112.3 66.7-153.5C505.8 695.7 563 672 624 672c110.4 0 200-89.5 200-200zm-109.5 90.5C690.3 586.7 658.2 600 624 600s-66.3-13.3-90.5-37.5a127.26 127.26 0 01-37.5-91.8c.3-32.8 13.4-64.5 36.3-88 24-24.6 56.1-38.3 90.4-38.7 33.9-.3 66.8 12.9 91 36.6 24.8 24.3 38.4 56.8 38.4 91.4-.1 34.2-13.4 66.3-37.6 90.5z' />
+    </svg>
+  );
+};
+
+export const IconPersonAddTwentyFour: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path
+        fillRule='evenodd'
+        d='M19.25 1a.75.75 0 01.75.75V4h2.25a.75.75 0 010 1.5H20v2.25a.75.75 0 01-1.5 0V5.5h-2.25a.75.75 0 010-1.5h2.25V1.75a.75.75 0 01.75-.75zM9 6a3.5 3.5 0 100 7 3.5 3.5 0 000-7zM4 9.5a5 5 0 117.916 4.062 7.973 7.973 0 015.018 7.166.75.75 0 11-1.499.044 6.469 6.469 0 00-12.932 0 .75.75 0 01-1.499-.044 7.973 7.973 0 015.059-7.181A4.993 4.993 0 014 9.5z'
+      />
+    </svg>
+  );
+};
+
+export const IconBxTransfer: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M15 12l5-4-5-4v2.999H2v2h13zm7 3H9v-3l-5 4 5 4v-3h13z' />
+    </svg>
+  );
+};
+
+export const IconEllipsisV: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M12 7a2 2 0 10-2-2 2 2 0 002 2zm0 10a2 2 0 102 2 2 2 0 00-2-2zm0-7a2 2 0 102 2 2 2 0 00-2-2z' />
+    </svg>
+  );
+};
+
+export const IconBxCalendarStar: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M9.981 14.811l-.467 2.726 2.449-1.287 2.449 1.287-.468-2.726 1.982-1.932-2.738-.398L11.963 10l-1.225 2.481L8 12.879z' />
+      <path d='M19 4h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm.002 16H5V8h14l.002 12z' />
+    </svg>
+  );
+};
+
+export const IconBxCalendarPlus: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M8 15h3v3h2v-3h3v-2h-3v-3h-2v3H8z' />
+      <path d='M19 4h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm.002 16H5V8h14l.002 12z' />
+    </svg>
+  );
+};
+
+export const IconBxCalendarMinus: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M8 13h8v2H8z' />
+      <path d='M19 4h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm.002 16H5V8h14l.002 12z' />
+    </svg>
+  );
+};
+
+export const IconBxCalendarExclamation: FC<SVGProps<SVGSVGElement>> = (
+  props
+) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M19 4h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm.002 16H5V8h14l.002 12z' />
+      <path d='M11 10h2v5h-2zm0 6h2v2h-2z' />
+    </svg>
+  );
+};
+
+export const IconCalendarCheck: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      fill='currentColor'
+      viewBox='0 0 16 16'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M10.854 7.146a.5.5 0 010 .708l-3 3a.5.5 0 01-.708 0l-1.5-1.5a.5.5 0 11.708-.708L7.5 9.793l2.646-2.647a.5.5 0 01.708 0z' />
+      <path d='M3.5 0a.5.5 0 01.5.5V1h8V.5a.5.5 0 011 0V1h1a2 2 0 012 2v11a2 2 0 01-2 2H2a2 2 0 01-2-2V3a2 2 0 012-2h1V.5a.5.5 0 01.5-.5zM1 4v10a1 1 0 001 1h12a1 1 0 001-1V4H1z' />
     </svg>
   );
 };

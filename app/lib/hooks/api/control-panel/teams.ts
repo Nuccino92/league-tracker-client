@@ -12,19 +12,38 @@ import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import { DefaultColors } from '@/app/lib/enums';
 import { Team } from '@/app/lib/types/Models/Team';
-import { Filter } from '@/app/lib/types/filters.types';
+import { Filter, SearchParamScope } from '@/app/lib/types/filters.types';
 import { createQueryString } from '@/app/lib/utils/createQueryString';
-import { useParams } from 'next/navigation';
 
-export function useTeams(slug: string) {
+/**
+ * @description returns a list of teams with ability to filter using url params.
+ * Use pagination default unless you need full list of teams.
+ * Add onlyUseSeasonParam if you want to bypass all url params except for season
+ *
+ * @returns
+ * with params BaseTeam[].
+ * without params redirects back via router.back()
+ */
+export function useTeams({
+  slug,
+  paginate = true,
+  enabled = true,
+  includeOnly = [],
+}: {
+  slug: string;
+  paginate?: boolean;
+  enabled?: boolean;
+  includeOnly?: SearchParamScope;
+}) {
   const { token } = useAuth();
-  const { getFullQueryString } = useQueryString();
+  const { scopeQueryParams } = useQueryString();
 
-  const params = getFullQueryString();
+  const params = scopeQueryParams(includeOnly);
 
   const { data, status } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params],
-    queryFn: () => fetchControlPanelTeams({ token, slug, params }),
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params, paginate],
+    queryFn: () => fetchControlPanelTeams({ token, slug, params, paginate }),
+    enabled,
     retry: false,
     staleTime: 30000,
   });

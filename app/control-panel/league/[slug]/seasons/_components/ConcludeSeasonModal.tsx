@@ -1,24 +1,18 @@
-import { FormikProps } from 'formik';
+'use client';
 
 import Modal from '@/app/lib/components/Modal';
 import { ModalType } from '@/app/types';
-
-type Props = {
-  formikProps: FormikProps<{
-    all_seasons: {
-      id: string;
-      name: string;
-    }[];
-    active_season: string;
-  }>;
-};
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 export default function ConcludeSeasonModal({
   panelClasses,
   isOpen,
   close,
-  formikProps,
-}: ModalType & Props) {
+}: ModalType) {
+  const { leagueData } = useLeagueControlPanel();
+  const { seasons } = leagueData;
+
+  //TODO: redesign
   return (
     <Modal panelClasses='sm:w-[450px] w-full' isOpen={isOpen} close={close}>
       <div className='items-center justify-center space-y-6 text-center'>
@@ -29,8 +23,8 @@ export default function ConcludeSeasonModal({
           <span>Are you sure you would like to conclude</span>{' '}
           <span className='und font-bold'>
             {
-              formikProps.values.all_seasons.find(
-                (season) => season.id === formikProps.values.active_season
+              seasons.all_seasons.find(
+                (season) => season.id === seasons.active_season_id
               )?.name
             }
           </span>
@@ -45,9 +39,7 @@ export default function ConcludeSeasonModal({
           <button
             onClick={() => {
               try {
-                //TODO: send request to conclude the season
-                formikProps.setFieldValue('active_season', null);
-
+                //TODO: use mutation request to conclude the active season (set it to null/do whatever else needs to be done)
                 close();
               } catch (error) {
                 console.log(error);

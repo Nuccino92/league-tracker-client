@@ -1,6 +1,5 @@
 'use client';
 
-import { Fragment, ReactNode, useState } from 'react';
 import {
   Formik,
   Form,
@@ -12,17 +11,9 @@ import {
 import Image from 'next/image';
 import classNames from 'classnames';
 import { toFormikValidate } from 'zod-formik-adapter';
-import { Listbox, Transition } from '@headlessui/react';
 
 import FileUpload from '@/app/lib/components/FileUpload';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/app/lib/components/Tooltip';
 import ColorPicker from '@/app/lib/components/ColorPicker';
-import ConcludeSeasonModal from './ConcludeSeasonModal';
 import { DeleteIcon, DownChevronIcon, ToolTipIcon } from '@/app/lib/SVGs';
 import { inputClasses, inputContainerClasses } from '@/app/lib/globals/styles';
 import {
@@ -32,14 +23,12 @@ import {
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { useUpdateLeague } from '@/app/lib/hooks/api/league';
 import { DefaultColors } from '@/app/lib/enums';
-import CreateNewSeasonModal from './CreateNewSeasonModal';
+import FormLabel from './FormLabel';
+import ControlPanelTooltip from './ControlPanelTooltip';
 
 export default function HomePageForms() {
   const { leagueData } = useLeagueControlPanel();
   const updateLeagueMutation = useUpdateLeague();
-
-  const [showConcludeSeasonModal, setShowConcludeSeasonModal] = useState(false);
-  const [showCreateNewSeasonModal, setCreateNewSeasonModal] = useState(false);
 
   // TODO: validate
   async function handleLeagueInfoSubmit(
@@ -64,8 +53,6 @@ export default function HomePageForms() {
     });
   }
 
-  function handleSeasonsSubmit(values: FormikValues) {}
-
   return (
     <div className='h-full'>
       {leagueData ? (
@@ -82,10 +69,10 @@ export default function HomePageForms() {
             validate={toFormikValidate(leagueInformationSchema)}
           >
             {(props) => (
-              <Form className='flex w-full flex-col space-y-6 rounded-xl border border-violet-100 bg-white p-6 md:w-[650px]'>
+              <Form className='flex w-full flex-col space-y-6 rounded-xl border border-violet-100 bg-white p-6 md:w-[900px]'>
                 <div className='text-2xl font-bold'>League Information</div>
                 <div className={inputContainerClasses}>
-                  <FormLabel name='League Name' htmlFor='name' required />
+                  <FormLabel label='League Name' htmlFor='name' required />
                   <div className='flex items-center space-x-2'>
                     <FastField
                       className={inputClasses}
@@ -111,7 +98,7 @@ export default function HomePageForms() {
                   />
                 </div>
                 <div className={inputContainerClasses}>
-                  <FormLabel name='League Logo' htmlFor='logo' />
+                  <FormLabel label='League Logo' htmlFor='logo' />
                   <div className='flex h-[200px] items-center justify-center space-x-2'>
                     {props.values.logo ? (
                       <div className='relative h-[200px] w-full  rounded-md border border-slate-200 bg-white'>
@@ -168,7 +155,7 @@ export default function HomePageForms() {
                   ) : null}
                 </div>
                 <div className={inputContainerClasses}>
-                  <FormLabel name='Name used inside url' htmlFor='slug' />
+                  <FormLabel label='Name used inside url' htmlFor='slug' />
                   <div className='flex items-center space-x-2'>
                     <input
                       type='text'
@@ -203,7 +190,7 @@ export default function HomePageForms() {
                   />
                 </div>
                 <div className={inputContainerClasses}>
-                  <FormLabel name='League Description' htmlFor='description' />
+                  <FormLabel label='League Description' htmlFor='description' />
                   <div className='flex items-center space-x-2'>
                     <FastField
                       className={classNames(
@@ -236,7 +223,7 @@ export default function HomePageForms() {
 
                 <div className={inputContainerClasses}>
                   <FormLabel
-                    name='League Primary Color'
+                    label='League Primary Color'
                     htmlFor='primary_color'
                   />
                   <div className='flex w-full items-center justify-between'>
@@ -276,7 +263,7 @@ export default function HomePageForms() {
                 </div>
                 <div className={inputContainerClasses}>
                   <FormLabel
-                    name='League Secondary Color'
+                    label='League Secondary Color'
                     htmlFor='secondary_color'
                   />
                   <div className='flex w-full items-center justify-between'>
@@ -334,227 +321,8 @@ export default function HomePageForms() {
               </Form>
             )}
           </Formik>
-
-          <Formik
-            validateOnChange={false}
-            validateOnBlur={false}
-            validateOnMount={false}
-            initialValues={initialSeasonsValues}
-            onSubmit={handleSeasonsSubmit}
-          >
-            {(props) => (
-              <Form className='flex h-max w-full flex-col space-y-6 rounded-xl border border-violet-100 bg-white p-6 md:w-[650px]'>
-                <div className='text-2xl font-bold'>Season Management</div>
-                <div className={inputContainerClasses}>
-                  <FormLabel name='All Seasons' htmlFor='seasons' />
-                  {props.values.all_seasons &&
-                  props.values.all_seasons.length !== 0 ? (
-                    <div className='flex items-center space-x-2'>
-                      <Listbox
-                        value={props.values.all_seasons.find(
-                          (season) => season.id === props.values.active_season
-                        )}
-                      >
-                        <div className='relative w-full'>
-                          <Listbox.Button
-                            id='listbox-button-id'
-                            type='button'
-                            className={classNames(
-                              inputClasses,
-                              'flex items-center justify-between'
-                            )}
-                          >
-                            <span>
-                              {props.values.all_seasons.find(
-                                (season) =>
-                                  season.id === props.values.active_season
-                              )?.name ?? 'Select from dropdown to activate'}
-                            </span>
-                            <DownChevronIcon height={22} width={22} />
-                          </Listbox.Button>
-
-                          <Transition
-                            as={Fragment}
-                            leave='transition ease-in duration-100'
-                            leaveFrom='opacity-100'
-                            leaveTo='opacity-0'
-                          >
-                            <Listbox.Options className='absolute mt-1 w-full overflow-auto rounded-md border border-violet-100 bg-white text-base'>
-                              {props.values.all_seasons.map((season) => (
-                                <Listbox.Option
-                                  onClick={(e) => {
-                                    if (props.values.active_season) {
-                                      e.preventDefault();
-                                      return e.stopPropagation();
-                                    } else {
-                                      try {
-                                        // TODO: add api call to set this as the active season
-                                        // TODO: give prompt telling them that this will activate this older season
-                                        props.setFieldValue(
-                                          'active_season',
-                                          season.id
-                                        );
-                                      } catch (error) {
-                                        console.log(error);
-                                      }
-                                    }
-                                  }}
-                                  className={classNames(
-                                    props.values.active_season
-                                      ? 'cursor-not-allowed'
-                                      : 'cursor-pointer',
-                                    ' px-2 py-2 hover:bg-secondary hover:text-white'
-                                  )}
-                                  key={season.id}
-                                  value={season.id}
-                                >
-                                  {season.name}
-                                </Listbox.Option>
-                              ))}
-                            </Listbox.Options>
-                          </Transition>
-                        </div>
-                      </Listbox>
-
-                      <ControlPanelTooltip
-                        content={
-                          <div className='max-w-[250px]'>
-                            This is a list of every season. You may re-activate
-                            a previous season, but only if there is no season
-                            currently active.
-                          </div>
-                        }
-                        classes='text-white font-medium bg-primary !py-3 text-sm'
-                      />
-                    </div>
-                  ) : null}
-                </div>
-
-                <div className={inputContainerClasses}>
-                  <div className='flex items-center justify-between'>
-                    <div className='flex flex-col'>
-                      <FormLabel name='Active Season' htmlFor='active season' />
-                      <span className='font-medium'>
-                        {props.values.active_season ? (
-                          props.values.all_seasons.find(
-                            (season) => season.id === props.values.active_season
-                          )?.name
-                        ) : (
-                          <span className='italic'>
-                            No current active season
-                          </span>
-                        )}
-                      </span>
-                    </div>
-
-                    {props.values.active_season ? (
-                      <div className='flex items-center space-x-2'>
-                        <button
-                          onClick={() => setShowConcludeSeasonModal(true)}
-                          className='rounded-md border border-violet-100 bg-secondary p-3 text-sm font-medium text-white'
-                          type='button'
-                        >
-                          Conclude Season
-                        </button>
-                        <ControlPanelTooltip
-                          content={
-                            <div className='max-w-[250px]'>
-                              Concluding this active season will prevent any
-                              game from being submitted.
-                            </div>
-                          }
-                          classes='text-white font-medium bg-primary !py-3 text-sm'
-                        />
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setCreateNewSeasonModal(true)}
-                        className='rounded-md border border-violet-100 bg-secondary p-3 text-sm font-medium text-white'
-                        type='button'
-                      >
-                        Create Season
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <CreateNewSeasonModal
-                  updateSeasons={(newSeason, shouldNewSeasonBeActive) => {
-                    props.setValues({
-                      active_season: shouldNewSeasonBeActive
-                        ? newSeason.id
-                        : props.values.active_season,
-                      all_seasons: [...props.values.all_seasons, newSeason],
-                    });
-                    setCreateNewSeasonModal(false);
-                  }}
-                  panelClasses='sm:w-[450px] w-full'
-                  isOpen={showCreateNewSeasonModal}
-                  close={() => setCreateNewSeasonModal(false)}
-                />
-                <ConcludeSeasonModal
-                  formikProps={props}
-                  panelClasses='sm:w-[450px] w-full'
-                  isOpen={showConcludeSeasonModal}
-                  close={() => {
-                    // TODO: send api request to conclude season
-                    setShowConcludeSeasonModal(false);
-                  }}
-                />
-              </Form>
-            )}
-          </Formik>
         </main>
       ) : null}
     </div>
-  );
-}
-
-const initialSeasonsValues = {
-  all_seasons: [
-    { id: '1', name: '2019-2020 Bball season' }, //TODO: possible add created_at to sort
-    { id: '2', name: '2020-2021 Bball season' },
-    { id: '3', name: '2021-2022 Bball season' },
-    { id: '4', name: '2022-2023 Bball season' },
-  ],
-  active_season: '4', // nullable,
-};
-
-function FormLabel({
-  name,
-  htmlFor,
-  required,
-}: {
-  name: string;
-  htmlFor: string;
-  required?: boolean;
-}) {
-  return (
-    <label className='font-bold' htmlFor={htmlFor}>
-      <span>{name}</span>{' '}
-      {required ? <span className='text-red-500'>*</span> : null}
-    </label>
-  );
-}
-
-function ControlPanelTooltip({
-  content,
-  classes,
-}: {
-  content: ReactNode;
-  classes?: string;
-}) {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger
-          onClick={(e) => e.preventDefault()}
-          className='transition-all duration-75 hover:text-yellow-300'
-        >
-          <ToolTipIcon width={24} height={24} />
-        </TooltipTrigger>
-        <TooltipContent className={classes}>{content}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }

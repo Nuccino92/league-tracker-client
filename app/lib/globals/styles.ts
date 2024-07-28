@@ -10,6 +10,8 @@
  * app\lib\components\CreateLeagueModal.tsx
  * app\control-panel\league\[slug]\teams\_components\TeamForm.tsx
  * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
+ * app\control-panel\league\[slug]\seasons\_components\Seasons.tsx
+ * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
  */
 
 export const inputContainerClasses = `flex flex-col space-y-3`;
@@ -26,6 +28,8 @@ export const inputContainerClasses = `flex flex-col space-y-3`;
  * app\lib\components\CreateLeagueModal.tsx
  * app\control-panel\league\[slug]\teams\_components\TeamForm.tsx
  * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
+ * app\control-panel\league\[slug]\seasons\_components\Seasons.tsx
+ * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
  */
 
 export const inputClasses =

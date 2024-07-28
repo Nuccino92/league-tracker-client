@@ -8,6 +8,7 @@ import Modal from '@/app/lib/components/Modal';
 import { ModalType } from '@/app/types';
 import { SeasonType } from '@/app/lib/types/Season/Season';
 import { inputClasses } from '@/app/lib/globals/styles';
+import { IconBxCalendarPlus } from '@/app/lib/SVGs';
 
 const newSeasonNameSchema = z
   .string()
@@ -60,7 +61,7 @@ export default function CreateNewSeasonModal({
   return (
     <Modal panelClasses={panelClasses} isOpen={isOpen} close={close}>
       <div className='flex flex-col items-center space-y-4'>
-        <IconCalendarCheck height={34} width={34} fill='#03C988' />
+        <IconBxCalendarPlus height={60} width={60} fill='#03C988' />
         <h1 className='text-lg font-bold'>Create a new season</h1>
 
         <div className='w-full space-y-2'>
@@ -101,22 +102,5 @@ export default function CreateNewSeasonModal({
         </div>
       </div>
     </Modal>
-  );
-}
-
-function IconCalendarCheck(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      fill='currentColor'
-      viewBox='0 0 16 16'
-      height='1em'
-      width='1em'
-      {...props}
-    >
-      <path d='M10.854 7.146a.5.5 0 010 .708l-3 3a.5.5 0 01-.708 0l-1.5-1.5a.5.5 0 11.708-.708L7.5 9.793l2.646-2.647a.5.5 0 01.708 0z' />
-      <path d='M3.5 0a.5.5 0 01.5.5V1h8V.5a.5.5 0 011 0V1h1a2 2 0 012 2v11a2 2 0 01-2 2H2a2 2 0 01-2-2V3a2 2 0 012-2h1V.5a.5.5 0 01.5-.5zM1 4v10a1 1 0 001 1h12a1 1 0 001-1V4H1z' />
-    </svg>
   );
 }

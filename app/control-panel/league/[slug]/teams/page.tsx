@@ -41,7 +41,6 @@ export default async function TeamsPage({
     <Container view='league'>
       {/* <Hydrate state={dehydratedState}> */}
       <div className='h-[calc(100%-104px)] space-y-4'>
-        <PageHeader text='League Teams' />
         <Teams slug={params['slug']} />
       </div>
       {/* </Hydrate> */}

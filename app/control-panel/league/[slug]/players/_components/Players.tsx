@@ -33,6 +33,8 @@ import MissingList from '@/app/control-panel/_components/MissingList';
 import { useControlPanelTeamsForDropdown } from '@/app/lib/hooks/api/control-panel/teams';
 import AchivedPlayersModal from './ArchivedPlayersModal';
 import DeletePlayerModal from './DeletePlayerModal';
+import PageHeader from '@/app/control-panel/_components/PageHeader';
+import DropdownMenu from '@/app/lib/components/DropdownMenu';
 
 const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
 
@@ -43,7 +45,10 @@ const PlayerForm = dynamic(
 
 export default function Players({ slug }: { slug: string }) {
   const params = useParams();
-  const { data, status, isLoading } = usePlayers(slug);
+  const { data, status, isLoading } = usePlayers({
+    slug,
+    includeOnly: ['season', 'page', 'search', 'team'],
+  });
 
   const [showCreatePlayerModal, setShowCreatePlayerModal] = useState(false);
   const [showArchivedPlayersModal, setShowArchivedPlayersModal] =
@@ -146,9 +151,37 @@ function PlayersHeader({
 
   const hasFinishedFetching = status === 'success' && teamsDropdownList;
 
+  const pageOptions = [
+    {
+      label: 'Create Player',
+      action: () => setShowCreatePlayerModal(true),
+      icon: <IconListAdd height={20} width={20} />,
+    },
+    {
+      label: 'Archived Players',
+      action: () => setShowArchivedPlayersModal(true),
+      icon: <IconBackupRestore height={20} width={20} />,
+    },
+  ];
+
   return (
     <div className='flex w-full items-center justify-between'>
+      <div className='flex items-center space-x-4'>
+        <PageHeader text='League Players' />
+        <DropdownMenu
+          items={pageOptions}
+          itemClasses='p-2'
+          buttonIcon={(open) => (
+            <IconOptionsOutline
+              height={24}
+              width={24}
+              color={open ? 'white' : 'currentColor'}
+            />
+          )}
+        />
+      </div>
       <div className='flex items-center space-x-6'>
+        <span className='-mr-2 text-sm font-medium italic'>Filters:</span>
         {/* Season dropdown */}
         <Listbox
           as={'div'}
@@ -207,7 +240,7 @@ function PlayersHeader({
                 >
                   <span>{season.name}</span>{' '}
                   {season.id === seasons.active_season_id ? (
-                    <span>(active)</span>
+                    <span>(current)</span>
                   ) : null}
                 </Listbox.Option>
               ))}
@@ -286,9 +319,7 @@ function PlayersHeader({
             </Listbox.Options>
           </Transition>
         </Listbox>
-      </div>
 
-      <div className='flex items-center space-x-6'>
         <SearchBar
           inputValue={searchInputValue}
           setInputValue={setSearchInputValue}
@@ -296,70 +327,6 @@ function PlayersHeader({
           searchIconSize={22}
           closeIconSize={20}
         />
-
-        <Menu as={'div'} className={'relative'}>
-          {({ open }) => (
-            <>
-              <Menu.Button
-                type='button'
-                className={classNames(
-                  open ? 'bg-primary' : 'bg-white',
-                  'fil-red-500 rounded border p-2 transition-colors duration-100 ease-out hover:border-primary hover:bg-primary hover:text-white'
-                )}
-              >
-                <IconOptionsOutline
-                  height={24}
-                  width={24}
-                  color={open ? 'white' : 'currentColor'}
-                />
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-100'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-100'
-              >
-                <Menu.Items
-                  className={classNames(
-                    'absolute right-0 z-10 mt-2 w-[225px] divide-y divide-gray-100 overflow-hidden rounded bg-white p-0 text-start text-sm font-medium shadow-lg'
-                  )}
-                >
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowCreatePlayerModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <IconListAdd height={20} width={20} />
-                    </span>
-                    <span>Create Player</span>
-                  </Menu.Item>
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowArchivedPlayersModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <IconBackupRestore height={20} width={20} />
-                    </span>
-                    <span>Archived Players</span>
-                  </Menu.Item>
-                </Menu.Items>
-              </Transition>
-            </>
-          )}
-        </Menu>
       </div>
     </div>
   );
@@ -368,6 +335,19 @@ function PlayersHeader({
 function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
   const [showPlayerEditModal, setShowPlayerEditModal] = useState(false);
   const [showPlayerDeleteModal, setShowPlayerDeleteModal] = useState(false);
+
+  const dropdownOption = [
+    {
+      label: 'Edit',
+      action: () => setShowPlayerEditModal(true),
+      icon: <EditIcon width={20} height={20} />,
+    },
+    {
+      label: 'Delete',
+      action: () => setShowPlayerDeleteModal(true),
+      icon: <DeleteIcon width={20} height={20} />,
+    },
+  ];
 
   return (
     <>
@@ -408,66 +388,14 @@ function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
           </div>
         </div>
 
-        <Menu as={'div'} className={'relative'}>
-          {({ open }) => (
-            <>
-              <Menu.Button
-                type='button'
-                className={classNames(
-                  open ? 'border-primary bg-primary' : '',
-                  'fil-red-500 rounded border border-violet-100 p-2 transition-colors duration-100 ease-out hover:border-primary hover:bg-primary hover:text-white'
-                )}
-              >
-                <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-100'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-100'
-              >
-                <Menu.Items
-                  className={classNames(
-                    'absolute right-0 z-10 mt-2 w-[150px] divide-y divide-gray-100 overflow-hidden rounded border border-gray-100 bg-white p-0 text-start text-sm font-medium shadow-lg'
-                  )}
-                >
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowPlayerEditModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <EditIcon width={20} height={20} />
-                    </span>
-                    <span>Edit</span>
-                  </Menu.Item>
-                  {/* this is a soft delete, i guess on the backend we will have an additional property */}
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowPlayerDeleteModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <DeleteIcon width={20} height={20} />
-                    </span>
-                    <span>Delete</span>
-                  </Menu.Item>
-                </Menu.Items>
-              </Transition>
-            </>
+        <DropdownMenu
+          items={dropdownOption}
+          buttonIcon={(open) => (
+            <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
           )}
-        </Menu>
+          itemContainerClasses='!left-[-11rem]'
+          itemClasses={`${menuItemClasses}`}
+        />
       </div>
 
       {showPlayerEditModal ? (

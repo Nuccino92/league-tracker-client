@@ -46,8 +46,8 @@ export default function Modal({
               >
                 <Dialog.Panel
                   className={classNames(
-                    panelClasses,
-                    'w-full transform overflow-hidden rounded-md bg-white p-6 text-left align-middle shadow-xl transition-all'
+                    'w-full transform overflow-hidden rounded-md bg-white p-6 text-left align-middle shadow-xl transition-all',
+                    panelClasses
                   )}
                 >
                   <button

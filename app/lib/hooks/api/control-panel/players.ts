@@ -7,20 +7,32 @@ import {
   fetchControlPanelArchivedPlayers,
   fetchControlPanelPlayer,
   fetchControlPanelPlayers,
+  fetchFreeAgents,
 } from '@/app/lib/requests/control-panel/players';
 import { Player } from '@/app/lib/types/Models/Player';
-import { Filter } from '@/app/lib/types/filters.types';
+import { Filter, SearchParamScope } from '@/app/lib/types/filters.types';
 import { createQueryString } from '@/app/lib/utils/createQueryString';
 
-export function usePlayers(slug: string) {
+// TODO: ascertain how to know when to use pagination vs. getting complete list
+export function usePlayers({
+  slug,
+  paginate = true,
+  enabled = true,
+  includeOnly = [],
+}: {
+  slug: string;
+  paginate?: boolean;
+  enabled?: boolean;
+  includeOnly?: SearchParamScope;
+}) {
   const { token } = useAuth();
-  const { getFullQueryString } = useQueryString();
+  const { scopeQueryParams } = useQueryString();
 
-  const params = getFullQueryString();
+  const params = scopeQueryParams(includeOnly);
 
   const { data, status, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.PLAYERS, slug, params],
-    queryFn: () => fetchControlPanelPlayers({ token, slug, params }),
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.PLAYERS, slug, params, paginate],
+    queryFn: () => fetchControlPanelPlayers({ token, slug, params, paginate }),
     retry: 1,
     staleTime: 30000,
   });
@@ -76,4 +88,23 @@ export function useArchivedPlayers({
   });
 
   return { data, status };
+}
+
+export function useFreeAgents({
+  slug,
+  paginate = true,
+}: {
+  slug: string;
+  paginate?: boolean;
+}) {
+  const { token } = useAuth();
+
+  const { data, status, isLoading } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.FREE_AGENTS, slug],
+    queryFn: () => fetchFreeAgents({ token, slug, paginate }),
+    retry: 1,
+    staleTime: 30000,
+  });
+
+  return { data, status, isLoading };
 }

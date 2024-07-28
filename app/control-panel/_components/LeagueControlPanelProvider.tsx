@@ -51,6 +51,17 @@ export const LeagueControlPanelContext = createContext({
 export function useLeagueControlPanel() {
   const { leagueData } = useContext(LeagueControlPanelContext);
 
+  const hasSeasons =
+    leagueData.seasons.all_seasons && leagueData.seasons.all_seasons.length > 0
+      ? true
+      : false;
+
+  const activeSeason = leagueData.seasons.active_season_id
+    ? leagueData.seasons.all_seasons.find(
+        (season) => season.id === leagueData.seasons.active_season_id
+      ) || null
+    : null;
+
   // ensure active season is at top of list
   const sortedSeasons = leagueData.seasons.all_seasons.slice().sort((a, b) => {
     if (a.id === leagueData.seasons.active_season_id) return -1;
@@ -63,5 +74,5 @@ export function useLeagueControlPanel() {
     seasons: { ...leagueData.seasons, all_seasons: sortedSeasons },
   };
 
-  return { leagueData: league_data };
+  return { leagueData: league_data, activeSeason, hasSeasons };
 }

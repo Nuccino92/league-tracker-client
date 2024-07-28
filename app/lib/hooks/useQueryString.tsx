@@ -24,7 +24,28 @@ function useQueryString() {
     return searchParams.toString();
   }, [searchParams]);
 
-  return { createQueryString, getFullQueryString };
+  const scopeQueryParams = useCallback(
+    (includeOnly: string[]) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (includeOnly.length === 0) {
+        return params.toString();
+      }
+
+      const scopedParams = new URLSearchParams();
+      includeOnly.forEach((key) => {
+        const value = params.get(key);
+        if (value !== null) {
+          scopedParams.append(key, value);
+        }
+      });
+
+      return scopedParams.toString();
+    },
+    [searchParams]
+  );
+
+  return { createQueryString, getFullQueryString, scopeQueryParams };
 }
 
 export default useQueryString;

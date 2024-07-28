@@ -15,12 +15,13 @@ export async function fetchControlPanelPlayers({
   token,
   slug,
   params,
+  paginate = true,
 }: {
   token: string;
   slug: string;
   params: string;
+  paginate: boolean;
 }) {
-  // TODO: possibly add can_remove property
   return new Promise<ControlPanelListPlayer[]>((resolve) => {
     setTimeout(() => {
       const result = z
@@ -128,6 +129,46 @@ export async function fetchControlPanelArchivedPlayers({
   //return z.array(controlPanelArchivedTeamSchema).parse(data.data)
 }
 
+export async function fetchFreeAgents({
+  token,
+  slug,
+  paginate = true,
+}: {
+  token: string;
+  slug: string;
+  paginate: boolean;
+}) {
+  return new Promise<ControlPanelListPlayer[]>((resolve) => {
+    setTimeout(() => {
+      const result = z
+        .array(controlPanelListPlayerSchema)
+        .parse(mockPlayerList);
+      resolve(result);
+    }, 400);
+  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}${ROUTES.CONTROL_PANEL}${ROUTES.LEAGUE}/${slug}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-store',
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok)
+    throw {
+      message: data.error as ErrorType,
+      statusCode: response.status,
+      owner_id: data.owner_id,
+    } as NotOk & { owner_id: string | undefined };
+
+  //  return z.array(controlPanelListPlayerSchema).parse(mockPlayerList);
+}
+
 const mockPlayer = {
   id: 1,
   name: 'Jimmeh Johns',
@@ -139,7 +180,7 @@ const mockPlayer = {
 const mockPlayerList = [
   {
     id: 1,
-    name: 'Jimmy Smithers',
+    name: 'Leaky Black',
     avatar: null,
     team: null,
   },
@@ -152,64 +193,64 @@ const mockPlayerList = [
   },
   {
     id: 3,
-    name: 'Jimmy Smithers',
+    name: 'Anthony Ronaldo',
     avatar: null,
     team: null,
   },
   {
     id: 4,
-    name: 'Jimmy Smithers',
+    name: 'Corey Hamal',
     avatar: null,
     team: 'Toronto Raptors',
   },
   {
     id: 5,
-    name: 'Jimmy Smithers',
+    name: 'Luke Walton',
     avatar: null,
     team: null,
   },
   {
     id: 6,
-    name: 'Jimmy Smithers',
+    name: 'Jerry Jones',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
     team: 'Brooklyn Nets',
   },
   {
     id: 7,
-    name: 'Jimmy Smithers',
+    name: 'Colin Jones',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
     team: 'Brooklyn Nets',
   },
   {
     id: 8,
-    name: 'Jimmy Smithers',
+    name: 'Zack Wilson',
     avatar: null,
     team: null,
   },
   {
     id: 9,
-    name: 'Jimmy Smithers',
+    name: 'Harriet Tubman',
     avatar: null,
     team: null,
   },
   {
     id: 10,
-    name: 'Jimmy Smithers',
+    name: 'Bill Walton',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
     team: null,
   },
   {
     id: 11,
-    name: 'Jimmy Smithers',
+    name: 'Truman Larold',
     avatar: null,
     team: 'Toronto Raptors',
   },
   {
     id: 12,
-    name: 'Jimmy Smithers',
+    name: 'Harry Potter',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
     team: null,

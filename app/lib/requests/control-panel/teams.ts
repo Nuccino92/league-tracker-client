@@ -19,12 +19,16 @@ export async function fetchControlPanelTeams({
   token,
   slug,
   params,
+  paginate = true,
 }: {
   token: string;
   slug: string;
   params: string;
+  paginate: boolean;
 }) {
   // TODO: possibly add can_remove property
+
+  //TODO: on backend, if there is no season and paginate is false, reject the request... possibly
 
   return new Promise<ControlPanelListTeam[]>((resolve) => {
     setTimeout(() => {
@@ -33,7 +37,7 @@ export async function fetchControlPanelTeams({
     }, 400);
   });
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}${ROUTES.CONTROL_PANEL}${ROUTES.LEAGUE}/${slug}?${params}`,
+    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}${ROUTES.CONTROL_PANEL}${ROUTES.LEAGUE}/${slug}?${params}&paginate=${paginate}`,
     {
       method: 'GET',
       headers: {
@@ -219,7 +223,7 @@ const mockTeamList = [
   },
   {
     id: 2,
-    name: 'Toronto Raptors',
+    name: 'Rip City',
     logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
     league_id: 20,
   },
@@ -231,7 +235,7 @@ const mockTeamList = [
   },
   {
     id: 4,
-    name: 'Toronto Raptors',
+    name: 'Chicago Bulls Baybee',
     logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
     league_id: 20,
   },

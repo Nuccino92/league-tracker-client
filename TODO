@@ -1,5 +1,9 @@
 Idenify Icons https://lottiefiles.com/
 
+CREATE A THEME PROVIDER!!
+
+Make app responsive
+
 TeamForm -Add expand/close animation to hide/show options button
 
 Refactor all page client components into server components
@@ -17,8 +21,10 @@ create another seasons tab
 CONTROL-PANEL
 POSSIBLY RESET CONTROL PANEL CACHE EVERY X NUMBER OF MINUTES
 
-    Players: 
+    Players:
         create/edit player form
         figure out dropdowns
         delete modal
         flush out how i want actions to effect things
+
+!! @@ Set up league signup/register process for the players to automatically track/accept payments and create a player like in the control panel

@@ -6,10 +6,12 @@ const QUERY_KEYS = {
     TEAM: 'team-control-panel',
     TEAMS_FOR_DROPDOWN: 'teams-for-dropdown-control-panel',
     ARCHIVED_TEAMS: 'archived-teams-control-panel',
+    FULL_LIST_OF_TEAMS_FOR_SEASON: 'teams-full-list-for-season',
 
     PLAYERS: 'players-control-panel',
     PLAYER: 'player-control-panel',
     ARCHIVED_PLAYERS: 'archived-players-control-panel',
+    FREE_AGENTS: 'free-agents-control-panel',
   },
 };
 
