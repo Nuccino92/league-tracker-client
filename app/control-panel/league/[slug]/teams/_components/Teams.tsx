@@ -10,13 +10,9 @@ import classNames from 'classnames';
 import Container from '@/app/control-panel/_components/Container';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import {
-  IconClose,
   IconEllipsisVertical,
   IconListAdd,
-  IconPlus,
-  IconSearch,
   DeleteIcon,
-  IconAppstoreAdd,
   EditIcon,
   IconOptionsOutline,
   IconBackupRestore,
@@ -30,8 +26,6 @@ import SearchBar from '@/app/lib/components/SearchBar';
 import { useRouter } from 'next/navigation';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
-import { Button } from '@/app/lib/components/Button';
-import AddTeamToSeasonModal from '@/app/control-panel/league/[slug]/teams/_components/AddTeamToSeasonModal';
 import { ControlPanelListTeam } from '@/app/lib/types/Responses/control-panel.types';
 import DeleteTeamModal from './DeleteTeamModal';
 import AchivedTeamsModal from './ArchivedTeamsModal';
@@ -48,9 +42,11 @@ const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-sta
 export default function Teams({ slug }: { slug: string }) {
   const params = useParams();
 
-  const { data, status } = useTeams(slug);
+  const { data: teams, status } = useTeams({
+    slug,
+    includeOnly: ['season', 'search'],
+  });
 
-  const [showAddToSeasonModal, setShowAddToSeasonModal] = useState(false);
   const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
   const [showArchivedTeamsModal, setShowArchivedTeamsModal] = useState(false);
 
@@ -59,19 +55,18 @@ export default function Teams({ slug }: { slug: string }) {
   );
 
   return (
-    <main className='h-full space-y-4 '>
+    <main className='h-full space-y-4'>
       <TeamsHeader
-        setShowAddToSeasonModal={setShowAddToSeasonModal}
         setShowCreateTeamModal={setShowCreateTeamModal}
         setShowArchivedTeamsModal={setShowArchivedTeamsModal}
       />
 
-      {status === 'success' && data ? (
+      {status === 'success' && teams ? (
         <>
           <div className='h-full max-h-full'>
             <div className='swatches-picker h-[95%] max-h-[95%] space-y-6 overflow-y-auto'>
-              {data.length > 0 ? (
-                data.map((team) => <TeamCard team={team} key={team.id} />)
+              {teams.length > 0 ? (
+                teams.map((team) => <TeamCard team={team} key={team.id} />)
               ) : (
                 <MissingList
                   text='There are no Teams'
@@ -88,16 +83,6 @@ export default function Teams({ slug }: { slug: string }) {
             <TeamForm
               isOpen={showCreateTeamModal}
               close={() => setShowCreateTeamModal(false)}
-            />
-          ) : null}
-
-          {showAddToSeasonModal ? (
-            <AddTeamToSeasonModal
-              isOpen={showAddToSeasonModal}
-              close={() => {
-                //TODO: invalidate the teams-control-panel params
-                setShowAddToSeasonModal(false);
-              }}
             />
           ) : null}
 
@@ -122,11 +107,9 @@ export default function Teams({ slug }: { slug: string }) {
 // TODO: possibly make into a re usable component for other page
 
 function TeamsHeader({
-  setShowAddToSeasonModal,
   setShowCreateTeamModal,
   setShowArchivedTeamsModal,
 }: {
-  setShowAddToSeasonModal: Dispatch<SetStateAction<boolean>>;
   setShowCreateTeamModal: Dispatch<SetStateAction<boolean>>;
   setShowArchivedTeamsModal: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -211,7 +194,7 @@ function TeamsHeader({
                 >
                   <span>{season.name}</span>{' '}
                   {season.id === seasons.active_season_id ? (
-                    <span>(active)</span>
+                    <span>(current)</span>
                   ) : null}
                 </Listbox.Option>
               ))}
@@ -272,20 +255,6 @@ function TeamsHeader({
                       <IconListAdd height={20} width={20} />
                     </span>
                     <span>Create Team</span>
-                  </Menu.Item>
-                  <Menu.Item
-                    as={'button'}
-                    type='button'
-                    onClick={() => setShowAddToSeasonModal(true)}
-                    className={classNames(
-                      'flex items-center space-x-2',
-                      menuItemClasses
-                    )}
-                  >
-                    <span>
-                      <IconAppstoreAdd height={20} width={20} />
-                    </span>
-                    <span>Manage Active Season</span>
                   </Menu.Item>
                   <Menu.Item
                     as={'button'}
