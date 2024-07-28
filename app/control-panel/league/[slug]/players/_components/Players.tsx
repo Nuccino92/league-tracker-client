@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
   useParams,
@@ -8,7 +8,6 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { Listbox, Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import dynamic from 'next/dynamic';
 
@@ -17,7 +16,6 @@ import useDebounce from '@/app/lib/hooks/useDebounce';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import {
   DeleteIcon,
-  DownChevronIcon,
   EditIcon,
   EmptyListIcon,
   IconBackupRestore,
@@ -35,6 +33,8 @@ import AchivedPlayersModal from './ArchivedPlayersModal';
 import DeletePlayerModal from './DeletePlayerModal';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
+import ListBox from '@/app/lib/components/Listbox';
+import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 
 const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
 
@@ -183,142 +183,51 @@ function PlayersHeader({
       <div className='flex items-center space-x-6'>
         <span className='-mr-2 text-sm font-medium italic'>Filters:</span>
         {/* Season dropdown */}
-        <Listbox
-          as={'div'}
-          className={'relative min-w-[200px]'}
+        <ListBox
           value={selectedSeason}
           onChange={(value) =>
             router.push(
               pathname + '?' + createQueryString('season', value?.toString())
             )
           }
-        >
-          <Listbox.Button
-            type='button'
-            className={
-              'flex w-full items-center justify-between space-x-2 rounded bg-white p-2 text-sm font-medium shadow-sm'
-            }
-          >
-            <span>
-              {seasons.all_seasons.find(
-                (season) => season.id === selectedSeason
-              )?.name ?? 'All Seasons'}
-            </span>
-            <DownChevronIcon height={22} width={22} />
-          </Listbox.Button>
-
-          <Transition
-            as={Fragment}
-            leave='transition ease-in duration-100'
-            leaveFrom='opacity-100'
-            leaveTo='opacity-0'
-          >
-            <Listbox.Options
-              as='ul'
-              className='absolute z-10 mt-1 w-max min-w-full overflow-auto rounded-md border border-violet-100 bg-white text-sm font-medium shadow-sm'
-            >
-              <Listbox.Option
-                as='li'
-                key={'all teams no season'}
-                value={null}
-                className={classNames(
-                  selectedSeason === null ? 'bg-primary text-white' : '',
-                  'flex cursor-pointer items-center space-x-2 px-2 py-2 hover:bg-secondary hover:text-white'
-                )}
-              >
-                All Seasons
-              </Listbox.Option>
-              {seasons.all_seasons.map((season) => (
-                <Listbox.Option
-                  as='li'
-                  key={season.id + season.name}
-                  value={season.id}
-                  className={classNames(
-                    selectedSeason === season.id ? 'bg-primary text-white' : '',
-                    'flex cursor-pointer items-center space-x-2 px-2 py-2 hover:bg-secondary hover:text-white'
-                  )}
-                >
-                  <span>{season.name}</span>{' '}
-                  {season.id === seasons.active_season_id ? (
-                    <span>(current)</span>
-                  ) : null}
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
-          </Transition>
-        </Listbox>
+          buttonText={
+            seasons.all_seasons.find((season) => season.id === selectedSeason)
+              ?.name ?? 'All Seasons'
+          }
+          options={[
+            { label: 'All Seasons', value: null },
+            ...transformIntoOptions(seasons.all_seasons, {
+              labelKey: 'name',
+              valueKey: 'id',
+            }),
+          ]}
+        />
 
         {/* Team dropdown */}
-        <Listbox
-          as={'div'}
-          className={'relative min-w-[200px]'}
+        <ListBox
           value={selectedTeam}
           onChange={(value) =>
             router.push(
               pathname + '?' + createQueryString('team', value?.toString())
             )
           }
-        >
-          <Listbox.Button
-            type='button'
-            className={
-              'flex w-full items-center justify-between space-x-2 rounded bg-white p-2 text-sm font-medium shadow-sm'
-            }
-          >
-            <span>
-              {teamsDropdownList?.find((team) => team.id === selectedTeam)
-                ?.name ?? 'All Teams'}
-            </span>
-            <DownChevronIcon height={22} width={22} />
-          </Listbox.Button>
-
-          <Transition
-            as={Fragment}
-            leave='transition ease-in duration-100'
-            leaveFrom='opacity-100'
-            leaveTo='opacity-0'
-          >
-            <Listbox.Options
-              as='ul'
-              className='absolute z-10 mt-1 w-max min-w-full overflow-auto rounded-md border border-violet-100 bg-white text-sm font-medium shadow-sm'
-            >
-              {hasFinishedFetching ? (
-                <>
-                  <Listbox.Option
-                    as='li'
-                    key={'all teams no season'}
-                    value={null}
-                    className={classNames(
-                      selectedTeam === null ? 'bg-primary text-white' : '',
-                      'flex cursor-pointer items-center space-x-2 px-2 py-2 hover:bg-secondary hover:text-white'
-                    )}
-                  >
-                    All Teams
-                  </Listbox.Option>
-                  {teamsDropdownList?.map((team) => (
-                    <Listbox.Option
-                      as='li'
-                      key={team.id + team.name}
-                      value={team.id}
-                      className={classNames(
-                        selectedTeam === team.id ? 'bg-primary text-white' : '',
-                        'flex cursor-pointer items-center space-x-2 px-2 py-2 hover:bg-secondary hover:text-white'
-                      )}
-                    >
-                      <span>{team.name}</span>{' '}
-                    </Listbox.Option>
-                  ))}
-                </>
-              ) : null}
-
-              {status === 'loading' ? (
-                <div className='flex items-center justify-center py-4'>
-                  <Spinner height={14} width={14} />
-                </div>
-              ) : null}
-            </Listbox.Options>
-          </Transition>
-        </Listbox>
+          buttonText={
+            teamsDropdownList?.find((team) => team.id === selectedTeam)?.name ??
+            'All Teams'
+          }
+          options={
+            hasFinishedFetching
+              ? [
+                  { label: 'All Teams', value: null },
+                  ...transformIntoOptions(teamsDropdownList as any, {
+                    labelKey: 'name',
+                    valueKey: 'id',
+                  }),
+                ]
+              : []
+          }
+          status={status}
+        />
 
         <SearchBar
           inputValue={searchInputValue}

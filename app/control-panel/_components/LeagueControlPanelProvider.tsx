@@ -51,6 +51,8 @@ export const LeagueControlPanelContext = createContext({
 export function useLeagueControlPanel() {
   const { leagueData } = useContext(LeagueControlPanelContext);
 
+  const slug = leagueData.league_info.slug
+
   const hasSeasons =
     leagueData.seasons.all_seasons && leagueData.seasons.all_seasons.length > 0
       ? true
@@ -74,5 +76,5 @@ export function useLeagueControlPanel() {
     seasons: { ...leagueData.seasons, all_seasons: sortedSeasons },
   };
 
-  return { leagueData: league_data, activeSeason, hasSeasons };
+  return { leagueData: league_data, activeSeason, hasSeasons, slug };
 }

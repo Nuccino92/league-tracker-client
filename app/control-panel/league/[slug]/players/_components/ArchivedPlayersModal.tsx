@@ -19,14 +19,14 @@ import { useArchivedPlayers } from '@/app/lib/hooks/api/control-panel/players';
 // TODO: change to proper archived players!
 
 export default function AchivedPlayersModal({ isOpen, close }: ModalType) {
-  const { leagueData } = useLeagueControlPanel();
+  const { leagueData, slug } = useLeagueControlPanel();
   const [searchInputValue, setSearchInputValue] = useState('');
 
   const debouncedSearch = useDebounce(searchInputValue, 750);
   const [page, setPage] = useState(1);
 
   const { data, status } = useArchivedPlayers({
-    slug: leagueData.league_info.slug,
+    slug: slug,
     page,
     query: debouncedSearch,
   });

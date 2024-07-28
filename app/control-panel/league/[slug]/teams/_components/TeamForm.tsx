@@ -33,9 +33,9 @@ export default function TeamForm({
   close,
   teamId,
 }: ModalType & { teamId?: number }) {
-  const { leagueData } = useLeagueControlPanel();
+  const { leagueData, slug } = useLeagueControlPanel();
   const { team, status } = useTeam({
-    slug: leagueData.league_info.slug,
+    slug: slug,
     teamId,
   });
 

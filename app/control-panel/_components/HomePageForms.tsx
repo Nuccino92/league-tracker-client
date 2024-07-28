@@ -27,7 +27,7 @@ import FormLabel from './FormLabel';
 import ControlPanelTooltip from './ControlPanelTooltip';
 
 export default function HomePageForms() {
-  const { leagueData } = useLeagueControlPanel();
+  const { leagueData, slug } = useLeagueControlPanel();
   const updateLeagueMutation = useUpdateLeague();
 
   // TODO: validate
@@ -44,7 +44,7 @@ export default function HomePageForms() {
     } as LeagueInformationResource;
 
     await updateLeagueMutation.mutateAsync({
-      slug: leagueData?.league_info.slug as string,
+      slug: slug as string,
       formData: valuesToSave,
     });
 

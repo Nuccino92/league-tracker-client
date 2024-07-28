@@ -1,6 +1,7 @@
 const QUERY_KEYS = {
   CONTROL_PANEL: {
     LEAGUE: 'league-control-panel',
+    ARCHIVED_SEASONS: 'archived-seasons-control-panel',
 
     TEAMS: 'teams-control-panel',
     TEAM: 'team-control-panel',
@@ -12,12 +13,15 @@ const QUERY_KEYS = {
     PLAYER: 'player-control-panel',
     ARCHIVED_PLAYERS: 'archived-players-control-panel',
     FREE_AGENTS: 'free-agents-control-panel',
+
+    MEMBERS: 'members-control-panel',
+    MEMBER: 'member-control-panel',
   },
 };
 
 export default QUERY_KEYS;
 
-//TODO: possibly refactor into facotry
+//TODO: possibly refactor into factory
 // reference: https://tkdodo.eu/blog/effective-react-query-keys
 
 /*

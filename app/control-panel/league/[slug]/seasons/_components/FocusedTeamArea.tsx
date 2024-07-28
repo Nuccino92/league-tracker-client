@@ -173,6 +173,11 @@ export default function FocusedTeamArea({
                     ))}
                 </>
               ) : null}{' '}
+              {freeAgentsStatus === 'loading' ? (
+                <div className='flex h-full min-h-[150px] w-full items-center justify-center'>
+                  <Spinner width={50} height={50} />
+                </div>
+              ) : null}
             </div>
           </StyledBox>
 

@@ -14,14 +14,14 @@ import MissingList from '@/app/control-panel/_components/MissingList';
 import { useArchivedTeams } from '@/app/lib/hooks/api/control-panel/teams';
 
 export default function AchivedTeamsModal({ isOpen, close }: ModalType) {
-  const { leagueData } = useLeagueControlPanel();
+  const { leagueData, slug } = useLeagueControlPanel();
   const [searchInputValue, setSearchInputValue] = useState('');
 
   const debouncedSearch = useDebounce(searchInputValue, 750);
   const [page, setPage] = useState(1);
 
   const { data, status } = useArchivedTeams({
-    slug: leagueData.league_info.slug,
+    slug: slug,
     page,
     query: debouncedSearch,
   });
@@ -117,81 +117,3 @@ function TeamCard({ team }: { team: ControlPanelArchivedTeam }) {
     </div>
   );
 }
-
-const mockTeamList = [
-  {
-    id: 1,
-    name: 'Toronto Raptors',
-    logo: null,
-  },
-  {
-    id: 2,
-    name: 'Charleotte Hornets',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-  },
-  {
-    id: 3,
-    name: 'Denver Nuggies',
-    logo: null,
-  },
-  {
-    id: 4,
-    name: 'Miami Heat',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-  },
-  {
-    id: 5,
-    name: 'Los Angeles Lakers',
-    logo: null,
-  },
-  {
-    id: 6,
-    name: 'Toronto Raptors',
-    logo: null,
-  },
-  {
-    id: 7,
-    name: 'Charleotte Hornets',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-  },
-  {
-    id: 8,
-    name: 'Denver Nuggies',
-    logo: null,
-  },
-  {
-    id: 9,
-    name: 'Miami Heat',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-  },
-  {
-    id: 10,
-    name: 'Los Angeles Lakers',
-    logo: null,
-  },
-  {
-    id: 11,
-    name: 'Toronto Raptors',
-    logo: null,
-  },
-  {
-    id: 12,
-    name: 'Charleotte Hornets',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-  },
-  {
-    id: 13,
-    name: 'Denver Nuggies',
-    logo: null,
-  },
-  {
-    id: 14,
-    name: 'Miami Heat',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-  },
-  {
-    id: 15,
-    name: 'Los Angeles Lakers',
-    logo: null,
-  },
-];

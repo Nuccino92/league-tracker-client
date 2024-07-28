@@ -4,6 +4,8 @@ import { League } from '@/app/lib/types/Models/League';
 import { basePlayerSchema } from '@/app/lib/types/Models/Player';
 import { baseTeamSchema } from '@/app/lib/types/Models/Team';
 import { LeagueInformationResource } from '@/app/lib/types/Resources/CreateLeagueResource';
+import { seasonSchema } from '../Models/Season';
+import { memberSchema } from '../Models/Member';
 
 // TODO: possibly seperate each region into its own file, follow the requests/control-panel folder structure
 
@@ -17,9 +19,13 @@ export type Seasons = {
   active_season_id: number | null;
 };
 
+// ---- region - seasons
+export type ControlPanelArchivedSeasonsList = z.infer<typeof seasonSchema>;
+// ---- end region
+
 // TODO: possibly add can_remove property
 
-// ----region - teams
+// ---- region - teams
 export const controlPanelListTeamSchema = baseTeamSchema.merge(
   z.object({
     league_id: z.number(),
@@ -47,7 +53,6 @@ export type ControlPanelArchivedTeam = z.infer<
 export type ControlPanelListTeamForDropdown = z.infer<
   typeof controlPaneListTeamForDropdownSchema
 >;
-
 // ---- endregion
 
 // ---- region - players
@@ -82,3 +87,7 @@ export const organizationInformationSchema = z.object({
 export type OrganizationInformationFormSchema = z.infer<
   typeof organizationInformationSchema
 >;
+
+// ---- region - members
+export type ControlPanelMembersList = z.infer<typeof memberSchema>;
+// ---- endregion

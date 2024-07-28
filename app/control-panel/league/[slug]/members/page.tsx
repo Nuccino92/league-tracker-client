@@ -1,11 +1,20 @@
 import Container from '@/app/control-panel/_components/Container';
-import PageHeader from '@/app/control-panel/_components/PageHeader';
+import MembersList from './_components/MembersList';
+import MembersHeader from './_components/MembersHeader';
 
-export default function MembersPage() {
+export default function MembersPage({
+  params,
+  searchParams,
+}: {
+  params: { ['slug']: string };
+  searchParams: Record<string, string | undefined>;
+}) {
   return (
     <Container view='league'>
-      <PageHeader text='Members' />
-      <main>this is the members page</main>
+      <MembersHeader />
+      <main>
+        <MembersList slug={params.slug} />
+      </main>
     </Container>
   );
 }

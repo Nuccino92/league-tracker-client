@@ -9,8 +9,7 @@ export default function ConcludeSeasonModal({
   isOpen,
   close,
 }: ModalType) {
-  const { leagueData } = useLeagueControlPanel();
-  const { seasons } = leagueData;
+  const { activeSeason } = useLeagueControlPanel();
 
   //TODO: redesign
   return (
@@ -21,13 +20,7 @@ export default function ConcludeSeasonModal({
         </span>
         <h4 className='flex flex-col text-center text-lg '>
           <span>Are you sure you would like to conclude</span>{' '}
-          <span className='und font-bold'>
-            {
-              seasons.all_seasons.find(
-                (season) => season.id === seasons.active_season_id
-              )?.name
-            }
-          </span>
+          <span className='und font-bold'>{activeSeason?.name}</span>
         </h4>
 
         <p className='text-sm'>

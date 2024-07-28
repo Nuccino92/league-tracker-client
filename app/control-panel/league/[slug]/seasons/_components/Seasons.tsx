@@ -1,14 +1,11 @@
 'use client';
 
-import { Fragment, useState } from 'react';
-import classNames from 'classnames';
-import { Listbox, Transition } from '@headlessui/react';
+import { useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 import { inputClasses } from '@/app/lib/globals/styles';
 import FormLabel from '@/app/control-panel/_components/FormLabel';
 import {
-  DownChevronIcon,
   IconOptionsOutline,
   IconBxCalendarMinus,
   IconBxCalendarPlus,
@@ -26,6 +23,8 @@ import ActivateSeasonModal from './ActivateSeasonModal';
 import RemoveSeasonModal from './RemoveSeasonModal';
 import ArchivedSeasonsModal from './ArchivedSeasonsModal';
 import { Button } from '@/app/lib/components/Button';
+import ListBox from '@/app/lib/components/Listbox';
+import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 
 export default function Seasons({ slug }: { slug: string }) {
   const searchParams = useSearchParams();
@@ -114,51 +113,27 @@ export default function Seasons({ slug }: { slug: string }) {
             <>
               <FormLabel label='Focused Season' htmlFor='' />
               <div className='flex items-center space-x-2 text-sm'>
-                <Listbox value={focusedSeason ? focusedSeason.id : null}>
-                  <div className='relative w-full'>
-                    <Listbox.Button
-                      id='listbox-button-id'
-                      type='button'
-                      className={classNames(
-                        inputClasses,
-                        'flex items-center space-x-2'
-                      )}
-                    >
-                      <span className='block w-full truncate'>
-                        {focusedSeason
-                          ? focusedSeason.name
-                          : 'Select a season from the dropdown for management'}
-                      </span>
-                      <DownChevronIcon height={22} width={22} />
-                    </Listbox.Button>
-
-                    <Transition
-                      as={Fragment}
-                      leave='transition ease-in duration-100'
-                      leaveFrom='opacity-100'
-                      leaveTo='opacity-0'
-                    >
-                      <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md border border-violet-100 bg-white shadow'>
-                        {seasonInformation.all_seasons.map((season) => (
-                          <Listbox.Option
-                            onClick={(e) => {
-                              const params = new URLSearchParams();
-                              params.set('season', season.id.toString());
-                              const newUrl = `${pathname}?${params.toString()}`;
-                              router.push(newUrl);
-                            }}
-                            className=' cursor-pointer px-2 py-2 hover:bg-secondary hover:text-white'
-                            key={season.id}
-                            value={season.id}
-                          >
-                            {season.name}
-                          </Listbox.Option>
-                        ))}
-                      </Listbox.Options>
-                    </Transition>
-                  </div>
-                </Listbox>
-              </div>{' '}
+                <ListBox
+                  value={focusedSeason ? focusedSeason.id : null}
+                  onChange={(val) => {
+                    if (!val) return;
+                    const params = new URLSearchParams();
+                    params.set('season', val.toString());
+                    const newUrl = `${pathname}?${params.toString()}`;
+                    router.push(newUrl);
+                  }}
+                  buttonClasses={inputClasses + ' !justify-center'}
+                  buttonText={
+                    focusedSeason
+                      ? focusedSeason.name
+                      : 'Select a season from the dropdown for management'
+                  }
+                  options={transformIntoOptions(seasonInformation.all_seasons, {
+                    labelKey: 'name',
+                    valueKey: 'id',
+                  })}
+                />
+              </div>
             </>
           ) : (
             <div className='flex items-center justify-between space-x-2'>

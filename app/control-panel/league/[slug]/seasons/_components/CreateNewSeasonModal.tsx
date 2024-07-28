@@ -6,9 +6,9 @@ import { z } from 'zod';
 import Checkbox from '@/app/lib/components/Checkbox';
 import Modal from '@/app/lib/components/Modal';
 import { ModalType } from '@/app/types';
-import { SeasonType } from '@/app/lib/types/Season/Season';
 import { inputClasses } from '@/app/lib/globals/styles';
 import { IconBxCalendarPlus } from '@/app/lib/SVGs';
+import { Season } from '@/app/lib/types/Models/Season';
 
 const newSeasonNameSchema = z
   .string()
@@ -17,7 +17,7 @@ const newSeasonNameSchema = z
 
 type Props = {
   updateSeasons: (
-    newSeasonData: SeasonType,
+    newSeasonData: Season,
     shouldNewSeasonBeActive: boolean
   ) => void;
 };
@@ -45,7 +45,7 @@ export default function CreateNewSeasonModal({
       // TODO: save to api w/ seasonValue
       // TODO: should check if name already exists in backend, if so setNameError
 
-      const fakeSeasonInformationResponse = { id: '69', name: 'Bougahtti' };
+      const fakeSeasonInformationResponse = { id: 11, name: 'Bougahtti' };
 
       updateSeasons(fakeSeasonInformationResponse, shouldActivateSeason);
       setNewSeasonName('');

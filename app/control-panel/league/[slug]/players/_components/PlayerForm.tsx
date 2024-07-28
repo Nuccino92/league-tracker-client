@@ -31,9 +31,9 @@ export default function PlayerForm({
   close,
   playerId,
 }: ModalType & { playerId?: number }) {
-  const { leagueData } = useLeagueControlPanel();
+  const { leagueData, slug } = useLeagueControlPanel();
   const { player, status } = usePlayer({
-    slug: leagueData.league_info.slug,
+    slug: slug,
     playerId: playerId,
   });
 
