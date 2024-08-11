@@ -8,7 +8,7 @@ import classNames from 'classnames';
 
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { usePlayer } from '@/app/lib/hooks/api/control-panel/players';
-import { Player } from '@/app/lib/types/Models/Player';
+
 import { ModalType } from '@/app/types';
 import Modal from '@/app/lib/components/Modal';
 import {
@@ -16,9 +16,9 @@ import {
   playerInformationSchema,
 } from '@/app/lib/types/Resources/CreatePlayerResource';
 import {
-  inputClasses,
-  inputContainerClasses,
-  skeletonClass,
+  INPUT_CLASSES,
+  INPUT_CONTAINER_CLASSES,
+  SKELETON_CLASSES,
 } from '@/app/lib/globals/styles';
 import FormLabel from '@/app/control-panel/_components/FormLabel';
 import { DeleteIcon, DownChevronIcon } from '@/app/lib/SVGs';
@@ -58,8 +58,10 @@ export default function PlayerForm({
 
     const valuesToSave = {
       ...values,
-      number: values.number === '' ? null : values.number,
-      age: values.age === '' ? null : values.age,
+      // number: values.number === '' ? null : values.number,
+      // age: values.age === '' ? null : values.age,
+      email: values.email === '' ? null : values.email,
+      phoneNumber: values.phoneNumber === '' ? null : values.phoneNumber,
     } as PlayerInformationResource;
 
     console.log('valuesToSave', valuesToSave);
@@ -83,8 +85,11 @@ export default function PlayerForm({
             onSubmit={handleSubmit}
             initialValues={{
               ...player,
-              age: player.age ?? '',
-              number: player.number ?? '',
+              email: player.email ?? '',
+              phoneNumber: player.phoneNumber ?? '',
+
+              // age: player.age ?? '',
+              // number: player.number ?? '',
             }}
             validate={toFormikValidate(playerInformationSchema)}
           >
@@ -96,10 +101,10 @@ export default function PlayerForm({
                     : 'Create new player'}
                 </h4>
 
-                <div className={inputContainerClasses}>
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <FormLabel label='Name' htmlFor='name' required />
                   <FastField
-                    className={inputClasses}
+                    className={INPUT_CLASSES}
                     name='name'
                     placeholder='Enter name here...'
                   />
@@ -136,7 +141,7 @@ export default function PlayerForm({
 
                 {shouldShowAdditionalOptions ? (
                   <div className='space-y-4'>
-                    <div className={inputContainerClasses}>
+                    <div className={INPUT_CONTAINER_CLASSES}>
                       <FormLabel label='Player Image' htmlFor='logo' />
                       <div className='flex h-[200px] items-center justify-center space-x-2'>
                         {props.values.avatar ? (
@@ -185,11 +190,11 @@ export default function PlayerForm({
                       ) : null}
                     </div>
 
-                    <div className='flex flex-col space-y-6 md:flex-row md:space-x-4 md:space-y-0'>
-                      <div className={'w-full ' + inputContainerClasses}>
+                    {/* <div className='flex flex-col space-y-6 md:flex-row md:space-x-4 md:space-y-0'>
+                      <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
                         <FormLabel label='Jersey Number' htmlFor='number' />
                         <FastField
-                          className={inputClasses}
+                          className={INPUT_CLASSES}
                           name='number'
                           placeholder='Enter number here...'
                           type='number'
@@ -201,10 +206,10 @@ export default function PlayerForm({
                           name='number'
                         />
                       </div>
-                      <div className={'w-full ' + inputContainerClasses}>
+                      <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
                         <FormLabel label='Age' htmlFor='age' />
                         <FastField
-                          className={inputClasses}
+                          className={INPUT_CLASSES}
                           name='age'
                           placeholder='Enter age here...'
                           type='number'
@@ -216,6 +221,36 @@ export default function PlayerForm({
                           name='age'
                         />
                       </div>
+                    </div> */}
+
+                    <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
+                      <FormLabel label='Email Address' htmlFor='email' />
+                      <FastField
+                        className={INPUT_CLASSES}
+                        name='email'
+                        placeholder='Enter email address here...'
+                        type='text'
+                      />
+                      <ErrorMessage
+                        component={'span'}
+                        className='text-sm text-red-500'
+                        name='email'
+                      />
+                    </div>
+
+                    <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
+                      <FormLabel label='Phone Number' htmlFor='phoneNumber' />
+                      <FastField
+                        className={INPUT_CLASSES}
+                        name='phoneNumber'
+                        placeholder='Enter phone number here...'
+                        type='text'
+                      />
+                      <ErrorMessage
+                        component={'span'}
+                        className='text-sm text-red-500'
+                        name='phoneNumber'
+                      />
                     </div>
                   </div>
                 ) : null}
@@ -245,41 +280,41 @@ export default function PlayerForm({
 function FormSkeleton({ showExtraOptions }: { showExtraOptions: boolean }) {
   return (
     <div className='w-full space-y-4'>
-      <div className={classNames('h-8 w-1/2', skeletonClass)} />
+      <div className={classNames('h-8 w-1/2', SKELETON_CLASSES)} />
 
-      <div className={inputContainerClasses}>
-        <div className={classNames('h-4 w-14', skeletonClass)} />
-        <div className={classNames('h-8', skeletonClass)} />
+      <div className={INPUT_CONTAINER_CLASSES}>
+        <div className={classNames('h-4 w-14', SKELETON_CLASSES)} />
+        <div className={classNames('h-8', SKELETON_CLASSES)} />
       </div>
 
       <div className='flex w-full items-center justify-between'>
-        <div className={classNames('h-5 w-14', skeletonClass)} />
+        <div className={classNames('h-5 w-14', SKELETON_CLASSES)} />
         <div className='flex items-center space-x-1'>
-          <div className={classNames('h-5 w-[100px]', skeletonClass)} />
-          <div className={classNames('h-5 w-5', skeletonClass)} />
+          <div className={classNames('h-5 w-[100px]', SKELETON_CLASSES)} />
+          <div className={classNames('h-5 w-5', SKELETON_CLASSES)} />
         </div>
       </div>
 
       {showExtraOptions ? (
         <div className='space-y-4'>
-          <div className={inputContainerClasses}>
-            <div className={classNames('h-4 w-20', skeletonClass)} />
-            <div className={classNames('h-[150px]', skeletonClass)} />
+          <div className={INPUT_CONTAINER_CLASSES}>
+            <div className={classNames('h-4 w-20', SKELETON_CLASSES)} />
+            <div className={classNames('h-[150px]', SKELETON_CLASSES)} />
           </div>
 
           <div className='flex flex-col space-y-6 md:flex-row md:space-x-4 md:space-y-0'>
-            <div className={'w-full ' + inputContainerClasses}>
-              <div className={classNames('h-4 w-14', skeletonClass)} />
-              <div className={classNames('h-8 w-full', skeletonClass)} />
+            <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
+              <div className={classNames('h-4 w-14', SKELETON_CLASSES)} />
+              <div className={classNames('h-8 w-full', SKELETON_CLASSES)} />
             </div>
-            <div className={'w-full ' + inputContainerClasses}>
-              <div className={classNames('h-4 w-14', skeletonClass)} />
-              <div className={classNames('h-8 w-full', skeletonClass)} />
+            <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
+              <div className={classNames('h-4 w-14', SKELETON_CLASSES)} />
+              <div className={classNames('h-8 w-full', SKELETON_CLASSES)} />
             </div>
           </div>
 
           <div className='flex w-full justify-end'>
-            <div className={classNames('h-10 w-[100px]', skeletonClass)} />
+            <div className={classNames('h-10 w-[100px]', SKELETON_CLASSES)} />
           </div>
         </div>
       ) : null}

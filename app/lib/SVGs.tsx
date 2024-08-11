@@ -480,3 +480,39 @@ export const IconCalendarCheck: FC<SVGProps<SVGSVGElement>> = (props) => {
     </svg>
   );
 };
+
+export const IconAdminLine: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path fill='none' d='M0 0h24v24H0z' />
+      <path d='M12 14v2a6 6 0 00-6 6H4a8 8 0 018-8zm0-1c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm9 6h1v5h-8v-5h1v-1a3 3 0 016 0v1zm-2 0v-1a1 1 0 00-2 0v1h2z' />
+    </svg>
+  );
+};
+
+export const IconBoxArrowUpRight: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      fill='currentColor'
+      viewBox='0 0 16 16'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path
+        fillRule='evenodd'
+        d='M8.636 3.5a.5.5 0 00-.5-.5H1.5A1.5 1.5 0 000 4.5v10A1.5 1.5 0 001.5 16h10a1.5 1.5 0 001.5-1.5V7.864a.5.5 0 00-1 0V14.5a.5.5 0 01-.5.5h-10a.5.5 0 01-.5-.5v-10a.5.5 0 01.5-.5h6.636a.5.5 0 00.5-.5z'
+      />
+      <path
+        fillRule='evenodd'
+        d='M16 .5a.5.5 0 00-.5-.5h-5a.5.5 0 000 1h3.793L6.146 9.146a.5.5 0 10.708.708L15 1.707V5.5a.5.5 0 001 0v-5z'
+      />
+    </svg>
+  );
+};

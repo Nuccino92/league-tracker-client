@@ -45,7 +45,7 @@ export function useTeams({
     queryFn: () => fetchControlPanelTeams({ token, slug, params, paginate }),
     enabled,
     retry: false,
-    staleTime: 30000,
+    staleTime: 180000,
   });
 
   return { data, status };

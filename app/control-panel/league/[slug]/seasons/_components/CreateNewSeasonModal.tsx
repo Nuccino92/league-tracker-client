@@ -1,12 +1,12 @@
 'use client';
 
-import { JSX, SVGProps, useState } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 
 import Checkbox from '@/app/lib/components/Checkbox';
 import Modal from '@/app/lib/components/Modal';
 import { ModalType } from '@/app/types';
-import { inputClasses } from '@/app/lib/globals/styles';
+import { INPUT_CLASSES } from '@/app/lib/globals/styles';
 import { IconBxCalendarPlus } from '@/app/lib/SVGs';
 import { Season } from '@/app/lib/types/Models/Season';
 
@@ -72,7 +72,7 @@ export default function CreateNewSeasonModal({
               setNewSeasonName(e.target.value);
             }}
             placeholder='Enter the name here'
-            className={inputClasses}
+            className={INPUT_CLASSES}
           />
           {nameError && (
             <p className='w-full text-start text-sm text-red-500'>

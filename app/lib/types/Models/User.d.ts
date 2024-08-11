@@ -4,4 +4,5 @@ export interface User {
   email: string;
   email_verified_at: string | null;
   token: string;
+  trial_ends_at: string | null;
 }

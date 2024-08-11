@@ -15,6 +15,7 @@ import {
   IconBackupRestore,
   EmptyListIcon,
   Spinner,
+  IconBoxArrowUpRight,
 } from '@/app/lib/SVGs';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import useDebounce from '@/app/lib/hooks/useDebounce';
@@ -29,13 +30,13 @@ import MissingList from '@/app/control-panel/_components/MissingList';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
+import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
+import ROUTES from '@/app/lib/globals/routes';
 
 const TeamForm = dynamic(
   () => import('@/app/control-panel/league/[slug]/teams/_components/TeamForm')
 );
 //import EditTeamForm from './_components/EditTeamForm';
-
-const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
 
 //TODO: check if no active season and provide disclaimer telling user that they can only assign a team to an active season
 export default function Teams({ slug }: { slug: string }) {
@@ -199,19 +200,27 @@ function TeamsHeader({
 }
 
 function TeamCard({ team }: { team: ControlPanelListTeam }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [showTeamEditModal, setShowTeamEditModal] = useState(false);
   const [showTeamDeleteModal, setShowTeamDeleteModal] = useState(false);
 
-  const dropdownOption = [
+  const dropdownOptions = [
+    {
+      label: 'Visit page',
+      action: () => router.push(`${pathname}/${team.id}`),
+      icon: <IconBoxArrowUpRight width={16} height={16} />,
+    },
     {
       label: 'Edit',
       action: () => setShowTeamEditModal(true),
-      icon: <EditIcon width={20} height={20} />,
+      icon: <EditIcon width={18} height={18} />,
     },
     {
       label: 'Delete',
       action: () => setShowTeamDeleteModal(true),
-      icon: <DeleteIcon width={20} height={20} />,
+      icon: <DeleteIcon width={18} height={18} />,
     },
   ];
 
@@ -243,12 +252,12 @@ function TeamCard({ team }: { team: ControlPanelListTeam }) {
         </div>
 
         <DropdownMenu
-          items={dropdownOption}
+          items={dropdownOptions}
           buttonIcon={(open) => (
             <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
           )}
           itemContainerClasses='!left-[-11rem]'
-          itemClasses={`${menuItemClasses}`}
+          itemClasses={`${MENU_ITEM_CLASSES}`}
         />
       </div>
 

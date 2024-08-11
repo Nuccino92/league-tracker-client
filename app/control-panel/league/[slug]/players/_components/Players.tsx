@@ -35,8 +35,7 @@ import PageHeader from '@/app/control-panel/_components/PageHeader';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
-
-const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
+import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 
 const PlayerForm = dynamic(
   () =>
@@ -303,7 +302,7 @@ function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
             <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
           )}
           itemContainerClasses='!left-[-11rem]'
-          itemClasses={`${menuItemClasses}`}
+          itemClasses={`${MENU_ITEM_CLASSES}`}
         />
       </div>
 

@@ -9,7 +9,10 @@ import classNames from 'classnames';
 import { useAuth } from '@/app/GlobalContext';
 import AuthFormInput from '@/app/lib/components/_auth/AuthFormInput';
 import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
-import { inputClasses, inputContainerClasses } from '@/app/lib/globals/styles';
+import {
+  INPUT_CLASSES,
+  INPUT_CONTAINER_CLASSES,
+} from '@/app/lib/globals/styles';
 
 const AccountInformationSchema = z.object({
   name: z.string().min(1, { message: 'A name is required' }),
@@ -57,11 +60,11 @@ export default function UserProfileForms() {
         {(props) => (
           <Form className='flex w-full flex-col space-y-6 rounded-xl border border-violet-100 bg-white p-6 md:w-[650px]'>
             <h2 className='text-xl font-bold'>Account information</h2>
-            <div className={inputContainerClasses}>
+            <div className={INPUT_CONTAINER_CLASSES}>
               <FormLabel name='Username' htmlFor='name' />
               <FastField
                 name='name'
-                className={inputClasses}
+                className={INPUT_CLASSES}
                 id='name'
                 placeholder='Enter your user name'
               />
@@ -72,11 +75,11 @@ export default function UserProfileForms() {
               />
             </div>
 
-            <div className={inputContainerClasses}>
+            <div className={INPUT_CONTAINER_CLASSES}>
               <FormLabel name='Email' htmlFor='email' />
               <FastField
                 name='email'
-                className={inputClasses}
+                className={INPUT_CLASSES}
                 id='email'
                 placeholder='Enter your email'
               />
@@ -116,7 +119,7 @@ export default function UserProfileForms() {
         {(props) => (
           <Form className='flex w-full flex-col space-y-6 rounded-xl border border-violet-100 bg-white p-6 md:w-[650px]'>
             <h2 className='text-xl font-bold'>Change Password</h2>
-            <div className={inputContainerClasses}>
+            <div className={INPUT_CONTAINER_CLASSES}>
               <AuthFormInput
                 placeholder='New Password'
                 name='newPassword'
@@ -127,7 +130,7 @@ export default function UserProfileForms() {
                 iconFn={() => setShowPassword((prev) => !prev)}
               />
             </div>
-            <div className={inputContainerClasses}>
+            <div className={INPUT_CONTAINER_CLASSES}>
               <AuthFormInput
                 placeholder='Re-type password'
                 name='confirmNewPassword'

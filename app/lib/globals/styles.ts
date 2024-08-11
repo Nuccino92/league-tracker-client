@@ -14,7 +14,7 @@
  * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
  */
 
-export const inputContainerClasses = `flex flex-col space-y-3`;
+export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
 
 /**
  * @description
@@ -32,7 +32,7 @@ export const inputContainerClasses = `flex flex-col space-y-3`;
  * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
  */
 
-export const inputClasses =
+export const INPUT_CLASSES =
   'h-10 w-full rounded-md border border-slate-200 px-2 focus:border-inherit focus:outline-offset-0 focus:outline-secondary focus:ring-0';
 
 /**
@@ -44,13 +44,25 @@ export const inputClasses =
  * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
  */
 
-export const skeletonClass = `animate-pulse bg-zinc-200 rounded`;
+export const SKELETON_CLASSES = `animate-pulse bg-zinc-200 rounded`;
 
 /**
  * @description
- * Classes for the sidebar Link.
+ * Tailwind classes for the sidebar Link.
  *
  * @locations
  * app\control-panel\_components\Sidebar.tsx
  */
-export const sidebarLinkClasses = `flex items-center space-x-3 px-6 py-2 hover:bg-secondary/10`;
+export const SIDEBAR_LINK_CLASSES = `flex items-center space-x-3 px-6 py-2 hover:bg-secondary/10`;
+
+/**
+ * @description
+ * Tailwind classes for menu dropdown items
+ *
+ * @locations
+ * app\control-panel\league\[slug]\teams\_components\Teams.tsx
+ * app\control-panel\league\[slug]\players\_components\Players.tsx
+ * app\control-panel\league\[slug]\members\_components\MembersList.tsx
+ */
+
+export const MENU_ITEM_CLASSES = `hover:bg-secondary hover:text-white w-full p-2 text-start`;

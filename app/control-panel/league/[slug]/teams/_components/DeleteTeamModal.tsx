@@ -32,6 +32,8 @@ export default function DeleteTeamModal({
             onClick={() => {
               //TODO: send a delete request
               console.log('TEAM ID:', teamId);
+
+              // TODO: NEED TO CASCADE DELETING the member roles w/ team_mamangement scopes w/ matching id's.
             }}
             type='button'
             className='rounded border border-red-600 bg-red-600 px-4 py-2 text-sm font-medium text-white hover:border-red-600/90 hover:bg-red-600/90'

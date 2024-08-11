@@ -1,11 +1,6 @@
 import { SetStateAction } from 'react';
 
-import {
-  IconClose,
-  IconEllipsisVertical,
-  IconPlus,
-  IconSearch,
-} from '@/app/lib/SVGs';
+import { IconClose, IconSearch } from '@/app/lib/SVGs';
 import classNames from 'classnames';
 
 type Props = {

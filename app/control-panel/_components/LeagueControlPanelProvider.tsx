@@ -1,12 +1,13 @@
 'use client';
 
 import { ReactNode, createContext, useContext } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import Lottie from 'react-lottie';
 
 import animationData from '@/app/assets/animations/horizontal-moving-circles.json';
 import { ControlPanelInformation } from '@/app/lib/types/Responses/control-panel.types';
 import { useLeague } from '@/app/lib/hooks/api/control-panel/index';
+import { ControlPanelLeaguePages } from '@/app/lib/enums';
 
 export default function LeagueControlPanelProvider({
   children,
@@ -14,6 +15,8 @@ export default function LeagueControlPanelProvider({
   children: ReactNode;
 }) {
   const params: any = useParams();
+
+  //TODO: handle if error redirect off page/show 404
 
   const { data: leagueData, status, error } = useLeague(params['slug']);
 
@@ -51,7 +54,7 @@ export const LeagueControlPanelContext = createContext({
 export function useLeagueControlPanel() {
   const { leagueData } = useContext(LeagueControlPanelContext);
 
-  const slug = leagueData.league_info.slug
+  const slug = leagueData.league_info.slug;
 
   const hasSeasons =
     leagueData.seasons.all_seasons && leagueData.seasons.all_seasons.length > 0
@@ -76,5 +79,63 @@ export function useLeagueControlPanel() {
     seasons: { ...leagueData.seasons, all_seasons: sortedSeasons },
   };
 
-  return { leagueData: league_data, activeSeason, hasSeasons, slug };
+  // TODO: possibly add a new page for league information, have an about page for league so any member can access it's control panel (possily remove access from player role and have them edit their information another way)
+
+  // so... default to /control-panel/slug which shows the about or w/e
+  // then... on the sidebar wheh click home, go to /control-panel/slug/home, which shows the league information which is role blocked
+
+  function hasPageAccess(page: ControlPanelLeaguePages): boolean {
+    const {
+      role: { role_name, permissions },
+    } = leagueData;
+
+    let accessGranted = false;
+
+    if (Object.keys(permissions).length < 1) return (accessGranted = false);
+
+    if (page === 'index') return (accessGranted = true);
+
+    if (role_name === 'owner' || role_name === 'super-admin') {
+      return (accessGranted = true);
+    }
+
+    if (page === 'home' || page === 'members') return (accessGranted = false);
+
+    if (role_name === 'admin') {
+      return (accessGranted = true);
+    }
+
+    if (page === 'registrations') return (accessGranted = false);
+
+    switch (page) {
+      case 'seasons':
+        if (permissions['manage_seasons'] || permissions['manage_roster'])
+          return (accessGranted = true);
+        break;
+      case 'teams':
+        if (permissions['manage_teams']) return (accessGranted = true);
+        break;
+      case 'players':
+        if (permissions['manage_players']) return (accessGranted = true);
+        break;
+      case 'calendar':
+        if (permissions['manage_calendar']) return (accessGranted = true);
+        break;
+      case 'news':
+        if (permissions['manage_news']) return (accessGranted = true);
+        break;
+      default:
+        return (accessGranted = false);
+    }
+
+    return accessGranted;
+  }
+
+  return {
+    leagueData: league_data,
+    activeSeason,
+    hasSeasons,
+    slug,
+    hasPageAccess,
+  };
 }

@@ -4,7 +4,10 @@ import classNames from 'classnames';
 
 import Modal from '@/app/lib/components/Modal';
 import { ModalType } from '@/app/types';
-import { inputClasses, inputContainerClasses } from '@/app/lib/globals/styles';
+import {
+  INPUT_CLASSES,
+  INPUT_CONTAINER_CLASSES,
+} from '@/app/lib/globals/styles';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { IconBxCalendarStar } from '@/app/lib/SVGs';
 import ListBox from '@/app/lib/components/Listbox';
@@ -42,14 +45,14 @@ export default function ActivateSeasonModal({
         </p>
       </div>
 
-      <div className={classNames('', inputContainerClasses)}>
+      <div className={classNames('', INPUT_CONTAINER_CLASSES)}>
         {hasSeasons ? (
           <div className='flex items-center space-x-4 text-sm'>
             <ListBox
               value={activeSeason}
               onChange={selectSeason}
               buttonClasses={
-                inputClasses + ' flex items-center justify-between'
+                INPUT_CLASSES + ' flex items-center justify-between'
               }
               buttonText={'Select from dropdown'}
               options={transformIntoOptions(seasonInformation.all_seasons, {

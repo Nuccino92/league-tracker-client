@@ -14,8 +14,11 @@ import { toFormikValidate } from 'zod-formik-adapter';
 
 import FileUpload from '@/app/lib/components/FileUpload';
 import ColorPicker from '@/app/lib/components/ColorPicker';
-import { DeleteIcon, DownChevronIcon, ToolTipIcon } from '@/app/lib/SVGs';
-import { inputClasses, inputContainerClasses } from '@/app/lib/globals/styles';
+import { DeleteIcon } from '@/app/lib/SVGs';
+import {
+  INPUT_CLASSES,
+  INPUT_CONTAINER_CLASSES,
+} from '@/app/lib/globals/styles';
 import {
   LeagueInformationResource,
   leagueInformationSchema,
@@ -23,8 +26,8 @@ import {
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { useUpdateLeague } from '@/app/lib/hooks/api/league';
 import { DefaultColors } from '@/app/lib/enums';
-import FormLabel from './FormLabel';
-import ControlPanelTooltip from './ControlPanelTooltip';
+import FormLabel from '@/app/control-panel/_components/FormLabel';
+import ControlPanelTooltip from '@/app/control-panel/_components/ControlPanelTooltip';
 
 export default function HomePageForms() {
   const { leagueData, slug } = useLeagueControlPanel();
@@ -71,11 +74,11 @@ export default function HomePageForms() {
             {(props) => (
               <Form className='flex w-full flex-col space-y-6 rounded-xl border border-violet-100 bg-white p-6 md:w-[900px]'>
                 <div className='text-2xl font-bold'>League Information</div>
-                <div className={inputContainerClasses}>
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <FormLabel label='League Name' htmlFor='name' required />
                   <div className='flex items-center space-x-2'>
                     <FastField
-                      className={inputClasses}
+                      className={INPUT_CLASSES}
                       name='name'
                       id='name'
                       placeholder='Enter your league name'
@@ -97,7 +100,7 @@ export default function HomePageForms() {
                     name='name'
                   />
                 </div>
-                <div className={inputContainerClasses}>
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <FormLabel label='League Logo' htmlFor='logo' />
                   <div className='flex h-[200px] items-center justify-center space-x-2'>
                     {props.values.logo ? (
@@ -154,21 +157,21 @@ export default function HomePageForms() {
                     </span>
                   ) : null}
                 </div>
-                <div className={inputContainerClasses}>
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <FormLabel label='Name used inside url' htmlFor='slug' />
                   <div className='flex items-center space-x-2'>
                     <input
                       type='text'
                       readOnly
                       disabled
-                      className={inputClasses + ' !text-gray-400'}
+                      className={INPUT_CLASSES + ' !text-gray-400'}
                       name='slug'
                       id='slug'
                       placeholder='League slug name'
                       value={props.values.slug}
                     />
                     {/* <FastField
-                      className={inputClasses}
+                      className={INPUT_CLASSES}
                       name='slug'
                       id='slug'
                       placeholder='Enter your league slug'
@@ -189,12 +192,12 @@ export default function HomePageForms() {
                     name='slug'
                   />
                 </div>
-                <div className={inputContainerClasses}>
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <FormLabel label='League Description' htmlFor='description' />
                   <div className='flex items-center space-x-2'>
                     <FastField
                       className={classNames(
-                        inputClasses,
+                        INPUT_CLASSES,
                         'min-h-[200px] !py-2'
                       )}
                       as='textarea'
@@ -221,7 +224,7 @@ export default function HomePageForms() {
                   />
                 </div>
 
-                <div className={inputContainerClasses}>
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <FormLabel
                     label='League Primary Color'
                     htmlFor='primary_color'
@@ -261,7 +264,7 @@ export default function HomePageForms() {
                     />
                   </div>
                 </div>
-                <div className={inputContainerClasses}>
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <FormLabel
                     label='League Secondary Color'
                     htmlFor='secondary_color'

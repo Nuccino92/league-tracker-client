@@ -11,10 +11,12 @@ export default function MembersPage({
 }) {
   return (
     <Container view='league'>
-      <MembersHeader />
-      <main>
-        <MembersList slug={params.slug} />
-      </main>
+      <div className='space-y-4'>
+        <MembersHeader />
+        <main className='h-[calc(100%-104px)]'>
+          <MembersList slug={params.slug} />
+        </main>
+      </div>
     </Container>
   );
 }

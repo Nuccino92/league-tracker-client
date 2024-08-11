@@ -9,9 +9,9 @@ import {
   fetchControlPanelPlayers,
   fetchFreeAgents,
 } from '@/app/lib/requests/control-panel/players';
-import { Player } from '@/app/lib/types/Models/Player';
 import { Filter, SearchParamScope } from '@/app/lib/types/filters.types';
 import { createQueryString } from '@/app/lib/utils/createQueryString';
+import { Player } from '@/app/lib/types/Models/Player';
 
 // TODO: ascertain how to know when to use pagination vs. getting complete list
 export function usePlayers({
@@ -57,8 +57,10 @@ export function usePlayer({
           id: null,
           name: '',
           avatar: null,
-          number: null,
-          age: null,
+          // number: null,
+          // age: null,
+          email: null,
+          phoneNumber: null,
         } as Player;
       } else {
         return fetchControlPanelPlayer({ token, slug, playerId });

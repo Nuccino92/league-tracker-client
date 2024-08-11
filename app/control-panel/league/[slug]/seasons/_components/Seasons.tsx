@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
-import { inputClasses } from '@/app/lib/globals/styles';
+import { INPUT_CLASSES } from '@/app/lib/globals/styles';
 import FormLabel from '@/app/control-panel/_components/FormLabel';
 import {
   IconOptionsOutline,
@@ -122,7 +122,7 @@ export default function Seasons({ slug }: { slug: string }) {
                     const newUrl = `${pathname}?${params.toString()}`;
                     router.push(newUrl);
                   }}
-                  buttonClasses={inputClasses + ' !justify-center'}
+                  buttonClasses={INPUT_CLASSES + ' !justify-center'}
                   buttonText={
                     focusedSeason
                       ? focusedSeason.name

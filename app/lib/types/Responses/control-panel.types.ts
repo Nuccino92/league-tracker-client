@@ -3,19 +3,20 @@ import { z } from 'zod';
 import { League } from '@/app/lib/types/Models/League';
 import { basePlayerSchema } from '@/app/lib/types/Models/Player';
 import { baseTeamSchema } from '@/app/lib/types/Models/Team';
-import { LeagueInformationResource } from '@/app/lib/types/Resources/CreateLeagueResource';
-import { seasonSchema } from '../Models/Season';
+import { Season, seasonSchema } from '../Models/Season';
 import { memberSchema } from '../Models/Member';
+import { Role } from '../Models/Role';
 
 // TODO: possibly seperate each region into its own file, follow the requests/control-panel folder structure
 
 export type ControlPanelInformation = {
   league_info: League;
   seasons: Seasons;
+  role: Role;
 };
 
 export type Seasons = {
-  all_seasons: { id: number; name: string }[];
+  all_seasons: Season[];
   active_season_id: number | null;
 };
 
@@ -89,5 +90,13 @@ export type OrganizationInformationFormSchema = z.infer<
 >;
 
 // ---- region - members
+export const controlPanelMemberForEdit = memberSchema.extend({
+  id: z.number().nullable(),
+});
+
 export type ControlPanelMembersList = z.infer<typeof memberSchema>;
+export type ControlPanelMemberForEdit = z.infer<
+  typeof controlPanelMemberForEdit
+>;
+
 // ---- endregion

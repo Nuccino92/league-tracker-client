@@ -15,10 +15,11 @@ const ROUTES = {
   },
   CONTROL_PANEL: '/control-panel',
   CONTROL_PANEL_SUBROUTES: {
+    HOME: '/home',
     MEMBERS: '/members',
     SEASONS: '/seasons',
     CALENDAR: '/calendar',
-    PAYMENTS: '/payments',
+    REGISTRATIONS: '/registrations',
     PLAYERS: '/players',
     TEAMS: '/teams',
     NEWS: '/news',

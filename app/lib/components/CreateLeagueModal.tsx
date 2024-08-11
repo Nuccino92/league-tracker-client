@@ -20,7 +20,7 @@ import {
 } from '@/app/GlobalContext';
 import Modal from './Modal';
 import { SportType } from '../types/sport.types';
-import { inputClasses, inputContainerClasses } from '../globals/styles';
+import { INPUT_CLASSES, INPUT_CONTAINER_CLASSES } from '../globals/styles';
 import FileUpload from '@/app/lib/components/FileUpload';
 import { DeleteIcon } from '../SVGs';
 import ColorPicker from '@/app/lib/components/ColorPicker';
@@ -514,7 +514,7 @@ function CreationForm({
       <h2 className='mb-4 text-xl font-bold italic'>{header}</h2>
 
       <div className='input-container space-y-5'>
-        <div className={inputContainerClasses}>
+        <div className={INPUT_CONTAINER_CLASSES}>
           <InputLabel
             htmlFor={`${leagueOrOrganization}-name`}
             label='Name'
@@ -523,7 +523,7 @@ function CreationForm({
           <input
             id={`${leagueOrOrganization}-name`}
             name='name'
-            className={inputClasses}
+            className={INPUT_CLASSES}
             value={formData.name}
             onChange={handleChange}
             placeholder='Enter your league name'
@@ -531,7 +531,7 @@ function CreationForm({
 
           {errors['name'] ? <ErrorDisplay text={errors['name']} /> : null}
         </div>
-        <div className={inputContainerClasses}>
+        <div className={INPUT_CONTAINER_CLASSES}>
           <InputLabel htmlFor={`${leagueOrOrganization}-logo`} label='Logo' />
 
           {formData.logo ? (
@@ -582,14 +582,14 @@ function CreationForm({
         </div>
 
         {/* {leagueOrOrganization === 'league' ? (
-          <div className={inputContainerClasses}>
+          <div className={INPUT_CONTAINER_CLASSES}>
             <InputLabel
               htmlFor={`${leagueOrOrganization}-slug`}
               label='Name used inside url'
             />
             <input
               name='slug'
-              className={inputClasses}
+              className={INPUT_CLASSES}
               type='text'
               value={formData.slug ?? ''}
               onChange={handleChange}
@@ -600,14 +600,14 @@ function CreationForm({
           </div>
         ) : null} */}
 
-        <div className={inputContainerClasses}>
+        <div className={INPUT_CONTAINER_CLASSES}>
           <InputLabel
             htmlFor={`${leagueOrOrganization}-description`}
             label='Description'
           />
           <textarea
             value={formData.description ? formData.description : ''}
-            className={classNames(inputClasses, 'min-h-[200px] !py-2')}
+            className={classNames(INPUT_CLASSES, 'min-h-[200px] !py-2')}
             name='description'
             id={`${leagueOrOrganization}-description`}
             placeholder='Enter your league description'
@@ -621,7 +621,7 @@ function CreationForm({
 
         {leagueOrOrganization === 'league' ? (
           <>
-            <div className={inputContainerClasses}>
+            <div className={INPUT_CONTAINER_CLASSES}>
               <InputLabel
                 htmlFor={`${leagueOrOrganization}-primary-color`}
                 label='League Primary Color'
@@ -649,7 +649,7 @@ function CreationForm({
                 <ErrorDisplay text={errors['primary_color']} />
               ) : null}
             </div>
-            <div className={inputContainerClasses}>
+            <div className={INPUT_CONTAINER_CLASSES}>
               <InputLabel
                 htmlFor={`${leagueOrOrganization}-secondary-color`}
                 label='League Secondary Color'

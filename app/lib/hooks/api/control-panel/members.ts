@@ -1,9 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import { useAuth } from '@/app/GlobalContext';
-import { fetchControlPanelMembers } from '@/app/lib/requests/control-panel/members';
+import {
+  fetchControlPanelMember,
+  fetchControlPanelMembers,
+} from '@/app/lib/requests/control-panel/members';
 import { SearchParamScope } from '@/app/lib/types/filters.types';
 import useQueryString from '../../useQueryString';
+import { ControlPanelMemberForEdit } from '@/app/lib/types/Responses/control-panel.types';
 
 export function useMembers({
   slug,
@@ -26,4 +30,32 @@ export function useMembers({
   });
 
   return { data, status };
+}
+
+export function useMember({
+  slug,
+  memberId,
+}: {
+  slug: string;
+  memberId?: number;
+}) {
+  const { token } = useAuth();
+
+  const { data: member, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.MEMBER, slug, memberId],
+    queryFn: () => {
+      if (!memberId) {
+        return {
+          id: null,
+          role: 'member',
+          name: 'Jerry Smith',
+        } as ControlPanelMemberForEdit;
+      } else {
+        return fetchControlPanelMember({ token, slug, memberId });
+      }
+    },
+    staleTime: 30000,
+  });
+
+  return { member, status };
 }

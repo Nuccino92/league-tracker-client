@@ -6,7 +6,6 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import { IconOptionsOutline, IconUsergroupAdd } from '@/app/lib/SVGs';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
-import AddMemberModal from './AddMemberModal';
 import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
 import useQueryString from '@/app/lib/hooks/useQueryString';
@@ -14,6 +13,7 @@ import { MemberRolesEnum } from '@/app/lib/enums';
 import getEnumKeyByEnumValue from '@/app/lib/utils/getEnumKeyByEnumValue';
 import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
+import MemberForm from './MemberForm';
 
 export default function MembersHeader() {
   const searchParams = useSearchParams();
@@ -107,7 +107,7 @@ export default function MembersHeader() {
         </div>
       </div>
       {showAddMemberModal ? (
-        <AddMemberModal
+        <MemberForm
           isOpen={showAddMemberModal}
           close={() => setShowAddMemberModal(false)}
         />

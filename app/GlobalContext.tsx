@@ -39,7 +39,7 @@ export default function GlobalContextProvider({
     <GlobalContext.Provider
       value={{
         expires: isUserLoggedIn ? data!.expires : (null as unknown as string),
-        user: user,
+        user: user as any,
         token: user?.token ?? '',
         status,
         update,
@@ -55,7 +55,7 @@ export default function GlobalContextProvider({
 
 export const GlobalContext = createContext({
   expires: '',
-  user: null as any | null,
+  user: null as User | null,
   token: '' as string,
   status: 'loading' as 'authenticated' | 'loading' | 'unauthenticated',
   update: (() => {}) as any,
@@ -69,7 +69,7 @@ export function useAuth() {
 
 export function useIsFreeTrialAvailable() {
   const { user, status } = useContext(GlobalContext);
-  if (status === 'unauthenticated') return false;
+  if (status === 'unauthenticated' || !user) return false;
 
   const { trial_ends_at } = user;
 

@@ -8,14 +8,21 @@ export const playerInformationSchema = z.object({
     .max(255)
     .url({ message: 'The logo must be a URL' })
     .nullable(),
-  number: z.preprocess(
-    (val) => (val === '' ? null : val),
-    z.union([z.number(), z.null()])
-  ),
-  age: z.preprocess(
-    (val) => (val === '' ? null : val),
-    z.union([z.number(), z.null()])
-  ),
+  // number: z.preprocess(
+  //   (val) => (val === '' ? null : val),
+  //   z.union([z.number(), z.null()])
+  // ),
+  // age: z
+  //   .preprocess(
+  //     (val) => (val === '' ? null : val),
+  //     z.union([z.number(), z.null()])
+  //   )
+  //   .nullable(),
+  email: z.string().email().nullable(),
+  phoneNumber: z
+    .string()
+    .max(30, { message: "The phone number musn't exceed 30 characters" })
+    .nullable(),
 });
 
 export type PlayerInformationResource = z.infer<typeof playerInformationSchema>;

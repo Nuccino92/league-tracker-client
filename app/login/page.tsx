@@ -15,7 +15,7 @@ import { useAuth } from '../GlobalContext';
 import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
 import classNames from 'classnames';
 import Checkbox from '../lib/components/Checkbox';
-import { inputContainerClasses } from '../lib/globals/styles';
+import { INPUT_CONTAINER_CLASSES } from '../lib/globals/styles';
 
 const Schema = z.object({
   email: z.string().email(),
@@ -92,7 +92,7 @@ export default function Login() {
         >
           {(props) => (
             <Form
-              className={inputContainerClasses}
+              className={INPUT_CONTAINER_CLASSES}
               onChange={() =>
                 backendValidationError.isError &&
                 setBackendValidationError({

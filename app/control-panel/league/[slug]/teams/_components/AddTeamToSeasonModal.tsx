@@ -18,7 +18,7 @@ import { useTeamsForManagement } from '@/app/lib/hooks/api/control-panel/teams';
 
 export default function AddTeamToSeasonModal({ isOpen, close }: ModalType) {
   const searchParams = useSearchParams();
-  const { leagueData, slug } = useLeagueControlPanel();
+  const { slug } = useLeagueControlPanel();
   const [searchInputValue, setSearchInputValue] = useState('');
 
   const debouncedSearch = useDebounce(searchInputValue, 750);
@@ -29,10 +29,6 @@ export default function AddTeamToSeasonModal({ isOpen, close }: ModalType) {
     page,
     query: debouncedSearch,
   });
-
-  const activeSeason = leagueData.seasons.all_seasons.find(
-    (season) => season.id === leagueData.seasons.active_season_id
-  );
 
   const seasonParam = searchParams.get('season');
 

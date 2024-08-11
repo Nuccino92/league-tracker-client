@@ -16,7 +16,7 @@ import AuthContainer from '../lib/components/_auth/AuthContainer';
 import { useAuth } from '../GlobalContext';
 import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
 import { registerRequest } from '@/app/lib/requests/auth';
-import { inputContainerClasses } from '../lib/globals/styles';
+import { INPUT_CONTAINER_CLASSES } from '../lib/globals/styles';
 
 const Schema = z
   .object({
@@ -117,7 +117,7 @@ export default function Register() {
         >
           {(props) => (
             <Form
-              className={inputContainerClasses}
+              className={INPUT_CONTAINER_CLASSES}
               onChange={() =>
                 backendRegistrationError.isError &&
                 setBackendRegistrationError({

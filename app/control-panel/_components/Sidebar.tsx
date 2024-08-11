@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FC, SVGProps, useState } from 'react';
 import { useParams, usePathname } from 'next/navigation';
 import classNames from 'classnames';
 import Link from 'next/link';
@@ -9,7 +9,8 @@ import ROUTES from '@/app/lib/globals/routes';
 import { ProfileViewType } from '@/app/lib/types/profile.types';
 import { useLeagueControlPanel } from './LeagueControlPanelProvider';
 import generateNavLinkWithParams from '@/app/lib/utils/generateNavLinkWithParams';
-import { sidebarLinkClasses } from '@/app/lib/globals/styles';
+import { SIDEBAR_LINK_CLASSES } from '@/app/lib/globals/styles';
+import { ControlPanelLeaguePages } from '@/app/lib/enums';
 
 // Have to get features from backend (maybe not depending on business model)
 
@@ -19,32 +20,25 @@ export default function Sidebar({ view }: { view: ProfileViewType }) {
 
   const { leagueData } = useLeagueControlPanel(); //TODO: conditionally get league or org data
 
-  //TODO: maybe create a hook to apply the current season filter to each url route!!!
-
   return (
     <div
       className={classNames(
         isSidebarExpanded ? 'w-[300px]' : 'w-[76px]',
-        'fixed top-0 z-50 h-screen border-r bg-primary lg:sticky lg:-mt-20'
+        'fixed top-0 z-50 h-screen border-r bg-white lg:sticky lg:-mt-20'
       )}
     >
-      <div className='flex h-20 items-center justify-center space-x-4 px-6 text-center text-xl font-bold text-white'>
+      <button
+        className='absolute right-0 p-1 text-primary transition-colors duration-75 ease-out hover:text-secondary'
+        onClick={() => setIsSidebarExpanded((prev: boolean) => !prev)}
+      >
         {isSidebarExpanded ? (
-          <span className=' line-clamp-2'>
-            {leagueData?.league_info.name ?? ''}
-          </span>
-        ) : null}{' '}
-        <button
-          className='rounded-full p-1 hover:bg-secondary'
-          onClick={() => setIsSidebarExpanded((prev: boolean) => !prev)}
-        >
-          {menuIcon}
-        </button>
-      </div>
+          <IconArrowLeftSquare height={26} width={26} />
+        ) : (
+          <IconArrowRightSquare height={26} width={26} />
+        )}
+      </button>
 
-      <ul className='control-options-container space-y-2 font-medium text-white'>
-        {/* TODO: possibly control what is displayed using features from backend */}
-
+      <ul className='control-options-container mt-[100px] space-y-2 font-bold text-primary/50'>
         <ControlPanelRoutes
           isSidebarExpanded={isSidebarExpanded}
           pathname={pathname}
@@ -67,60 +61,68 @@ function ControlPanelRoutes({
 }: ControlPanelTypes) {
   const params = useParams();
 
-  const { leagueData } = useLeagueControlPanel();
+  const { leagueData, hasPageAccess } = useLeagueControlPanel();
 
   const baseRoute = ROUTES.CONTROL_PANEL + '/' + view + '/' + params['slug'];
 
   const navigationLinks = [
     {
-      href: baseRoute,
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.HOME,
       label: 'Home',
       icon: homeIcon,
       withSeasonParam: false,
+      access: hasPageAccess(ControlPanelLeaguePages.HOME),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.MEMBERS,
       label: 'Members',
       icon: membersIcon,
       withSeasonParam: false,
+      access: hasPageAccess(ControlPanelLeaguePages.MEMBERS),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS,
       label: 'Seasons',
       icon: seasonsIcon,
       withSeasonParam: true,
+      access: hasPageAccess(ControlPanelLeaguePages.SEASONS),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.TEAMS,
       label: 'Teams',
       icon: teamIcon,
       withSeasonParam: true,
+      access: hasPageAccess(ControlPanelLeaguePages.TEAMS),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PLAYERS,
       label: 'Players',
       icon: playerIcon,
       withSeasonParam: true,
+      access: hasPageAccess(ControlPanelLeaguePages.PLAYERS),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.CALENDAR,
       label: 'Calendar',
       icon: calendarIcon,
       withSeasonParam: true,
+      access: hasPageAccess(ControlPanelLeaguePages.CALENDAR),
     },
     {
-      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PAYMENTS,
-      label: 'Payments',
-      icon: paymentsIcon,
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.REGISTRATIONS,
+      label: 'Registrations',
+      icon: registrationsIcon,
       withSeasonParam: true,
+      access: hasPageAccess(ControlPanelLeaguePages.REGISTRATIONS),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.NEWS,
       label: 'News',
       icon: newsIcon,
       withSeasonParam: true,
+      access: hasPageAccess(ControlPanelLeaguePages.NEWS),
     },
-  ];
+  ].filter((link) => link.access);
 
   return (
     <>
@@ -128,8 +130,8 @@ function ControlPanelRoutes({
         <li
           key={link.label}
           className={classNames(
-            pathname === link.href ? 'bg-secondary' : '',
-            ''
+            pathname === link.href ? 'text-secondary' : '',
+            'text-sm'
           )}
         >
           <Link
@@ -142,10 +144,10 @@ function ControlPanelRoutes({
             }
             className={classNames(
               isSidebarExpanded ? 'justify-start' : '',
-              sidebarLinkClasses
+              SIDEBAR_LINK_CLASSES
             )}
           >
-            <span>{link.icon}</span>{' '}
+            <span className=''>{link.icon}</span>{' '}
             {isSidebarExpanded ? <span>{link.label}</span> : null}
           </Link>
         </li>
@@ -208,7 +210,7 @@ const menuIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -225,7 +227,7 @@ const homeIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -242,7 +244,7 @@ const membersIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -259,7 +261,7 @@ const seasonsIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -281,7 +283,7 @@ const teamIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -298,7 +300,7 @@ const playerIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -315,7 +317,7 @@ const calendarIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -325,14 +327,14 @@ const calendarIcon = (
   </svg>
 );
 
-const paymentsIcon = (
+const registrationsIcon = (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -349,7 +351,7 @@ const newsIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -366,7 +368,7 @@ const organizationIcon = (
     viewBox='0 0 24 24'
     strokeWidth={1.5}
     stroke='currentColor'
-    className='h-7 w-7'
+    className='h-6 w-6'
   >
     <path
       strokeLinecap='round'
@@ -375,3 +377,37 @@ const organizationIcon = (
     />
   </svg>
 );
+
+const IconArrowRightSquare: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      fill='currentColor'
+      viewBox='0 0 16 16'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path
+        fillRule='evenodd'
+        d='M15 2a1 1 0 00-1-1H2a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V2zM0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H2a2 2 0 01-2-2V2zm4.5 5.5a.5.5 0 000 1h5.793l-2.147 2.146a.5.5 0 00.708.708l3-3a.5.5 0 000-.708l-3-3a.5.5 0 10-.708.708L10.293 7.5H4.5z'
+      />
+    </svg>
+  );
+};
+
+const IconArrowLeftSquare: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      fill='currentColor'
+      viewBox='0 0 16 16'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path
+        fillRule='evenodd'
+        d='M15 2a1 1 0 00-1-1H2a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V2zM0 2a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H2a2 2 0 01-2-2V2zm11.5 5.5a.5.5 0 010 1H5.707l2.147 2.146a.5.5 0 01-.708.708l-3-3a.5.5 0 010-.708l3-3a.5.5 0 11.708.708L5.707 7.5H11.5z'
+      />
+    </svg>
+  );
+};

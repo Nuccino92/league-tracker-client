@@ -6,7 +6,6 @@ import animationData from '@/app/assets/animations/not-found.json';
 export default function NotFound({ children }: { children: ReactNode }) {
   return (
     <main className='flex h-[80vh] w-full flex-col items-center justify-center'>
-      {children}
       <div className='flex flex-col items-center justify-center'>
         <Lottie
           height={250}
@@ -18,6 +17,8 @@ export default function NotFound({ children }: { children: ReactNode }) {
           }}
         />
       </div>
+
+      {children}
     </main>
   );
 }

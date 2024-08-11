@@ -59,7 +59,7 @@ export default function UserDropdown({
             type='button'
             className={classNames(
               'flex items-center space-x-2',
-              menuItemClasses
+              MENU_ITEM_CLASSES
             )}
           >
             <span>{startLeagueIcon}</span> <span>Start League</span>
@@ -68,7 +68,7 @@ export default function UserDropdown({
             as={'div'}
             className={classNames(
               'flex items-center space-x-2',
-              menuItemClasses
+              MENU_ITEM_CLASSES
             )}
           >
             <span>{profileIcon}</span>
@@ -81,7 +81,7 @@ export default function UserDropdown({
             type='button'
             className={classNames(
               'flex items-center space-x-2',
-              menuItemClasses
+              MENU_ITEM_CLASSES
             )}
           >
             <span>{logoutIcon}</span> <span>Sign Out</span>
@@ -92,7 +92,7 @@ export default function UserDropdown({
   );
 }
 
-const menuItemClasses = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
+const MENU_ITEM_CLASSES = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
 
 const startLeagueIcon = (
   <svg

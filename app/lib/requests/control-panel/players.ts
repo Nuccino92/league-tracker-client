@@ -173,8 +173,8 @@ const mockPlayer = {
   id: 1,
   name: 'Jimmeh Johns',
   avatar: null,
-  number: 43,
-  age: 27,
+  email: 'cashNasty@gmail.com',
+  phoneNumber: null,
 } as Player;
 
 const mockPlayerList = [
