@@ -29,11 +29,11 @@ export default function TeamInformation({
   const [showTeamEditModal, setShowTeamEditModal] = useState(false);
 
   return (
-    <StyledBox classes='p-8'>
+    <StyledBox classes=''>
       {status === 'success' && team ? (
         <>
           <div className='space-y-6'>
-            <div className='flex items-center justify-between space-x-6'>
+            <div className='flex items-center justify-between space-x-6 border-b p-8'>
               <h2 className='text-2xl font-bold'>{team.name}</h2>
 
               <Button
@@ -44,7 +44,7 @@ export default function TeamInformation({
               </Button>
             </div>
 
-            <div className='flex space-x-4'>
+            <div className='flex space-x-4 p-8'>
               <div className='relative h-[200px] min-w-[200px]'>
                 {team.logo ? (
                   <Image

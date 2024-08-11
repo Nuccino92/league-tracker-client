@@ -13,7 +13,7 @@ export default function TeamPage({
   return (
     <Container view='league'>
       <div className='mb-6'>
-        <PageHeader text='Team Page' />{' '}
+        <PageHeader text='Team Page' />
       </div>
       <div className='flex w-full justify-center'>
         <div className='w-full max-w-[1200px] space-y-6'>

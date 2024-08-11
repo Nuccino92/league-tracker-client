@@ -42,7 +42,7 @@ export default function TeamManagementSection({ slug }: { slug: string }) {
           Schedule
         </button>
       </div>
-      <div className='bg-white p-8'>
+      <div className='bg-white'>
         {selectedSection === 'roster' ? <TeamRoster /> : null}
         {selectedSection === 'schedule' ? <TeamSchedule /> : null}
       </div>
