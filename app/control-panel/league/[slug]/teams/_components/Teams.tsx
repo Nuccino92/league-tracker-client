@@ -32,6 +32,7 @@ import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 import ROUTES from '@/app/lib/globals/routes';
+import Link from 'next/link';
 
 const TeamForm = dynamic(
   () => import('@/app/control-panel/league/[slug]/teams/_components/TeamForm')
@@ -227,11 +228,11 @@ function TeamCard({ team }: { team: ControlPanelListTeam }) {
   return (
     <>
       <div className='flex w-full items-center justify-between rounded bg-white p-4'>
-        <div
+        <Link
           className='flex items-center space-x-2 transition-colors duration-100 ease-out hover:text-secondary'
           role='button'
           tabIndex={0}
-          onClick={() => setShowTeamEditModal(true)}
+          href={`${pathname}/${team.id}`}
         >
           {team.logo ? (
             <div className='relative h-12 w-12 rounded border'>
@@ -249,7 +250,7 @@ function TeamCard({ team }: { team: ControlPanelListTeam }) {
             </div>
           )}
           <span className='font-medium'>{team.name}</span>
-        </div>
+        </Link>
 
         <DropdownMenu
           items={dropdownOptions}

@@ -43,8 +43,9 @@ export default function TeamManagementSection({ slug }: { slug: string }) {
         </button>
       </div>
       <div className='bg-white'>
+        {/* TODO: have to manage this properly. Could possibly restrict to active season or not */}
         {selectedSection === 'roster' ? <TeamRoster /> : null}
-        {selectedSection === 'schedule' ? <TeamSchedule /> : null}
+        {selectedSection === 'schedule' ? <TeamSchedule slug={slug} /> : null}
       </div>
     </div>
   );

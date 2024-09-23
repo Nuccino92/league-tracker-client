@@ -17,6 +17,8 @@ type Props = {
   buttonClasses?: string;
   optionContainerClasses?: string;
   optionClasees?: string;
+  rootClasses?: string;
+  chevron?: boolean;
   status?: 'success' | 'loading' | 'error';
 };
 
@@ -28,12 +30,14 @@ export default function ListBox({
   buttonClasses,
   optionContainerClasses,
   optionClasees,
+  rootClasses,
+  chevron = true,
   status = 'success',
 }: Props) {
   return (
     <Listbox
       as={'div'}
-      className={'relative w-full min-w-[200px]'}
+      className={classNames(rootClasses, 'relative w-full min-w-[200px]')}
       value={value}
       onChange={(val) => onChange(val)}
     >
@@ -46,7 +50,8 @@ export default function ListBox({
       >
         <span>{buttonText}</span>
         {/* TODO: possibly pass in icon as optional prop and default to this */}
-        <DownChevronIcon height={22} width={22} />
+
+        {chevron ? <DownChevronIcon height={22} width={22} /> : null}
       </Listbox.Button>
 
       <Transition

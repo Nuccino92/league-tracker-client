@@ -74,7 +74,11 @@ export default function TeamInformation({
         </>
       ) : null}
 
-      {status === 'loading' ? <Spinner /> : null}
+      {status === 'loading' ? (
+        <div className='flex h-full w-full items-center justify-center py-40'>
+          <Spinner height={55} width={55} />{' '}
+        </div>
+      ) : null}
 
       {status === 'error' ? (
         <NotFound>

@@ -1,10 +1,10 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { getTeamsLinks } from '@/app/lib/collections/breadcrumbLinks';
 import Breadcrumb from '@/app/lib/components/Breadcrumb';
 import { SportType } from '@/app/lib/types/sport.types';
 import getInitials from '@/app/lib/utils/getInitials';
-import Link from 'next/link';
 import ROUTES from '@/app/lib/globals/routes';
 
 const league = {

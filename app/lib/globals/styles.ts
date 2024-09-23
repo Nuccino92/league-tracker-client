@@ -12,6 +12,7 @@
  * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
  * app\control-panel\league\[slug]\seasons\_components\Seasons.tsx
  * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
+ * app\lib\components\_scheduler\EventFormModal.tsx
  */
 
 export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
@@ -30,6 +31,7 @@ export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
  * app\control-panel\league\[slug]\players\_components\PlayerForm.tsx
  * app\control-panel\league\[slug]\seasons\_components\Seasons.tsx
  * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
+ * app\lib\components\_scheduler\EventFormModal.tsx
  */
 
 export const INPUT_CLASSES =

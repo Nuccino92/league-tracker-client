@@ -18,10 +18,7 @@ export default function Home() {
         <Link href='/profile' className='text-secondary'>
           Profile
         </Link>
-        <Link
-          href='/control-panel/league/oh-mah-gawd'
-          className='text-primary'
-        >
+        <Link href='/control-panel/league/oh-mah-gawd' className='text-primary'>
           Control Panel
         </Link>
       </div>
