@@ -1,16 +1,19 @@
-import { CalendarEvent } from '../../types/Models/CalendarEvent';
+import classNames from 'classnames';
+import {
+  IconBxFootball,
+  IconPeopleGroup,
+  IconBxCustomize,
+  LocationIcon,
+} from '@/app/lib/SVGs';
+import { CalendarEvent } from '@/app/lib/types/Models/CalendarEvent';
 
 type Props = {
   calendarEvent: CalendarEvent;
 };
 
 export function TimeGridEvent({ calendarEvent }: Props) {
-  //TODO: customize based on even type
-
-  console.log('rednderd', calendarEvent);
-  // TODO: get full height
   return (
-    <div className='h-full bg-red-500'>
+    <div className='h-full'>
       {calendarEvent.event_type === 'game' ? (
         <GameView calendarEvent={calendarEvent} />
       ) : null}
@@ -27,13 +30,165 @@ export function TimeGridEvent({ calendarEvent }: Props) {
 }
 
 function GameView({ calendarEvent }: Props) {
-  return <div className='h-full bg-green-300'>gametime</div>;
+  const isGameLongerThan15Minutes = isEventLongerThanXMinutes(
+    calendarEvent.start,
+    calendarEvent.end,
+    15
+  );
+
+  const isGameLongerThan30Minutes = isEventLongerThanXMinutes(
+    calendarEvent.start,
+    calendarEvent.end,
+    30
+  );
+
+  return (
+    <div
+      className={classNames(
+        isGameLongerThan15Minutes ? 'py-2' : '',
+        'relative h-full space-y-2 rounded-xl bg-red-300 px-2 pr-5'
+      )}
+    >
+      <div className='flex font-medium leading-4'>
+        <span
+          className={classNames(
+            isGameLongerThan15Minutes ? 'm-2' : 'mx-1',
+            'absolute right-0 top-0'
+          )}
+        >
+          <IconBxFootball height={16} width={16} />
+        </span>
+        <span
+          className={classNames(
+            isGameLongerThan15Minutes && !isGameLongerThan30Minutes
+              ? 'truncate'
+              : ''
+          )}
+        >
+          {calendarEvent.title}
+        </span>
+      </div>
+
+      {calendarEvent.location ? (
+        <div className='flex items-center space-x-1 text-xs'>
+          <LocationIcon />
+          <span className='truncate'>{calendarEvent.location}</span>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 function PracticeView({ calendarEvent }: Props) {
-  return <div className='h-full bg-red-300'>prac time</div>;
+  const isPracticeLongerThan15Minutes = isEventLongerThanXMinutes(
+    calendarEvent.start,
+    calendarEvent.end,
+    15
+  );
+
+  const isPracticeLongerThan30Minutes = isEventLongerThanXMinutes(
+    calendarEvent.start,
+    calendarEvent.end,
+    30
+  );
+
+  return (
+    <div
+      className={classNames(
+        isPracticeLongerThan15Minutes ? 'py-2' : '',
+        'relative h-full space-y-2 rounded-xl bg-blue-300 px-2 pr-5'
+      )}
+    >
+      <div className='flex font-medium leading-4'>
+        <span
+          className={classNames(
+            isPracticeLongerThan15Minutes ? 'm-2' : 'mx-1',
+            'absolute right-0 top-0'
+          )}
+        >
+          <IconPeopleGroup height={16} width={16} />
+        </span>
+        <span
+          className={classNames(
+            isPracticeLongerThan15Minutes && !isPracticeLongerThan30Minutes
+              ? 'truncate'
+              : ''
+          )}
+        >
+          {calendarEvent.title}
+        </span>
+      </div>
+
+      {calendarEvent.location ? (
+        <div className='flex items-center space-x-1 text-xs'>
+          <LocationIcon />
+          <span className='truncate'>{calendarEvent.location}</span>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 function CustomView({ calendarEvent }: Props) {
-  return <div className='h-full bg-blue-300'>custom time</div>;
+  const isPracticeLongerThan15Minutes = isEventLongerThanXMinutes(
+    calendarEvent.start,
+    calendarEvent.end,
+    15
+  );
+
+  const isPracticeLongerThan30Minutes = isEventLongerThanXMinutes(
+    calendarEvent.start,
+    calendarEvent.end,
+    30
+  );
+
+  return (
+    <div
+      className={classNames(
+        isPracticeLongerThan15Minutes ? 'py-2' : '',
+        'relative h-full space-y-2 rounded-xl bg-green-300 px-2 pr-5'
+      )}
+    >
+      <div className='flex pr-2 font-medium leading-4'>
+        <span
+          className={classNames(
+            isPracticeLongerThan15Minutes ? 'm-2' : 'mx-1',
+            'absolute right-0 top-0'
+          )}
+        >
+          <IconBxCustomize height={16} width={16} />
+        </span>
+        <span
+          className={classNames(
+            isPracticeLongerThan15Minutes && !isPracticeLongerThan30Minutes
+              ? 'truncate'
+              : ''
+          )}
+        >
+          {calendarEvent.title}
+        </span>
+      </div>
+
+      {calendarEvent.location ? (
+        <div className='flex items-center space-x-1 text-xs'>
+          <LocationIcon />
+          <span className='truncate'>{calendarEvent.location}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function isEventLongerThanXMinutes(
+  start: string,
+  end: string,
+  minutes: number
+): boolean {
+  const startTime = new Date(start);
+  const endTime = new Date(end);
+
+  const durationInMinutes =
+    (endTime.getTime() - startTime.getTime()) / (1000 * 60);
+
+  return durationInMinutes > minutes;
 }
