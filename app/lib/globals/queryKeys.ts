@@ -8,6 +8,7 @@ const QUERY_KEYS = {
     TEAMS_FOR_DROPDOWN: 'teams-for-dropdown-control-panel',
     ARCHIVED_TEAMS: 'archived-teams-control-panel',
     FULL_LIST_OF_TEAMS_FOR_SEASON: 'teams-full-list-for-season',
+    TEAM_IS_IN_ACTIVE_SEASON: 'team-is-in-active-season-control-panel',
 
     PLAYERS: 'players-control-panel',
     PLAYER: 'player-control-panel',
@@ -16,6 +17,10 @@ const QUERY_KEYS = {
 
     MEMBERS: 'members-control-panel',
     MEMBER: 'member-control-panel',
+  },
+
+  EVENTS: {
+    LEAGUE_EVENTS: 'league-events',
   },
 };
 

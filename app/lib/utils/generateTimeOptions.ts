@@ -28,26 +28,21 @@ function generateTimeOptions(): TimeOption[] {
   return times;
 }
 
-export function roundToClosestTime(
-  dateTimeString: string,
+export function findNearestTimeOption(
+  time: string,
   timeOptions: TimeOption[]
-): TimeOption | null {
-  const date = new Date(dateTimeString);
-  const minutes = date.getMinutes();
-  const roundedMinutes = Math.round(minutes / 15) * 15; // Round to the nearest 15 minutes
-  const roundedHours = date.getHours() + Math.floor(roundedMinutes / 60);
+): TimeOption | undefined {
+  const [inputHours, inputMinutes] = time.split(':').map(Number);
+  const totalMinutes = inputHours * 60 + inputMinutes;
 
-  const finalHours = roundedHours % 24; // Ensure the hour is within a 24-hour format
-  const finalMinutes = roundedMinutes % 60; // Ensure minutes are between 0-59
+  const roundedMinutes = Math.round(totalMinutes / 15) * 15;
 
-  // Format the value as HH:mm
-  const roundedTimeValue = `${finalHours.toString().padStart(2, '0')}:${finalMinutes.toString().padStart(2, '0')}`;
+  const roundedHours = Math.floor(roundedMinutes / 60);
+  const roundedMinutesPastHour = roundedMinutes % 60;
 
-  // Find the closest time option
-  const closestOption =
-    timeOptions.find((option) => option.value === roundedTimeValue) || null;
+  const roundedTimeValue = `${roundedHours.toString().padStart(2, '0')}:${roundedMinutesPastHour.toString().padStart(2, '0')}`;
 
-  return closestOption;
+  return timeOptions.find((option) => option.value === roundedTimeValue);
 }
 
 export default generateTimeOptions;

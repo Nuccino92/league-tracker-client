@@ -6,6 +6,11 @@ import {
   LocationIcon,
 } from '@/app/lib/SVGs';
 import { CalendarEvent } from '@/app/lib/types/Models/CalendarEvent';
+import {
+  SPORT_EVENT_BACKGROUND_COLOR,
+  PRACTICE_EVENT_BACKGROUND_COLOR,
+  CUSTOM_EVENT_BACKGROUND_COLOR,
+} from '@/app/lib/globals/styles';
 
 type Props = {
   calendarEvent: CalendarEvent;
@@ -45,8 +50,9 @@ function GameView({ calendarEvent }: Props) {
   return (
     <div
       className={classNames(
+        SPORT_EVENT_BACKGROUND_COLOR,
         isGameLongerThan15Minutes ? 'py-2' : '',
-        'relative h-full space-y-2 rounded-xl bg-red-300 px-2 pr-5'
+        'relative h-full space-y-2 rounded-xl px-2 pr-5'
       )}
     >
       <div className='flex font-medium leading-4'>
@@ -95,8 +101,9 @@ function PracticeView({ calendarEvent }: Props) {
   return (
     <div
       className={classNames(
+        PRACTICE_EVENT_BACKGROUND_COLOR,
         isPracticeLongerThan15Minutes ? 'py-2' : '',
-        'relative h-full space-y-2 rounded-xl bg-blue-300 px-2 pr-5'
+        'relative h-full space-y-2 rounded-xl px-2 pr-5'
       )}
     >
       <div className='flex font-medium leading-4'>
@@ -145,8 +152,9 @@ function CustomView({ calendarEvent }: Props) {
   return (
     <div
       className={classNames(
+        CUSTOM_EVENT_BACKGROUND_COLOR,
         isPracticeLongerThan15Minutes ? 'py-2' : '',
-        'relative h-full space-y-2 rounded-xl bg-green-300 px-2 pr-5'
+        'relative h-full space-y-2 rounded-xl px-2 pr-5'
       )}
     >
       <div className='flex pr-2 font-medium leading-4'>

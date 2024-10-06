@@ -12,6 +12,7 @@ import NotFound from '@/app/lib/components/NotFound';
 import { useTeam } from '@/app/lib/hooks/api/control-panel/teams';
 import { EditIcon, Spinner } from '@/app/lib/SVGs';
 import StyledBox from '@/app/lib/components/StyledBox';
+import extractInitials from '@/app/lib/utils/extractInitials';
 
 export default function TeamInformation({
   slug,
@@ -54,7 +55,12 @@ export default function TeamInformation({
                     style={{ objectFit: 'cover' }}
                   />
                 ) : (
-                  <div className='h-full w-full'>wow</div>
+                  <div
+                    style={{ backgroundColor: team.primary_color ?? 'gray' }}
+                    className='flex h-full w-full items-center justify-center rounded text-3xl font-bold uppercase text-white'
+                  >
+                    {extractInitials(team.name)}
+                  </div>
                 )}
               </div>
 

@@ -8,6 +8,12 @@ export default function CalendarPage() {
    * Practices -scope: teams
    * Events  -scope:league,teams
    */
+
+  /**
+   * get scope, is it league or team
+   * if on team, only show team events, when creating lock this team
+   * if league, show all events for the league
+   */
   return (
     <Container view='league'>
       <PageHeader text='Calendar' />

@@ -5,6 +5,7 @@ export default function Home() {
   // have a search so a user can find their league
   return (
     <main className='flex min-h-screen flex-col items-center justify-between p-24'>
+      use framer to create/design homepage
       <div className='space-x-2'>
         <Link href='/register' className='text-primary'>
           Register

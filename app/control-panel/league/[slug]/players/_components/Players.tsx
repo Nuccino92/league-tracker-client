@@ -183,7 +183,7 @@ function PlayersHeader({
         <span className='-mr-2 text-sm font-medium italic'>Filters:</span>
         {/* Season dropdown */}
         <ListBox
-          value={selectedSeason}
+          value={selectedSeason ? selectedSeason.toString() : null}
           onChange={(value) =>
             router.push(
               pathname + '?' + createQueryString('season', value?.toString())

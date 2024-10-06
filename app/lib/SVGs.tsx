@@ -177,9 +177,10 @@ export const Spinner: FC<SVGProps<SVGSVGElement>> = (props) => {
     <div role='status'>
       <svg
         aria-hidden='true'
+        style={{ color: props.color ?? 'rgb(229, 231, 235)' }}
         className={classNames(
           props.fill ? '' : 'fill-secondary',
-          'inline animate-spin text-gray-200'
+          'inline animate-spin'
         )}
         viewBox='0 0 100 101'
         fill='currentColor'
@@ -614,6 +615,111 @@ export function LocationIcon(
       {...props}
     >
       <path d='M250 100c69.333 0 128.333 24.333 177 73s73 107.667 73 177c0 70.667-20.667 151.667-62 243s-83.333 165.667-126 223l-62 84c-6.667-8-15.667-19.667-27-35-11.333-15.333-31.333-45-60-89s-54-87.333-76-130-42-91.667-60-147S0 394 0 350c0-69.333 24.333-128.333 73-177s107.667-73 177-73m0 388c37.333 0 69.333-13.333 96-40s40-58.667 40-96-13.333-69-40-95-58.667-39-96-39-69 13-95 39-39 57.667-39 95 13 69.333 39 96 57.667 40 95 40' />
+    </svg>
+  );
+}
+
+export function IconCalendar(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      viewBox='0 0 1024 1024'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z' />
+    </svg>
+  );
+}
+
+export function IconLocationOutline(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      viewBox='0 0 512 512'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth={32}
+        d='M256 48c-79.5 0-144 61.39-144 137 0 87 96 224.87 131.25 272.49a15.77 15.77 0 0025.5 0C304 409.89 400 272.07 400 185c0-75.61-64.5-137-144-137z'
+      />
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth={32}
+        d='M304 192 A48 48 0 0 1 256 240 A48 48 0 0 1 208 192 A48 48 0 0 1 304 192 z'
+      />
+    </svg>
+  );
+}
+
+export function IconCategory(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      fill='none'
+      stroke='currentColor'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      strokeWidth={2}
+      viewBox='0 0 24 24'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path stroke='none' d='M0 0h24v24H0z' />
+      <path d='M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z' />
+      <path d='M20 17 A3 3 0 0 1 17 20 A3 3 0 0 1 14 17 A3 3 0 0 1 20 17 z' />
+    </svg>
+  );
+}
+
+export function IconTextLeft(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      fill='currentColor'
+      viewBox='0 0 16 16'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path
+        fillRule='evenodd'
+        d='M2 12.5a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5z'
+      />
+    </svg>
+  );
+}
+
+export function IconTeamLine(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path fill='none' d='M0 0h24v24H0z' />
+      <path d='M12 11a5 5 0 015 5v6h-2v-6a3 3 0 00-2.824-2.995L12 13a3 3 0 00-2.995 2.824L9 16v6H7v-6a5 5 0 015-5zm-6.5 3c.279 0 .55.033.81.094a5.947 5.947 0 00-.301 1.575L6 16v.086a1.492 1.492 0 00-.356-.08L5.5 16a1.5 1.5 0 00-1.493 1.356L4 17.5V22H2v-4.5A3.5 3.5 0 015.5 14zm13 0a3.5 3.5 0 013.5 3.5V22h-2v-4.5a1.5 1.5 0 00-1.356-1.493L18.5 16c-.175 0-.343.03-.5.085V16c0-.666-.108-1.306-.309-1.904A3.42 3.42 0 0118.5 14zm-13-6a2.5 2.5 0 110 5 2.5 2.5 0 010-5zm13 0a2.5 2.5 0 110 5 2.5 2.5 0 010-5zm-13 2a.5.5 0 100 1 .5.5 0 000-1zm13 0a.5.5 0 100 1 .5.5 0 000-1zM12 2a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4z' />
     </svg>
   );
 }

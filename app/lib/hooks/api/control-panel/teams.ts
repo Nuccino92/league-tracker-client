@@ -2,11 +2,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/app/GlobalContext';
 import {
-  fetchControlPanelTeams,
-  fetchControlPanelTeam,
-  fetchControlPanelTeamsForManagement,
-  fetchControlPanelArchivedTeams,
-  fetchControlPanelTeamsForDropdown,
+  controlPanelTeamsRequest,
+  controlPanelTeamRequest,
+  controlPanelTeamsForManagementRequest,
+  controlPanelArchivedTeamsRequest,
+  controlPanelTeamsForDropdownRequest,
+  checkIfTeamIsInSeasonRequest,
 } from '@/app/lib/requests/control-panel/teams';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import useQueryString from '@/app/lib/hooks/useQueryString';
@@ -42,7 +43,7 @@ export function useTeams({
 
   const { data, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params, paginate],
-    queryFn: () => fetchControlPanelTeams({ token, slug, params, paginate }),
+    queryFn: () => controlPanelTeamsRequest({ token, slug, params, paginate }),
     enabled,
     retry: false,
     staleTime: 180000,
@@ -66,7 +67,7 @@ export function useTeam({ slug, teamId }: { slug: string; teamId?: number }) {
           secondary_color: DefaultColors.Secondary,
         } as Team;
       } else {
-        return fetchControlPanelTeam({ token, slug, teamId });
+        return controlPanelTeamRequest({ token, slug, teamId });
       }
     },
     retry: false,
@@ -106,7 +107,8 @@ export function useTeamsForManagement({
 
   const { data, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params],
-    queryFn: () => fetchControlPanelTeamsForManagement({ token, slug, params }),
+    queryFn: () =>
+      controlPanelTeamsForManagementRequest({ token, slug, params }),
     retry: false,
     staleTime: 30000,
   });
@@ -125,7 +127,7 @@ export function useArchivedTeams({
 
   const { data, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.ARCHIVED_TEAMS, slug, params],
-    queryFn: () => fetchControlPanelArchivedTeams({ token, slug, params }),
+    queryFn: () => controlPanelArchivedTeamsRequest({ token, slug, params }),
     retry: false,
     staleTime: 30000,
   });
@@ -148,10 +150,39 @@ export function useControlPanelTeamsForDropdown({ slug }: { slug: string }) {
 
   const { data: teamsDropdownList, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS_FOR_DROPDOWN, slug],
-    queryFn: () => fetchControlPanelTeamsForDropdown({ token, slug }),
+    queryFn: () => controlPanelTeamsForDropdownRequest({ token, slug }),
     retry: 2,
     staleTime: Infinity,
   });
 
   return { teamsDropdownList, status };
+}
+
+export function useCheckIfTeamIsInSeason({
+  teamID,
+  seasonID,
+  slug,
+}: {
+  teamID: string;
+  seasonID: string | null;
+  slug: string;
+}) {
+  const { token } = useAuth();
+
+  const { data, status } = useQuery({
+    queryKey: [
+      QUERY_KEYS.CONTROL_PANEL.TEAM_IS_IN_ACTIVE_SEASON,
+      teamID,
+      seasonID,
+    ],
+    queryFn: () => {
+      if (!seasonID) return { is_team_involved_in_season: false };
+
+      return checkIfTeamIsInSeasonRequest({ token, teamID, seasonID, slug });
+    },
+    retry: 1,
+    staleTime: Infinity,
+  });
+
+  return { data, status };
 }

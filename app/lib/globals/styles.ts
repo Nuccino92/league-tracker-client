@@ -68,3 +68,15 @@ export const SIDEBAR_LINK_CLASSES = `flex items-center space-x-3 px-6 py-2 hover
  */
 
 export const MENU_ITEM_CLASSES = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
+
+/**
+ * @description
+ * Tailwind classes for event cards
+ *
+ * @locations
+ * app\lib\components\_scheduler\TimeGridEvent.tsx
+ */
+
+export const SPORT_EVENT_BACKGROUND_COLOR = 'bg-red-300';
+export const PRACTICE_EVENT_BACKGROUND_COLOR = 'bg-blue-300';
+export const CUSTOM_EVENT_BACKGROUND_COLOR = 'bg-green-300';

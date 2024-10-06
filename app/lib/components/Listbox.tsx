@@ -20,6 +20,7 @@ type Props = {
   rootClasses?: string;
   chevron?: boolean;
   status?: 'success' | 'loading' | 'error';
+  disabled?: boolean;
 };
 
 export default function ListBox({
@@ -33,6 +34,7 @@ export default function ListBox({
   rootClasses,
   chevron = true,
   status = 'success',
+  disabled = false,
 }: Props) {
   return (
     <Listbox
@@ -40,18 +42,19 @@ export default function ListBox({
       className={classNames(rootClasses, 'relative w-full min-w-[200px]')}
       value={value}
       onChange={(val) => onChange(val)}
+      disabled={disabled}
     >
       <Listbox.Button
         type='button'
         className={classNames(
-          'flex w-full items-center justify-between space-x-2 whitespace-nowrap rounded bg-white p-2 text-sm font-medium shadow-sm',
+          'flex w-full items-center justify-between space-x-2 whitespace-nowrap rounded bg-white p-2 text-sm font-medium shadow-sm disabled:bg-gray-50',
           buttonClasses
         )}
       >
         <span>{buttonText}</span>
         {/* TODO: possibly pass in icon as optional prop and default to this */}
 
-        {chevron ? <DownChevronIcon height={22} width={22} /> : null}
+        {chevron ? <DownChevronIcon height={18} width={18} /> : null}
       </Listbox.Button>
 
       <Transition

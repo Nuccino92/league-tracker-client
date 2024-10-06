@@ -31,8 +31,8 @@ import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
-import ROUTES from '@/app/lib/globals/routes';
 import Link from 'next/link';
+import generateNavLinkWithParams from '@/app/lib/utils/generateNavLinkWithParams';
 
 const TeamForm = dynamic(
   () => import('@/app/control-panel/league/[slug]/teams/_components/TeamForm')
@@ -169,7 +169,7 @@ function TeamsHeader({
       <div className='flex items-center space-x-6'>
         <span className='-mr-2 text-sm font-medium italic'>Filters:</span>
         <ListBox
-          value={selectedSeason}
+          value={selectedSeason ? selectedSeason.toString() : null}
           onChange={(value) =>
             router.push(
               pathname + '?' + createQueryString('season', value?.toString())
@@ -203,6 +203,9 @@ function TeamsHeader({
 function TeamCard({ team }: { team: ControlPanelListTeam }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const { activeSeason } = useLeagueControlPanel();
 
   const [showTeamEditModal, setShowTeamEditModal] = useState(false);
   const [showTeamDeleteModal, setShowTeamDeleteModal] = useState(false);
@@ -232,7 +235,9 @@ function TeamCard({ team }: { team: ControlPanelListTeam }) {
           className='flex items-center space-x-2 transition-colors duration-100 ease-out hover:text-secondary'
           role='button'
           tabIndex={0}
-          href={`${pathname}/${team.id}`}
+          href={generateNavLinkWithParams(`${pathname}/${team.id}`, {
+            season: searchParams.get('season') ?? null,
+          })}
         >
           {team.logo ? (
             <div className='relative h-12 w-12 rounded border'>

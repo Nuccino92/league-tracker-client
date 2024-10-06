@@ -43,6 +43,9 @@ export const controlPaneListTeamForDropdownSchema = z.object({
   id: z.number(),
   name: z.string(),
 });
+export const controlPanelCheckIfTeamIsInSeasonSchema = z.object({
+  is_team_involved_in_season: z.boolean(),
+});
 
 export type ControlPanelListTeam = z.infer<typeof controlPanelListTeamSchema>;
 export type ControlPanelManageTeam = z.infer<
@@ -54,6 +57,10 @@ export type ControlPanelArchivedTeam = z.infer<
 export type ControlPanelListTeamForDropdown = z.infer<
   typeof controlPaneListTeamForDropdownSchema
 >;
+export type ControlPanelCheckIfTeamIsInSeason = z.infer<
+  typeof controlPanelCheckIfTeamIsInSeasonSchema
+>;
+
 // ---- endregion
 
 // ---- region - players

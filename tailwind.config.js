@@ -20,6 +20,17 @@ module.exports = {
         'primary-dark': '#002a63',
         'secondary-dark': '#02a76b',
       },
+      keyframes: {
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '2%': { transform: 'rotate(-1deg)' },
+          '3.5%': { transform: 'rotate(3deg)' },
+          '5%': { transform: 'rotate(0deg)' },
+        },
+      },
+      animation: {
+        wiggle: 'wiggle 6.5s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

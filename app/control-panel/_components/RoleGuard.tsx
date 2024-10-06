@@ -22,7 +22,7 @@ type Props = {
 export default function RoleGuard({ children }: Props) {
   const router = useRouter();
 
-  const { leagueData, hasPageAccess } = useLeagueControlPanel();
+  const { hasPageAccess } = useLeagueControlPanel();
 
   const page = useGetControlPanelPage();
   const pageAccess = hasPageAccess(page);
@@ -66,6 +66,7 @@ function useGetControlPanelPage(): ControlPanelLeaguePages {
   if (pathname.includes('seasons')) {
     return ControlPanelLeaguePages.SEASONS;
   }
+  //Todo: need to guard against specific teams. Page /teams/(teamid). Need to check user scope
   if (pathname.includes('teams')) {
     return ControlPanelLeaguePages.TEAMS;
   }

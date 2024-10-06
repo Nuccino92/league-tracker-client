@@ -79,6 +79,22 @@ export function useLeagueControlPanel() {
     seasons: { ...leagueData.seasons, all_seasons: sortedSeasons },
   };
 
+  // Checks if user is admin or above
+  function isAdministrator(): boolean {
+    const {
+      role: { role_name },
+    } = leagueData;
+
+    if (
+      role_name === 'owner' ||
+      role_name === 'super-admin' ||
+      role_name === 'admin'
+    )
+      return true;
+
+    return false;
+  }
+
   // TODO: possibly add a new page for league information, have an about page for league so any member can access it's control panel (possily remove access from player role and have them edit their information another way)
 
   // so... default to /control-panel/slug which shows the about or w/e
@@ -137,5 +153,6 @@ export function useLeagueControlPanel() {
     hasSeasons,
     slug,
     hasPageAccess,
+    isAdministrator,
   };
 }

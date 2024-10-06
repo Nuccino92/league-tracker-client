@@ -12,10 +12,12 @@ import {
   controlPanelListTeamSchema,
   controlPaneListTeamForDropdownSchema,
   controlPanelManageTeamSchema,
+  controlPanelCheckIfTeamIsInSeasonSchema,
+  ControlPanelCheckIfTeamIsInSeason,
 } from '@/app/lib/types/Responses/control-panel.types';
 import { Team, teamSchema } from '@/app/lib/types/Models/Team';
 
-export async function fetchControlPanelTeams({
+export async function controlPanelTeamsRequest({
   token,
   slug,
   params,
@@ -58,7 +60,7 @@ export async function fetchControlPanelTeams({
   // return z.array(controlPanelListTeamSchema).parse(data);
 }
 
-export async function fetchControlPanelTeam({
+export async function controlPanelTeamRequest({
   token,
   slug,
   teamId,
@@ -95,7 +97,7 @@ export async function fetchControlPanelTeam({
   // return teamSchema.parse(data.data)
 }
 
-export async function fetchControlPanelTeamsForManagement({
+export async function controlPanelTeamsForManagementRequest({
   token,
   slug,
   params,
@@ -136,7 +138,7 @@ export async function fetchControlPanelTeamsForManagement({
   // .parse(data.data);
 }
 
-export async function fetchControlPanelArchivedTeams({
+export async function controlPanelArchivedTeamsRequest({
   token,
   slug,
   params,
@@ -175,7 +177,7 @@ export async function fetchControlPanelArchivedTeams({
   //return z.array(controlPanelArchivedTeamSchema).parse(data.data)
 }
 
-export async function fetchControlPanelTeamsForDropdown({
+export async function controlPanelTeamsForDropdownRequest({
   token,
   slug,
 }: {
@@ -214,6 +216,51 @@ export async function fetchControlPanelTeamsForDropdown({
   // return z.array(controlPanelListTeamSchema).parse(data);
 }
 
+export async function checkIfTeamIsInSeasonRequest({
+  token,
+  teamID,
+  seasonID,
+  slug,
+}: {
+  token: string;
+  teamID: string;
+  seasonID: string;
+  slug: string;
+}) {
+  // TODO: possibly add can_remove property
+
+  //TODO: on backend, if there is no season and paginate is false, reject the request... possibly
+
+  return new Promise<{ is_team_involved_in_season: boolean }>((resolve) => {
+    setTimeout(() => {
+      resolve({
+        is_team_involved_in_season: seasonID !== '1' ? true : false,
+      });
+    }, 400);
+  });
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}${ROUTES.CONTROL_PANEL}${ROUTES.LEAGUE}/${slug}/teams/${teamID}/${seasonID}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok)
+    throw {
+      message: data.error as ErrorType,
+      statusCode: response.status,
+      owner_id: data.owner_id,
+    } as NotOk & { owner_id: string | undefined };
+
+  return controlPanelCheckIfTeamIsInSeasonSchema.parse(data);
+}
+
 const mockTeamList = [
   {
     id: 1,
@@ -229,7 +276,7 @@ const mockTeamList = [
   },
   {
     id: 3,
-    name: 'Toronto Raptors',
+    name: 'Los Angeles Lakers',
     logo: null,
     league_id: 20,
   },
@@ -241,7 +288,7 @@ const mockTeamList = [
   },
   {
     id: 5,
-    name: 'Toronto Raptors',
+    name: 'Houston Rockets',
     logo: null,
     league_id: 20,
   },
@@ -356,7 +403,7 @@ const mockTeamForManagementList = [
 ];
 
 const mockTeam = {
-  id: 4,
+  id: 1,
   name: 'Toronto Raptors',
   logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
   description: 'Holly molly this team is legiiiiiit',
