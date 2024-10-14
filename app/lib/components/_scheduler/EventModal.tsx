@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -29,7 +28,7 @@ export default function EventModal({
 }: Props) {
   const params = useParams();
 
-  const deleteEventMutation = useDeleteEvent(params.slug as string);
+  const deleteEventMutation = useDeleteEvent();
 
   const eventType = calendarEvent.event_type;
 

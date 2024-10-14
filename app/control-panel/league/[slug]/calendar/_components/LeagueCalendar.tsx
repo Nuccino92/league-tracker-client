@@ -15,24 +15,19 @@ import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createCurrentTimePlugin } from '@schedule-x/current-time';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import '@schedule-x/theme-default/dist/index.css';
-
-import { TimeGridEvent } from '@/app/lib/components/_scheduler/TimeGridEvent';
-import EventModal from '@/app/lib/components/_scheduler/EventModal';
 import '@/app/lib/components/_scheduler/calendar.css';
-import EventFormModal from '@/app/lib/components/_scheduler/EventFormModal';
+
 import { EventForm } from '@/app/lib/types/Resources/CreateEventResource';
-import { useAddEvent, useEvents } from '@/app/lib/hooks/api/events';
-import { IconCalendar } from '@/app/lib/SVGs';
-import { useTeam } from '@/app/lib/hooks/api/control-panel/teams';
-import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { EventFormTypes } from '@/app/lib/types/Responses/events.types';
+import { useAddEvent, useEvents } from '@/app/lib/hooks/api/events';
 import generateEventTitles from '@/app/lib/utils/generateEventTitles';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
+import EventModal from '@/app/lib/components/_scheduler/EventModal';
+import { TimeGridEvent } from '@/app/lib/components/_scheduler/TimeGridEvent';
+import { IconCalendar } from '@/app/lib/SVGs';
+import EventFormModal from '@/app/lib/components/_scheduler/EventFormModal';
 
-type Props = {
-  slug: string;
-};
-
-export default function TeamSchdule({ slug }: Props) {
+export default function LeagueCalendar() {
   const params = useParams();
   const searchParams = useSearchParams();
 
@@ -48,13 +43,9 @@ export default function TeamSchdule({ slug }: Props) {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd')
   );
+
   const { events, status } = useEvents({
     date: selectedDate,
-  });
-
-  const { team, status: teamStatus } = useTeam({
-    slug: slug,
-    teamId: parseInt(params.id as string),
   });
 
   const addEventMutation = useAddEvent();
@@ -76,8 +67,6 @@ export default function TeamSchdule({ slug }: Props) {
     events: events,
     callbacks: {
       onClickDateTime: (dateTime) => {
-        if (!team) return;
-
         if (!activeSeason || activeSeason.id !== selectedSeasonRef.current) {
           return;
         }
@@ -95,7 +84,7 @@ export default function TeamSchdule({ slug }: Props) {
         setEventFormData({
           title: generateEventTitles({
             eventType: isAdministrator() ? 'game' : 'practice',
-            teamNames: [team.name],
+            teamNames: [], //todo: grab from filter/state
           }),
           description: '',
           start_date: new Date(start_date + 'T00:00:00'),
@@ -105,8 +94,8 @@ export default function TeamSchdule({ slug }: Props) {
           end_time,
           location: '',
           notes: '',
-          teams: [team],
-          lockedTeams: [{ id: team.id, name: team.name }],
+          teams: [], //todo: grab from filter/state
+          lockedTeams: [], //todo: grab from filter/state
           recurrence_type: 'none',
           recurrence_interval: 1,
           recurrence_end: null,
@@ -167,62 +156,48 @@ export default function TeamSchdule({ slug }: Props) {
   };
 
   return (
-    <>
-      {team && teamStatus === 'success' ? (
-        <>
-          <div className='sx-react-calendar-wrapper p-8'>
-            {hasSeasons ? (
-              <ScheduleXCalendar
-                calendarApp={calendar}
-                customComponents={{
-                  timeGridEvent: TimeGridEvent,
-                  eventModal: (props) => <EventModalWrapper {...props} />,
-                }}
-              />
-            ) : (
-              <div className='flex flex-col items-center space-y-2 rounded-[8px] border border-[#c4c7c5] py-[100px] text-center text-lg font-medium'>
-                <IconCalendar height={44} width={44} />
+    <div>
+      <div className='sx-react-calendar-wrapper p-8'>
+        {hasSeasons ? (
+          <ScheduleXCalendar
+            calendarApp={calendar}
+            customComponents={{
+              timeGridEvent: TimeGridEvent,
+              eventModal: (props) => <EventModalWrapper {...props} />,
+            }}
+          />
+        ) : (
+          <div className='flex flex-col items-center space-y-2 rounded-[8px] border border-[#c4c7c5] py-[100px] text-center text-lg font-medium'>
+            <IconCalendar height={44} width={44} />
 
-                <div>
-                  <span className='font-bold'>
-                    {leagueData.league_info.name}
-                  </span>{' '}
-                  does not have an active season
-                </div>
-              </div>
-            )}
+            <div>
+              <span className='font-bold'>{leagueData.league_info.name}</span>{' '}
+              Visit the season page to activate a season
+            </div>
           </div>
+        )}
+      </div>
 
-          {showEventCreationModal && eventFormData ? (
-            <EventFormModal
-              isOpen={showEventCreationModal}
-              close={() => {
-                setEventFormData(null);
-                setShowEventCreationModal(false);
-              }}
-              eventFormData={eventFormData}
-              onSubmit={async (saveValues) => {
-                if (addEventMutation.isLoading) return;
+      {showEventCreationModal && eventFormData ? (
+        <EventFormModal
+          isOpen={showEventCreationModal}
+          close={() => {
+            setEventFormData(null);
+            setShowEventCreationModal(false);
+          }}
+          eventFormData={eventFormData}
+          onSubmit={async (saveValues) => {
+            if (addEventMutation.isLoading) return;
 
-                //TODO: set this up
-                const res = addEventMutation.mutateAsync(saveValues);
+            //TODO: set this up
+            const res = addEventMutation.mutateAsync(saveValues);
 
-                setEventFormData(null);
-                setShowEventCreationModal(false);
-              }}
-              formType={formType}
-            />
-          ) : null}
-        </>
+            setEventFormData(null);
+            setShowEventCreationModal(false);
+          }}
+          formType={formType}
+        />
       ) : null}
-
-      {status === 'error' ? (
-        <div>
-          <div className='sx-react-calendar-wrapper flex items-center justify-center p-8 py-14'>
-            something went wrong
-          </div>
-        </div>
-      ) : null}
-    </>
+    </div>
   );
 }

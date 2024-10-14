@@ -139,6 +139,11 @@ function ControlPanelRoutes({
               link.withSeasonParam
                 ? generateNavLinkWithParams(link.href, {
                     season: leagueData.seasons.active_season_id,
+                    type: link.href.includes(
+                      ROUTES.CONTROL_PANEL_SUBROUTES.CALENDAR
+                    )
+                      ? 'game'
+                      : undefined,
                   })
                 : link.href
             }

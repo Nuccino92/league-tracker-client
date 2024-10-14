@@ -5,19 +5,23 @@ import { ErrorType } from '../types/Responses/control-panel.types';
 import { calendarEventListItem } from '../types/Responses/events.types';
 import { CalendarEvent } from '../types/Models/CalendarEvent';
 import convertToClientTimezone from '../utils/convertToClientTimezone';
+import { CreateEvent } from '@/app/lib/types/Resources/CreateEventResource';
 
 export async function getEventsRequest({
   token,
   slug,
+  date,
   teamSlugs,
 }: {
   token: string;
   slug: string;
+  date: string;
   teamSlugs?: string[];
 }) {
   //TODO: pass in team slugs
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}/events/league/${slug}`,
+    // `${process.env.NEXT_PUBLIC_KEEPR_API_URL}/events/league/${slug}?start=${dateRange.start}&end=${dateRange.end}`,
+    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}/events/league/${slug}?date=${date}`,
     {
       method: 'GET',
       headers: {
@@ -51,11 +55,11 @@ export async function getEventsRequest({
 export async function addEventRequest({
   token,
   slug,
-  teamSlugs,
+  eventData,
 }: {
   token: string;
   slug: string;
-  teamSlugs?: string[];
+  eventData: CreateEvent;
 }) {
   //TODO: pass in team slugs
   const response = await fetch(
@@ -66,6 +70,7 @@ export async function addEventRequest({
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(eventData),
     }
   );
 

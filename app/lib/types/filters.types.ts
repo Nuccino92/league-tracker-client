@@ -12,5 +12,5 @@ export type Filter<T extends object = {}> = BaseFilter & T;
  */
 
 export type SearchParamScope = Array<
-  'season' | 'search' | 'team' | 'page' | 'role'
+  'season' | 'search' | 'team' | 'page' | 'role' | 'date'
 >;

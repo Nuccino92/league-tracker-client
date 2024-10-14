@@ -4,13 +4,11 @@ import { Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { IconClose } from '../SVGs';
+import { ModalType } from '@/app/types';
 
 type Props = {
-  isOpen: boolean;
-  close: () => void;
   children: ReactNode;
-  panelClasses?: string;
-};
+} & ModalType;
 
 export default function Modal({
   isOpen,

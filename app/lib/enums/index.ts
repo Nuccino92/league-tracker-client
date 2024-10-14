@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export enum DefaultColors {
   Primary = '#00337C',
   Secondary = '#03C988',
@@ -36,3 +38,21 @@ export enum ControlPanelLeaguePages {
   REGISTRATIONS = 'registrations',
   NEWS = 'news',
 }
+
+export enum EventRecurrenceEnum {
+  NONE = 'none',
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+}
+
+export const RecurrenceTypeSchema = z.enum([
+  'none',
+  'daily',
+  'weekly',
+  'monthly',
+]);
+export type EventRecurrenceTypeEnum = z.infer<typeof RecurrenceTypeSchema>;
+
+export const EventTypeEnum = z.enum(['game', 'practice', 'custom_event']);
+export type EventType = z.infer<typeof EventTypeEnum>;

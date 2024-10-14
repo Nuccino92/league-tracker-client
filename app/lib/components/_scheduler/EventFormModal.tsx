@@ -1,3 +1,9 @@
+import { useState } from 'react';
+
+import { addYears, format, isSameDay } from 'date-fns';
+import { Popover } from '@headlessui/react';
+import { useParams } from 'next/navigation';
+import classNames from 'classnames';
 import {
   ErrorMessage,
   FastField,
@@ -6,10 +12,6 @@ import {
   Formik,
   FormikProps,
 } from 'formik';
-import { addHours, format, isSameDay } from 'date-fns';
-import { Popover } from '@headlessui/react';
-import { useParams } from 'next/navigation';
-import classNames from 'classnames';
 import { toFormikValidate } from 'zod-formik-adapter';
 
 import Modal from '@/app/lib/components/Modal';
@@ -40,12 +42,14 @@ import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { EventFormTypes } from '@/app/lib/types/Responses/events.types';
 import generateEventTitles from '@/app/lib/utils/generateEventTitles';
-import { EventType } from '@/app/lib/types/Models/CalendarEvent';
+
 import toUTCTimestamp from '@/app/lib/utils/toUTCTimestamp';
+import { EventRecurrenceEnum, EventType } from '@/app/lib/enums/index';
+import CustomRecurrenceForm from '@/app/lib/components/_scheduler/CustomRecurrenceForm';
+import generateFormattedRecurrenceLabel from '@/app/lib/utils/generateFormattedRecurrenceLabel';
+import { ModalType } from '@/app/types';
 
 type Props = {
-  isOpen: boolean;
-  onClose: () => void;
   eventFormData: EventForm;
   onSubmit: (saveValues: CreateEvent) => void;
   formType: EventFormTypes;
@@ -57,12 +61,16 @@ const grayBoxClasses =
 
 export default function EventFormModal({
   isOpen,
-  onClose,
+  close,
   eventFormData,
   onSubmit,
   formType,
-}: Props) {
+  panelClasses,
+}: Props & ModalType) {
   const { isAdministrator } = useLeagueControlPanel();
+
+  const [showCustomRecurrenceForm, setShowCustomRecurrenceForm] =
+    useState(false);
 
   const eventOptions = [
     ...(isAdministrator()
@@ -83,16 +91,39 @@ export default function EventFormModal({
     },
   ];
 
+  const recurrenctTypeOptions = [
+    {
+      label: 'Does not repeat',
+      value: EventRecurrenceEnum.NONE,
+    },
+    {
+      label: 'Daily',
+      value: EventRecurrenceEnum.DAILY,
+    },
+    {
+      label: 'Weekly',
+      value: EventRecurrenceEnum.WEEKLY,
+    },
+    {
+      label: 'Monthly',
+      value: EventRecurrenceEnum.MONTHLY,
+    },
+    {
+      label: 'Custom...',
+      value: 'custom',
+    },
+  ];
+
   return (
     <Modal
-      panelClasses='sm:w-[690px] w-full overflow-visible'
+      panelClasses={classNames(
+        panelClasses,
+        'sm:min-w-[640px] w-full overflow-visible w-max'
+      )}
       isOpen={isOpen}
-      close={onClose}
+      close={close}
     >
       <Formik
-        validateOnChange={false}
-        validateOnBlur={false}
-        validateOnMount={false}
         initialValues={
           {
             event_type: eventFormData.event_type,
@@ -115,6 +146,9 @@ export default function EventFormModal({
             notes: eventFormData.notes,
             teams: eventFormData.teams,
             lockedTeams: eventFormData.lockedTeams,
+            recurrence_type: eventFormData.recurrence_type,
+            recurrence_interval: eventFormData.recurrence_interval,
+            recurrence_end: eventFormData.recurrence_end,
           } as EventForm
         }
         onSubmit={(values) => {
@@ -133,6 +167,12 @@ export default function EventFormModal({
             description: values.description,
             notes: values.notes,
             teams: values.teams.map((team) => team.id),
+
+            recurrence_type: values.recurrence_type,
+            recurrence_interval: values.recurrence_interval,
+            recurrence_end: values.recurrence_end
+              ? toUTCTimestamp(values.recurrence_end, '23:59', timezone)
+              : null,
           } as CreateEvent;
 
           onSubmit(valuesToSave);
@@ -153,312 +193,390 @@ export default function EventFormModal({
             description: values.description,
             notes: values.notes,
             teams: values.teams.map((team) => team.id),
+
+            recurrence_type: values.recurrence_type,
+            recurrence_interval: values.recurrence_interval,
+            recurrence_end: values.recurrence_end
+              ? toUTCTimestamp(values.recurrence_end, '23:59', timezone)
+              : null,
           };
+
+          console.log('valuesToValidate', valuesToValidate);
 
           const validate = toFormikValidate(createEventSchema);
 
           return await validate(valuesToValidate);
         }}
+        validateOnChange={false}
+        validateOnBlur={false}
+        validateOnMount={false}
       >
         {(props) => (
-          <Form className='space-y-4'>
-            <div className='h-10'>
-              <div className='text-lg font-bold'>Event Form</div>
-            </div>
+          <>
+            <Form className='space-y-4'>
+              <div className='h-10'>
+                <div className='text-lg font-bold'>Event Form</div>
+              </div>
 
-            <div className='top-section space-y-4'>
-              {/* Google calendar mimic */}
-              <div className={INPUT_CONTAINER_CLASSES}>
-                <div className='flex items-center justify-start space-x-2'>
-                  <IconCalendar
-                    height={22}
-                    width={22}
-                    className='min-h-max min-w-max'
-                  />
-                  <div className='flex items-center space-x-2'>
-                    <Popover
-                      as='div'
-                      className='relative flex h-full w-max items-center justify-center rounded-lg'
-                    >
-                      <Popover.Button className={grayBoxClasses}>
-                        {props.values.start_date ? (
-                          format(props.values.start_date, 'PPP')
-                        ) : (
-                          <span>Pick a Date</span>
-                        )}
-                      </Popover.Button>
+              <div className='top-section space-y-4'>
+                {/* Google calendar mimic */}
+                <div className={INPUT_CONTAINER_CLASSES}>
+                  <div className='flex items-center justify-start space-x-2'>
+                    <IconCalendar
+                      height={22}
+                      width={22}
+                      className='min-h-max min-w-max'
+                    />
+                    <div className='flex flex-row flex-wrap items-center gap-2'>
+                      <div className='flex items-center space-x-2'>
+                        <Popover
+                          as='div'
+                          className='relative flex h-full w-max items-center justify-center rounded-lg'
+                        >
+                          <Popover.Button className={grayBoxClasses}>
+                            {props.values.start_date ? (
+                              format(props.values.start_date, 'PPP')
+                            ) : (
+                              <span>Pick a Date</span>
+                            )}
+                          </Popover.Button>
 
-                      <Popover.Panel aria-label='Open Date'>
-                        {({ close }) => (
-                          <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
-                            <Calendar
-                              showOutsideDays={false}
-                              mode='single'
-                              selected={new Date(props.values.start_date)}
-                              onSelect={(date) => {
-                                props.setFieldValue('start_date', date);
+                          <Popover.Panel aria-label='Open Date'>
+                            {({ close }) => (
+                              <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
+                                <Calendar
+                                  showOutsideDays={false}
+                                  mode='single'
+                                  selected={new Date(props.values.start_date)}
+                                  onSelect={(date) => {
+                                    props.setFieldValue('start_date', date);
 
-                                const startTimeParts =
-                                  props.values.start_time.split(':');
-                                const selectedDateTime = date
-                                  ? new Date(date)
-                                  : new Date();
-                                selectedDateTime.setHours(
-                                  parseInt(startTimeParts[0], 10)
-                                );
-                                selectedDateTime.setMinutes(
-                                  parseInt(startTimeParts[1], 10)
-                                );
+                                    const startTimeParts =
+                                      props.values.start_time.split(':');
+                                    const selectedDateTime = date
+                                      ? new Date(date)
+                                      : new Date();
+                                    selectedDateTime.setHours(
+                                      parseInt(startTimeParts[0], 10)
+                                    );
+                                    selectedDateTime.setMinutes(
+                                      parseInt(startTimeParts[1], 10)
+                                    );
 
-                                const endDateTime = new Date(selectedDateTime);
-                                endDateTime.setHours(
-                                  endDateTime.getHours() + 1
-                                );
+                                    const endDateTime = new Date(
+                                      selectedDateTime
+                                    );
+                                    endDateTime.setHours(
+                                      endDateTime.getHours() + 1
+                                    );
 
-                                props.setFieldValue('end_date', endDateTime);
-                                props.setFieldValue(
-                                  'end_time',
-                                  endDateTime
-                                    .toTimeString()
-                                    .split(' ')[0]
-                                    .substring(0, 5)
-                                );
+                                    props.setFieldValue(
+                                      'end_date',
+                                      endDateTime
+                                    );
+                                    props.setFieldValue(
+                                      'end_time',
+                                      endDateTime
+                                        .toTimeString()
+                                        .split(' ')[0]
+                                        .substring(0, 5)
+                                    );
 
-                                close();
-                              }}
-                            />
-                          </div>
-                        )}
-                      </Popover.Panel>
-                    </Popover>
+                                    close();
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </Popover.Panel>
+                        </Popover>
 
-                    <ListBox
-                      value={props.values.start_time}
-                      rootClasses='!min-w-max'
-                      buttonClasses={grayBoxClasses}
-                      optionContainerClasses='max-h-[275px] swatches-picker !w-[150px]'
-                      optionClasees='text-sm'
-                      onChange={(value) => {
-                        if (!value || typeof value !== 'string') return;
+                        <ListBox
+                          value={props.values.start_time}
+                          rootClasses='!min-w-max'
+                          buttonClasses={grayBoxClasses}
+                          optionContainerClasses='max-h-[275px] swatches-picker '
+                          optionClasees='text-sm'
+                          onChange={(value) => {
+                            if (!value || typeof value !== 'string') return;
 
-                        props.setFieldValue('start_time', value);
+                            props.setFieldValue('start_time', value);
 
-                        const [hours, minutes] = value.split(':').map(Number);
+                            const [hours, minutes] = value
+                              .split(':')
+                              .map(Number);
 
-                        const startDateTime = new Date(props.values.start_date);
-                        startDateTime.setHours(hours);
-                        startDateTime.setMinutes(minutes);
+                            const startDateTime = new Date(
+                              props.values.start_date
+                            );
+                            startDateTime.setHours(hours);
+                            startDateTime.setMinutes(minutes);
 
-                        const [endHours, endMinutes] = props.values.end_time
-                          .split(':')
-                          .map(Number);
-                        const endDateTime = new Date(props.values.end_date);
-                        endDateTime.setHours(endHours);
-                        endDateTime.setMinutes(endMinutes);
+                            const [endHours, endMinutes] = props.values.end_time
+                              .split(':')
+                              .map(Number);
+                            const endDateTime = new Date(props.values.end_date);
+                            endDateTime.setHours(endHours);
+                            endDateTime.setMinutes(endMinutes);
 
-                        if (startDateTime >= endDateTime) {
-                          const newEndDateTime = new Date(startDateTime);
-                          newEndDateTime.setHours(
-                            newEndDateTime.getHours() + 1
-                          );
+                            if (startDateTime >= endDateTime) {
+                              const newEndDateTime = new Date(startDateTime);
+                              newEndDateTime.setHours(
+                                newEndDateTime.getHours() + 1
+                              );
 
-                          props.setFieldValue('end_date', newEndDateTime);
-                          props.setFieldValue(
-                            'end_time',
-                            newEndDateTime
-                              .toTimeString()
-                              .split(' ')[0]
-                              .substring(0, 5)
-                          );
+                              props.setFieldValue('end_date', newEndDateTime);
+                              props.setFieldValue(
+                                'end_time',
+                                newEndDateTime
+                                  .toTimeString()
+                                  .split(' ')[0]
+                                  .substring(0, 5)
+                              );
+                            }
+                          }}
+                          buttonText={
+                            timeOptions.find(
+                              (option) =>
+                                option.value === props.values.start_time
+                            )?.label ?? 'Select Time'
+                          }
+                          options={timeOptions}
+                          chevron={false}
+                        />
+                      </div>
+                      <span className='text-sm'>to</span>
+                      <div className='flex items-center space-x-2'>
+                        <Popover
+                          as='div'
+                          className='relative flex h-full w-max items-center justify-center rounded-lg'
+                        >
+                          <Popover.Button className={grayBoxClasses}>
+                            {props.values.end_date ? (
+                              format(props.values.end_date, 'PPP')
+                            ) : (
+                              <span>Pick a Date</span>
+                            )}
+                          </Popover.Button>
+
+                          <Popover.Panel aria-label='Open Date'>
+                            {({ close }) => (
+                              <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
+                                <Calendar
+                                  showOutsideDays={false}
+                                  disabled={{ before: props.values.start_date }}
+                                  mode='single'
+                                  selected={
+                                    props.values.end_date
+                                      ? new Date(props.values.end_date)
+                                      : undefined
+                                  }
+                                  onSelect={(date) => {
+                                    if (!date) return;
+
+                                    const startDate = props.values.start_date;
+                                    const startTime = props.values.start_time;
+
+                                    props.setFieldValue('end_date', date);
+
+                                    if (isSameDay(startDate, date)) {
+                                      const [startHours, startMinutes] =
+                                        startTime.split(':').map(Number);
+
+                                      const startDateTime = new Date(startDate);
+                                      startDateTime.setHours(startHours);
+                                      startDateTime.setMinutes(startMinutes);
+
+                                      let endDateTime: any;
+
+                                      if (
+                                        startHours === 23 &&
+                                        startMinutes === 45
+                                      ) {
+                                        endDateTime = new Date(startDateTime);
+                                      } else if (
+                                        startHours === 23 &&
+                                        startMinutes < 45
+                                      ) {
+                                        endDateTime = new Date(startDateTime);
+                                        endDateTime.setMinutes(
+                                          startMinutes + 15
+                                        );
+                                      } else if (startHours < 23) {
+                                        endDateTime = new Date(startDateTime);
+                                        endDateTime.setHours(startHours + 1);
+                                      }
+
+                                      props.setFieldValue(
+                                        'end_time',
+                                        endDateTime
+                                          .toTimeString()
+                                          .split(' ')[0]
+                                          .substring(0, 5)
+                                      );
+                                    }
+
+                                    close();
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </Popover.Panel>
+                        </Popover>
+
+                        <ListBox
+                          rootClasses='!min-w-max'
+                          optionContainerClasses='max-h-[275px] swatches-picker '
+                          value={props.values.end_time}
+                          buttonClasses={grayBoxClasses}
+                          onChange={(value) =>
+                            props.setFieldValue('end_time', value)
+                          }
+                          buttonText={
+                            timeOptions.find(
+                              (option) => option.value === props.values.end_time
+                            )?.label ?? 'Select Time'
+                          }
+                          options={
+                            isSameDay(
+                              props.values.end_date,
+                              props.values.start_date
+                            )
+                              ? timeOptions.filter(
+                                  (time) => time.value > props.values.start_time
+                                )
+                              : timeOptions
+                          }
+                          chevron={false}
+                        />
+                      </div>
+                      <ListBox
+                        rootClasses='!w-[175px] !min-w-max'
+                        buttonClasses={grayBoxClasses}
+                        options={recurrenctTypeOptions}
+                        onChange={(value) => {
+                          if (value === 'custom') {
+                            setShowCustomRecurrenceForm(true);
+                          } else {
+                            props.setFieldValue('recurrence_type', value);
+                            props.setFieldValue('recurrence_interval', 1);
+                            props.setFieldValue('recurrence_end', null);
+                          }
+                        }}
+                        value={
+                          props.values.recurrence_interval > 1
+                            ? 'custom'
+                            : props.values.recurrence_type
                         }
-                      }}
-                      buttonText={
-                        timeOptions.find(
-                          (option) => option.value === props.values.start_time
-                        )?.label ?? 'Select Time'
-                      }
-                      options={timeOptions}
-                      chevron={false}
+                        buttonText={generateFormattedRecurrenceLabel({
+                          interval: props.values.recurrence_interval,
+                          recurrenceType: props.values.recurrence_type,
+                        })}
+                      />
+                    </div>{' '}
+                  </div>
+                </div>
+
+                <div className={INPUT_CONTAINER_CLASSES}>
+                  <div className='flex items-center space-x-2'>
+                    {/* TODO: implement google places api */}
+                    <IconLocationOutline height={22} width={22} />{' '}
+                    <FastField
+                      className={'!text-sm ' + INPUT_CLASSES}
+                      name='location'
+                      id='location'
+                      placeholder='Add event location'
                     />
                   </div>
-                  <span className='text-sm'>to</span>
+                </div>
+
+                <div className={INPUT_CONTAINER_CLASSES}>
                   <div className='flex items-center space-x-2'>
-                    <Popover
-                      as='div'
-                      className='relative flex h-full w-max items-center justify-center rounded-lg'
-                    >
-                      <Popover.Button className={grayBoxClasses}>
-                        {props.values.end_date ? (
-                          format(props.values.end_date, 'PPP')
-                        ) : (
-                          <span>Pick a Date</span>
-                        )}
-                      </Popover.Button>
-
-                      <Popover.Panel aria-label='Open Date'>
-                        {({ close }) => (
-                          <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
-                            <Calendar
-                              showOutsideDays={false}
-                              disabled={{ before: props.values.start_date }}
-                              mode='single'
-                              selected={
-                                props.values.end_date
-                                  ? new Date(props.values.end_date)
-                                  : undefined
-                              }
-                              onSelect={(date) => {
-                                if (!date) return;
-
-                                const startDate = props.values.start_date;
-                                const startTime = props.values.start_time;
-
-                                props.setFieldValue('end_date', date);
-
-                                if (isSameDay(startDate, date)) {
-                                  const [startHours, startMinutes] = startTime
-                                    .split(':')
-                                    .map(Number);
-
-                                  const startDateTime = new Date(startDate);
-                                  startDateTime.setHours(startHours);
-                                  startDateTime.setMinutes(startMinutes);
-
-                                  let endDateTime: any;
-
-                                  if (
-                                    startHours === 23 &&
-                                    startMinutes === 45
-                                  ) {
-                                    endDateTime = new Date(startDateTime);
-                                  } else if (
-                                    startHours === 23 &&
-                                    startMinutes < 45
-                                  ) {
-                                    endDateTime = new Date(startDateTime);
-                                    endDateTime.setMinutes(startMinutes + 15);
-                                  } else if (startHours < 23) {
-                                    endDateTime = new Date(startDateTime);
-                                    endDateTime.setHours(startHours + 1);
-                                  }
-
-                                  props.setFieldValue(
-                                    'end_time',
-                                    endDateTime
-                                      .toTimeString()
-                                      .split(' ')[0]
-                                      .substring(0, 5)
-                                  );
-                                }
-
-                                close();
-                              }}
-                            />
-                          </div>
-                        )}
-                      </Popover.Panel>
-                    </Popover>
-
-                    <ListBox
-                      value={props.values.end_time}
-                      buttonClasses={grayBoxClasses}
-                      optionContainerClasses='max-h-[275px] swatches-picker !w-[150px]'
-                      onChange={(value) =>
-                        props.setFieldValue('end_time', value)
-                      }
-                      buttonText={
-                        timeOptions.find(
-                          (option) => option.value === props.values.end_time
-                        )?.label ?? 'Select Time'
-                      }
-                      options={
-                        isSameDay(
-                          props.values.end_date,
-                          props.values.start_date
-                        )
-                          ? timeOptions.filter(
-                              (time) => time.value > props.values.start_time
-                            )
-                          : timeOptions
-                      }
-                      chevron={false}
-                    />
-                  </div>{' '}
+                    <IconCategory height={22} width={22} strokeWidth={1.5} />{' '}
+                    {eventOptions.map((option) => {
+                      if (
+                        formType === 'edit' &&
+                        option.value !== props.values.event_type
+                      )
+                        return;
+                      return (
+                        <button
+                          disabled={formType === 'edit' ? true : false}
+                          key={option.value}
+                          type='button'
+                          className={classNames(
+                            props.values.event_type === option.value
+                              ? '!bg-secondary/10 text-secondary hover:!bg-secondary/10'
+                              : '!bg-white opacity-50',
+                            '!border-0 ',
+                            grayBoxClasses
+                          )}
+                          onClick={() => {
+                            if (formType === 'edit') return;
+                            props.setFieldValue(
+                              'title',
+                              generateEventTitles({
+                                eventType: option.value as EventType,
+                                teamNames: props.values.teams
+                                  ? props.values.teams?.map((team) => team.name)
+                                  : [],
+                              })
+                            );
+                            props.setFieldValue('event_type', option.value);
+                            props.setFieldError('title', undefined);
+                            props.setFieldError('teams', undefined);
+                          }}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              <div className={INPUT_CONTAINER_CLASSES}>
-                <div className='flex items-center space-x-2'>
-                  {/* TODO: implement google places api */}
-                  <IconLocationOutline height={22} width={22} />{' '}
-                  <FastField
-                    className={'!text-sm ' + INPUT_CLASSES}
-                    name='location'
-                    id='location'
-                    placeholder='Add event location'
-                  />
-                </div>
-              </div>
+              {props.values.event_type ? (
+                <FormSectionBelowType props={props} formType={formType} />
+              ) : null}
 
-              <div className={INPUT_CONTAINER_CLASSES}>
-                <div className='flex items-center space-x-2'>
-                  <IconCategory height={22} width={22} strokeWidth={1.5} />{' '}
-                  {eventOptions.map((option) => {
-                    if (
-                      formType === 'edit' &&
-                      option.value !== props.values.event_type
-                    )
-                      return;
-                    return (
-                      <button
-                        disabled={formType === 'edit' ? true : false}
-                        key={option.value}
-                        type='button'
-                        className={classNames(
-                          props.values.event_type === option.value
-                            ? '!bg-secondary/10 text-secondary hover:!bg-secondary/10'
-                            : '!bg-white opacity-50',
-                          '!border-0 ',
-                          grayBoxClasses
-                        )}
-                        onClick={() => {
-                          if (formType === 'edit') return;
-                          props.setFieldValue(
-                            'title',
-                            generateEventTitles({
-                              eventType: option.value as EventType,
-                              teamNames: props.values.teams
-                                ? props.values.teams?.map((team) => team.name)
-                                : [],
-                            })
-                          );
-                          props.setFieldValue('event_type', option.value);
-                          props.setFieldError('title', undefined);
-                          props.setFieldError('teams', undefined);
-                        }}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
+              <div className='flex w-full justify-end'>
+                <Button
+                  type='submit'
+                  className={classNames(props.dirty ? 'animate-wiggle' : '')}
+                  variant={'secondary'}
+                >
+                  Save Event
+                </Button>{' '}
               </div>
-            </div>
+            </Form>
 
-            {props.values.event_type ? (
-              <FormSectionBelowType props={props} formType={formType} />
+            {showCustomRecurrenceForm ? (
+              <CustomRecurrenceForm
+                isOpen={showCustomRecurrenceForm}
+                close={() => setShowCustomRecurrenceForm(false)}
+                onCompleteCustomRecurrenceForm={(values) => {
+                  props.setFieldValue(
+                    'recurrence_type',
+                    values.recurrence_type
+                  );
+                  props.setFieldValue(
+                    'recurrence_interval',
+                    values.recurrence_interval
+                  );
+                  props.setFieldValue('recurrence_end', values.recurrence_end);
+                }}
+                initialRecurrenceValues={{
+                  recurrence_type:
+                    props.values.recurrence_type === 'none'
+                      ? EventRecurrenceEnum.WEEKLY
+                      : props.values.recurrence_type,
+                  recurrence_interval: props.values.recurrence_interval,
+                  recurrence_end: props.values.recurrence_end
+                    ? props.values.recurrence_end
+                    : addYears(new Date(), 1),
+                }}
+              />
             ) : null}
-
-            <div className='flex w-full justify-end'>
-              <Button
-                type='submit'
-                className={classNames(props.dirty ? 'animate-wiggle' : '')}
-                variant={'secondary'}
-              >
-                Save Event
-              </Button>{' '}
-            </div>
-          </Form>
+          </>
         )}
       </Formik>
     </Modal>
@@ -483,11 +601,11 @@ function FormSectionBelowType({
         <div className='flex items-center space-x-2'>
           <IconTeamLine height={20} width={20} strokeWidth={0.2} />
 
-          <div className='space-y-2'>
+          <div className='flex items-center space-x-2'>
             {props.values.lockedTeams.length > 0 ? (
               <>
                 {props.values.lockedTeams.map((team, index) => (
-                  <div key={team.id} className='flex items-center space-x-2'>
+                  <div key={team.id} className='flex items-center space-x-2 '>
                     <ListBox
                       options={[]}
                       disabled

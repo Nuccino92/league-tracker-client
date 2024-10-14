@@ -7,10 +7,13 @@ function useQueryString() {
   const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
-    (name: string, value: string | undefined) => {
+    (name: string, value: string | string[] | undefined) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (!value) {
+
+      if (!value || (Array.isArray(value) && value.length === 0)) {
         params.delete(name);
+      } else if (Array.isArray(value)) {
+        params.set(name, value.join(','));
       } else {
         params.set(name, value);
       }

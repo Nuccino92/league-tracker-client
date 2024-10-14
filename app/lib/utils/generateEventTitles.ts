@@ -1,4 +1,4 @@
-import { EventType } from '@/app/lib/types/Models/CalendarEvent';
+import { EventType } from '@/app/lib/enums/index';
 
 export default function generateEventTitles({
   eventType,
@@ -7,8 +7,6 @@ export default function generateEventTitles({
   eventType: EventType;
   teamNames: string[];
 }): string {
-  console.log();
-
   if (eventType === 'game') {
     return `Game: ${teamNames[0] ?? '___________'} vs ${teamNames[1] ?? '___________'}`;
   }
