@@ -288,6 +288,24 @@ const mockTeamList = [
   },
   {
     id: 5,
+    name: 'Milwaukee Bucks',
+    logo: null,
+    league_id: 20,
+  },
+  {
+    id: 6,
+    name: 'Long Dong Tigers',
+    logo: null,
+    league_id: 20,
+  },
+  {
+    id: 7,
+    name: 'Miami Heat',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+    league_id: 20,
+  },
+  {
+    id: 8,
     name: 'Houston Rockets',
     logo: null,
     league_id: 20,

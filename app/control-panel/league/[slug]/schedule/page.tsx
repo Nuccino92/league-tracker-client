@@ -1,7 +1,7 @@
 import Container from '@/app/control-panel/_components/Container';
-import PageHeader from '@/app/control-panel/_components/PageHeader';
-import LeagueCalendar from '@/app/control-panel/league/[slug]/calendar/_components/LeagueCalendar';
-import LeagueCalendarFilters from '@/app/control-panel/league/[slug]/calendar/_components/LeagueCalendarFilters';
+import LeagueCalendar from '@/app/control-panel/league/[slug]/schedule/_components/LeagueCalendar';
+import LeagueCalendarFilters from '@/app/control-panel/league/[slug]/schedule/_components/LeagueCalendarFilters';
+import GenerateSchedule from '@/app/control-panel/league/[slug]/schedule/_components/GenerateSchedule';
 
 export default function CalendarPage({
   params,
@@ -40,10 +40,13 @@ export default function CalendarPage({
 
   return (
     <Container view='league'>
-      <main className='bg-white text-sm'>
-        <LeagueCalendarFilters />
-        <LeagueCalendar />
-      </main>
+      <div className='space-y-6'>
+        <GenerateSchedule slug={params.slug} />
+        <main className='bg-white text-sm'>
+          <LeagueCalendarFilters />
+          <LeagueCalendar />
+        </main>
+      </div>
     </Container>
   );
 }

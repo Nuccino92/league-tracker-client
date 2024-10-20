@@ -122,7 +122,7 @@ export default function TeamForm({
                 {shouldShowAdditionalOptions ? (
                   <div className='space-y-4'>
                     <div className={INPUT_CONTAINER_CLASSES}>
-                      <FormLabel label='League Logo' htmlFor='logo' />
+                      <FormLabel label='Team Logo' htmlFor='logo' />
                       <div className='flex h-[200px] items-center justify-center space-x-2'>
                         {props.values.logo ? (
                           <div className='relative h-[200px] w-full  rounded-md border border-slate-200 bg-white'>

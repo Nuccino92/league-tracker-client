@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { addHours, format, parseISO } from 'date-fns';
 import { ScheduleXCalendar, useCalendarApp } from '@schedule-x/react';
 import {
@@ -28,7 +28,6 @@ import { IconCalendar } from '@/app/lib/SVGs';
 import EventFormModal from '@/app/lib/components/_scheduler/EventFormModal';
 
 export default function LeagueCalendar() {
-  const params = useParams();
   const searchParams = useSearchParams();
 
   const { leagueData, activeSeason, hasSeasons, isAdministrator } =
@@ -46,6 +45,8 @@ export default function LeagueCalendar() {
 
   const { events, status } = useEvents({
     date: selectedDate,
+    includeOnly: ['season', 'type', 'teams'],
+    teamIds: searchParams.get('teams')?.split(','),
   });
 
   const addEventMutation = useAddEvent();

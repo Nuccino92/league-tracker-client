@@ -48,8 +48,11 @@ export default function TeamSchdule({ slug }: Props) {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), 'yyyy-MM-dd')
   );
+
   const { events, status } = useEvents({
     date: selectedDate,
+    includeOnly: ['season', 'type', 'teams'],
+    teamIds: [params.id as string],
   });
 
   const { team, status: teamStatus } = useTeam({

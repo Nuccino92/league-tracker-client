@@ -18,6 +18,7 @@ import useQueryString from '@/app/lib/hooks/useQueryString';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { useCheckIfTeamIsInSeason } from '@/app/lib/hooks/api/control-panel/teams';
 import { Spinner } from '@/app/lib/SVGs';
+import CalendarEventOptionFilter from '@/app/lib/components/_scheduler/CalendarEventOptionFilter';
 
 export default function TeamManagementSection({ slug }: { slug: string }) {
   const router = useRouter();
@@ -82,30 +83,39 @@ export default function TeamManagementSection({ slug }: { slug: string }) {
             {selectedSection === 'schedule' ? 'Team Schedule' : null}
           </div>
 
-          <div className='flex items-center space-x-2 text-sm'>
-            <span>Season:</span>
-            <ListBox
-              rootClasses='w-max !text-xs'
-              value={selectedSeason ? selectedSeason.toString() : null}
-              onChange={(value) =>
-                router.push(
-                  pathname +
-                    '?' +
-                    createQueryString('season', value?.toString())
-                )
-              }
-              buttonText={
-                seasons.all_seasons.find(
-                  (season) => season.id === selectedSeason
-                )?.name ?? 'Select a Season'
-              }
-              options={[
-                ...transformIntoOptions(seasons.all_seasons, {
-                  labelKey: 'name',
-                  valueKey: 'id',
-                }),
-              ]}
-            />
+          <div className='flex items-center space-x-4'>
+            <div className='flex items-center space-x-2 text-sm'>
+              <span>Season:</span>
+              <ListBox
+                buttonClasses='border'
+                rootClasses='w-max !text-xs'
+                value={selectedSeason ? selectedSeason.toString() : null}
+                onChange={(value) =>
+                  router.push(
+                    pathname +
+                      '?' +
+                      createQueryString('season', value?.toString())
+                  )
+                }
+                buttonText={
+                  seasons.all_seasons.find(
+                    (season) => season.id === selectedSeason
+                  )?.name ?? 'Select a Season'
+                }
+                options={[
+                  ...transformIntoOptions(seasons.all_seasons, {
+                    labelKey: 'name',
+                    valueKey: 'id',
+                  }),
+                ]}
+              />
+            </div>
+
+            {selectedSection === 'schedule' ? (
+              <div className='space-x-1'>
+                <CalendarEventOptionFilter />
+              </div>
+            ) : null}
           </div>
         </div>
 

@@ -20,7 +20,7 @@ export enum RolePermissions {
   MANAGE_PLAYERS = 'manage_players', //manage players
   MANAGE_REGISTRATIONS = 'manage_registrations',
   MANAGE_NEWS = 'manage_news',
-  MANAGE_CALENDAR = 'manage_calendar',
+  MANAGE_SCHEDULE = 'manage_schedule',
   MANAGE_SEASONS = 'manage_seasons', //(add season, delete season, set active season, add/remove teams from season)
 
   MANAGE_ROSTER = 'manage_roster', //for season page
@@ -34,7 +34,7 @@ export enum ControlPanelLeaguePages {
   SEASONS = 'seasons',
   TEAMS = 'teams',
   PLAYERS = 'players',
-  CALENDAR = 'calendar',
+  SCHEDULE = 'schedule',
   REGISTRATIONS = 'registrations',
   NEWS = 'news',
 }
@@ -56,3 +56,14 @@ export type EventRecurrenceTypeEnum = z.infer<typeof RecurrenceTypeSchema>;
 
 export const EventTypeEnum = z.enum(['game', 'practice', 'custom_event']);
 export type EventType = z.infer<typeof EventTypeEnum>;
+
+export const DaysOfWeekSchema = z.enum([
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+]);
+export type DaysOfWeekEnum = z.infer<typeof DaysOfWeekSchema>;

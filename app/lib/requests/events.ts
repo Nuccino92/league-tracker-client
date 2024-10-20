@@ -11,17 +11,16 @@ export async function getEventsRequest({
   token,
   slug,
   date,
-  teamSlugs,
+  params,
 }: {
   token: string;
   slug: string;
   date: string;
-  teamSlugs?: string[];
+  params?: string;
 }) {
   //TODO: pass in team slugs
   const response = await fetch(
-    // `${process.env.NEXT_PUBLIC_KEEPR_API_URL}/events/league/${slug}?start=${dateRange.start}&end=${dateRange.end}`,
-    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}/events/league/${slug}?date=${date}`,
+    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}/events/league/${slug}?date=${date}&${params}`,
     {
       method: 'GET',
       headers: {

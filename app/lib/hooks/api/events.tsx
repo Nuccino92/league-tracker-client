@@ -16,28 +16,27 @@ import { SearchParamScope } from '@/app/lib/types/filters.types';
 
 export function useEvents({
   date,
-  teamSlugs,
+  teamIds = [],
   includeOnly = [],
 }: {
   date: string;
-  teamSlugs?: string[];
+  teamIds?: Array<string | number>;
   includeOnly?: SearchParamScope;
 }) {
   const { token } = useAuth();
   const { slug } = useLeagueControlPanel();
-  const { scopeQueryParams } = useQueryString();
+  const { createQueryString } = useQueryString();
 
-  const params = scopeQueryParams(includeOnly);
+  const params = createQueryString('teams', teamIds, includeOnly);
 
-  // implement the param check, w/ scope etc. see teams/players hook
   const { data: events, status } = useQuery({
     queryKey: [
       QUERY_KEYS.EVENTS.LEAGUE_EVENTS,
       slug,
-      teamSlugs,
       format(date, 'yyyy-MM'),
+      params,
     ],
-    queryFn: () => getEventsRequest({ slug, token, date, teamSlugs }),
+    queryFn: () => getEventsRequest({ slug, token, date, params }),
     staleTime: 60000,
   });
 

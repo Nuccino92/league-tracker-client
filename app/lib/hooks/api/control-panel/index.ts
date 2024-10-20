@@ -1,8 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/app/GlobalContext';
 import {
   fetchControlPanelArchivedSeasons,
+  generateGameSchedule,
   leagueControlPanelInformationRequest,
 } from '@/app/lib/requests/control-panel';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
@@ -35,4 +36,18 @@ export function useArchivedSeasons(slug: string) {
   });
 
   return { data, status };
+}
+
+export function useGenerateGameSchedule(slug: string) {
+  const { token } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => generateGameSchedule({ token, slug }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.EVENTS.LEAGUE_EVENTS],
+      });
+    },
+  });
 }

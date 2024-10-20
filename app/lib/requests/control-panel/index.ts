@@ -107,3 +107,23 @@ const mockRestoreSeasonsData = [
     name: '2018-2019 Basketball season',
   },
 ];
+
+export async function generateGameSchedule({
+  token,
+  slug,
+}: {
+  token: string;
+  slug: string;
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}/control-panel/league/${slug}/generate-game-schedule`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) throw Error('Failed to retrieve league');
+}

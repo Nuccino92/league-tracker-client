@@ -1,6 +1,8 @@
 https://www.getapp.ca/directory/747/sports-league/software
 https://www.ezfacility.com/features/league-scheduling-management/
 
+create mass generators where you just type in a name and it adds the player/team for you
+
 Registration should auto create a player. Also if don't want to auto create but link to an already created player that should be an option
 
 -implement auto scheduler
@@ -34,6 +36,8 @@ set fixed width on sidebar
 refactor the response types into zod schema's that then act as types
 
 make fetch requests no-cache
+
+create a fetch
 
 fix SIDEBAR RE OPENING ON PAGE CHANGE
 

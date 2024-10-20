@@ -134,8 +134,8 @@ export function useLeagueControlPanel() {
       case 'players':
         if (permissions['manage_players']) return (accessGranted = true);
         break;
-      case 'calendar':
-        if (permissions['manage_calendar']) return (accessGranted = true);
+      case 'schedule':
+        if (permissions['manage_schedule']) return (accessGranted = true);
         break;
       case 'news':
         if (permissions['manage_news']) return (accessGranted = true);

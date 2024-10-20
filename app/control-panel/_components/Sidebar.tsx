@@ -102,11 +102,11 @@ function ControlPanelRoutes({
       access: hasPageAccess(ControlPanelLeaguePages.PLAYERS),
     },
     {
-      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.CALENDAR,
-      label: 'Calendar',
-      icon: calendarIcon,
+      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.SCHEDULE,
+      label: 'Schedule',
+      icon: scheduleIcon,
       withSeasonParam: true,
-      access: hasPageAccess(ControlPanelLeaguePages.CALENDAR),
+      access: hasPageAccess(ControlPanelLeaguePages.SCHEDULE),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.REGISTRATIONS,
@@ -140,7 +140,7 @@ function ControlPanelRoutes({
                 ? generateNavLinkWithParams(link.href, {
                     season: leagueData.seasons.active_season_id,
                     type: link.href.includes(
-                      ROUTES.CONTROL_PANEL_SUBROUTES.CALENDAR
+                      ROUTES.CONTROL_PANEL_SUBROUTES.SCHEDULE
                     )
                       ? 'game'
                       : undefined,
@@ -315,7 +315,7 @@ const playerIcon = (
   </svg>
 );
 
-const calendarIcon = (
+const scheduleIcon = (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
