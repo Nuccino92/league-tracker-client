@@ -13,6 +13,7 @@
  * app\control-panel\league\[slug]\seasons\_components\Seasons.tsx
  * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
  * app\lib\components\_scheduler\EventFormModal.tsx
+ * app\control-panel\league\[slug]\schedule\_components\ScheduleGenerationForm.tsx
  */
 
 export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
@@ -80,3 +81,16 @@ export const MENU_ITEM_CLASSES = `hover:bg-secondary hover:text-white w-full p-2
 export const SPORT_EVENT_BACKGROUND_COLOR = 'bg-red-300';
 export const PRACTICE_EVENT_BACKGROUND_COLOR = 'bg-blue-300';
 export const CUSTOM_EVENT_BACKGROUND_COLOR = 'bg-green-300';
+
+/**
+ * @description
+ * Used to style certain selectables
+ *
+ * @locations
+ * app\lib\types\Resources\GenerateGameShedule.ts
+ * app\lib\components\_scheduler\CustomRecurrenceForm.tsx
+ *
+ */
+
+export const GRAY_BOX_CLASSES =
+  'h-10 w-max rounded border !bg-gray-100 px-3 py-2 text-sm font-medium !shadow-none transition-colors duration-75 hover:!bg-gray-200';

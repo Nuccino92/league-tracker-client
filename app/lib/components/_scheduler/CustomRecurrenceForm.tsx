@@ -12,9 +12,7 @@ import { eventFormSchema } from '@/app/lib/types/Resources/CreateEventResource';
 import { Button } from '@/app/lib/components/Button';
 import { Calendar } from '@/app/lib/components/Calendar';
 import { ModalType } from '@/app/types';
-
-const grayBoxClasses =
-  'h-10 w-max rounded border !bg-gray-100 px-3 py-2 text-sm font-medium !shadow-none transition-colors duration-75 hover:!bg-gray-200';
+import { GRAY_BOX_CLASSES } from '@/app/lib/globals/styles';
 
 const customRecurrenceFormSaveTypesSchema = eventFormSchema.pick({
   recurrence_type: true,
@@ -82,7 +80,7 @@ export default function CustomRecurrenceForm({
                 </span>{' '}
                 <div className='flex items-center space-x-2'>
                   <FastField
-                    className={classNames('!w-[100px]', grayBoxClasses)}
+                    className={classNames('!w-[100px]', GRAY_BOX_CLASSES)}
                     name='recurrence_interval'
                     type='number'
                     min={1}
@@ -90,7 +88,7 @@ export default function CustomRecurrenceForm({
 
                   <ListBox
                     rootClasses='!w-[175px] !min-w-max'
-                    buttonClasses={grayBoxClasses}
+                    buttonClasses={GRAY_BOX_CLASSES}
                     options={recurrenctTypeOptions}
                     onChange={(value) => {
                       props.setFieldValue('recurrence_type', value);
@@ -120,7 +118,7 @@ export default function CustomRecurrenceForm({
                   as='div'
                   className='relative flex h-full w-max items-center justify-center rounded-lg'
                 >
-                  <Popover.Button className={grayBoxClasses}>
+                  <Popover.Button className={GRAY_BOX_CLASSES}>
                     {props.values.recurrence_end ? (
                       format(props.values.recurrence_end, 'PPP')
                     ) : (

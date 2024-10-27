@@ -21,6 +21,7 @@ import generateTimeOptions, {
   findNearestTimeOption,
 } from '@/app/lib/utils/generateTimeOptions';
 import {
+  GRAY_BOX_CLASSES,
   INPUT_CLASSES,
   INPUT_CONTAINER_CLASSES,
 } from '@/app/lib/globals/styles';
@@ -54,10 +55,6 @@ type Props = {
   onSubmit: (saveValues: CreateEvent) => void;
   formType: EventFormTypes;
 };
-
-// grayBoxClasses is used to style certain selectables
-const grayBoxClasses =
-  'h-10 w-max rounded border !bg-gray-100 px-3 py-2 text-sm font-medium !shadow-none transition-colors duration-75 hover:!bg-gray-200';
 
 export default function EventFormModal({
   isOpen,
@@ -233,7 +230,7 @@ export default function EventFormModal({
                           as='div'
                           className='relative flex h-full w-max items-center justify-center rounded-lg'
                         >
-                          <Popover.Button className={grayBoxClasses}>
+                          <Popover.Button className={GRAY_BOX_CLASSES}>
                             {props.values.start_date ? (
                               format(props.values.start_date, 'PPP')
                             ) : (
@@ -293,7 +290,7 @@ export default function EventFormModal({
                         <ListBox
                           value={props.values.start_time}
                           rootClasses='!min-w-max'
-                          buttonClasses={grayBoxClasses}
+                          buttonClasses={GRAY_BOX_CLASSES}
                           optionContainerClasses='max-h-[275px] swatches-picker '
                           optionClasees='text-sm'
                           onChange={(value) => {
@@ -350,7 +347,7 @@ export default function EventFormModal({
                           as='div'
                           className='relative flex h-full w-max items-center justify-center rounded-lg'
                         >
-                          <Popover.Button className={grayBoxClasses}>
+                          <Popover.Button className={GRAY_BOX_CLASSES}>
                             {props.values.end_date ? (
                               format(props.values.end_date, 'PPP')
                             ) : (
@@ -427,7 +424,7 @@ export default function EventFormModal({
                           rootClasses='!min-w-max'
                           optionContainerClasses='max-h-[275px] swatches-picker '
                           value={props.values.end_time}
-                          buttonClasses={grayBoxClasses}
+                          buttonClasses={GRAY_BOX_CLASSES}
                           onChange={(value) =>
                             props.setFieldValue('end_time', value)
                           }
@@ -451,7 +448,7 @@ export default function EventFormModal({
                       </div>
                       <ListBox
                         rootClasses='!w-[175px] !min-w-max'
-                        buttonClasses={grayBoxClasses}
+                        buttonClasses={GRAY_BOX_CLASSES}
                         options={recurrenctTypeOptions}
                         onChange={(value) => {
                           if (value === 'custom') {
@@ -508,7 +505,7 @@ export default function EventFormModal({
                               ? '!bg-secondary/10 text-secondary hover:!bg-secondary/10'
                               : '!bg-white opacity-50',
                             '!border-0 ',
-                            grayBoxClasses
+                            GRAY_BOX_CLASSES
                           )}
                           onClick={() => {
                             if (formType === 'edit') return;
@@ -617,7 +614,7 @@ function FormSectionBelowType({
                       rootClasses='w-max min-w-max'
                       buttonClasses={classNames(
                         'opacity-50 italic hover:',
-                        grayBoxClasses
+                        GRAY_BOX_CLASSES
                       )}
                     />
 
@@ -687,7 +684,7 @@ function FormSectionBelowType({
                             props.errors.teams && !props.values.teams[1]
                               ? '!border-red-500 !text-red-500'
                               : '',
-                            grayBoxClasses
+                            GRAY_BOX_CLASSES
                           )}
                         />
 
