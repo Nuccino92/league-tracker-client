@@ -31,16 +31,6 @@ export default function GenerateSchedule({ slug }: Props) {
     (season) => season.id.toString() === searchParams.get('season')
   );
 
-  const [dots, setDots] = useState<string>('');
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots((prevDots) => (prevDots.length < 3 ? prevDots + '.' : ''));
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <>
       {focusedSeason ? (
@@ -48,7 +38,7 @@ export default function GenerateSchedule({ slug }: Props) {
           <div className='flex h-14 flex-col justify-center space-y-1'>
             {generateGamesMut.status === 'loading' ? (
               <div className='font-medium text-zinc-600'>
-                Generating games, Please wait{dots}
+                Generating games, Please wait
               </div>
             ) : (
               <>
@@ -80,7 +70,7 @@ export default function GenerateSchedule({ slug }: Props) {
               variant={'secondary'}
               onClick={() => setShowSheduleGeneratorForm(true)}
             >
-              Generate Games
+              Generate Game Schedule
             </Button>
           )}
         </StyledBox>
