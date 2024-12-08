@@ -1,3 +1,5 @@
+import { headers } from 'next/headers';
+
 import Container from '@/app/control-panel/_components/Container';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import TeamInformation from '@/app/control-panel/league/[slug]/teams/[id]/_components/TeamInformation';
@@ -26,7 +28,7 @@ export default function TeamPage({
         <div className='w-full max-w-[1200px] space-y-6'>
           <TeamInformation slug={params.slug} id={params.id} />
           {/* Calendar */}
-          <TeamManagementSection slug={params.slug} />
+          <TeamManagementSection slug={params.slug} id={params.id} />
         </div>{' '}
       </div>
     </Container>

@@ -23,7 +23,9 @@ export default function LeagueCalendarFilters() {
   const { createQueryString } = useQueryString();
 
   const selectedSeason = searchParams.get('season')
-    ? parseInt(searchParams.get('season') as string)
+    ? seasons.all_seasons.find(
+        (season) => season.id === parseInt(searchParams.get('season') as string)
+      )?.id
     : null;
 
   const [showTeamSelectionModal, setShowTeamSelectionModal] = useState(false);

@@ -87,6 +87,7 @@ export default function FocusedTeamArea({
                           <TooltipTrigger
                             onClick={() => {
                               //TODO: implement remove from team mutation
+                              // todo: use RemoveFromRosterModal
                               console.log('REMOVING FROM TEAM:', player);
                             }}
                             className='transition-colors duration-75 ease-out hover:text-red-600'

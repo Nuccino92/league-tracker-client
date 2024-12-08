@@ -121,7 +121,9 @@ function TeamsHeader({
   const searchParams = useSearchParams();
 
   const selectedSeason = searchParams.get('season')
-    ? parseInt(searchParams.get('season') as string)
+    ? seasons.all_seasons.find(
+        (season) => season.id === parseInt(searchParams.get('season') as string)
+      )?.id
     : null;
 
   const [searchInputValue, setSearchInputValue] = useState(

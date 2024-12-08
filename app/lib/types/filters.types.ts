@@ -13,5 +13,5 @@ export type Filter<T extends object = {}> = BaseFilter & T;
 
 //TODO: possibly handling creating type at argument level
 export type SearchParamScope = Array<
-  'season' | 'search' | 'teams' | 'page' | 'role' | 'date' | 'type'
+  'season' | 'search' | 'team' | 'page' | 'role' | 'date' | 'type'
 >;

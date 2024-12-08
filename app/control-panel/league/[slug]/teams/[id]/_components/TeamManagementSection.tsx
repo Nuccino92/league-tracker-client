@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   usePathname,
   useSearchParams,
@@ -19,8 +19,18 @@ import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { useCheckIfTeamIsInSeason } from '@/app/lib/hooks/api/control-panel/teams';
 import { Spinner } from '@/app/lib/SVGs';
 import CalendarEventOptionFilter from '@/app/lib/components/_scheduler/CalendarEventOptionFilter';
+import SearchBar from '@/app/lib/components/SearchBar';
+import useDebounce from '@/app/lib/hooks/useDebounce';
+import { Button } from '@/app/lib/components/Button';
+import FreeAgentsModal from '@/app/control-panel/league/[slug]/players/_components/FreeAgentsModal';
 
-export default function TeamManagementSection({ slug }: { slug: string }) {
+export default function TeamManagementSection({
+  slug,
+  id,
+}: {
+  slug: string;
+  id: string;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -35,15 +45,37 @@ export default function TeamManagementSection({ slug }: { slug: string }) {
     'roster'
   );
 
+  const [showFreeAgentsModal, setShowFreeAgentsModal] = useState(false);
+
   const selectedSeason = searchParams.get('season')
-    ? parseInt(searchParams.get('season') as string)
+    ? seasons.all_seasons.find(
+        (season) => season.id === parseInt(searchParams.get('season') as string)
+      )?.id
     : null;
+
+  console.log(activeSeason, selectedSeason);
 
   const { data, status } = useCheckIfTeamIsInSeason({
     teamID: params.id as string,
     seasonID: selectedSeason ? selectedSeason.toString() : null,
     slug: params.slug as string,
   });
+
+  const [searchInputValue, setSearchInputValue] = useState(
+    searchParams.get('search') ?? ''
+  );
+  const debouncedSearch = useDebounce(searchInputValue, 750);
+
+  useEffect(() => {
+    router.push(pathname + '?' + createQueryString('search', debouncedSearch));
+  }, [createQueryString, debouncedSearch, pathname, router]);
+
+  console.log(
+    'selectedSeason',
+    seasons.all_seasons.find(
+      (season) => season.id === parseInt(searchParams.get('season') as string)
+    )
+  );
 
   return (
     <div className='text-sm'>
@@ -78,45 +110,63 @@ export default function TeamManagementSection({ slug }: { slug: string }) {
       </div>
       <div className='bg-white'>
         <div className='flex items-center justify-between space-x-6 border-b p-8 text-xl font-bold'>
-          <div className='text-xl font-bold'>
-            {selectedSection === 'roster' ? 'Team Roster' : null}
-            {selectedSection === 'schedule' ? 'Team Schedule' : null}
-          </div>
-
-          <div className='flex items-center space-x-4'>
-            <div className='flex items-center space-x-2 text-sm'>
-              <span>Season:</span>
-              <ListBox
-                buttonClasses='border'
-                rootClasses='w-max !text-xs'
-                value={selectedSeason ? selectedSeason.toString() : null}
-                onChange={(value) =>
-                  router.push(
-                    pathname +
-                      '?' +
-                      createQueryString('season', value?.toString())
-                  )
-                }
-                buttonText={
-                  seasons.all_seasons.find(
-                    (season) => season.id === selectedSeason
-                  )?.name ?? 'Select a Season'
-                }
-                options={[
-                  ...transformIntoOptions(seasons.all_seasons, {
-                    labelKey: 'name',
-                    valueKey: 'id',
-                  }),
-                ]}
-              />
+          <div className='flex items-center gap-6'>
+            <div className='text-xl font-bold'>
+              {selectedSection === 'roster' ? 'Team Roster' : null}
+              {selectedSection === 'schedule' ? 'Team Schedule' : null}
             </div>
 
-            {selectedSection === 'schedule' ? (
-              <div className='space-x-1'>
-                <CalendarEventOptionFilter />
-              </div>
-            ) : null}
+            {selectedSection === 'roster' && (
+              <SearchBar
+                inputValue={searchInputValue}
+                setInputValue={setSearchInputValue}
+                placeholder='Search for players...'
+                containerClasses='font-normal !bg-slate-100'
+              />
+            )}
           </div>
+
+          {seasons.all_seasons.length > 0 && (
+            <div className='flex items-center space-x-4'>
+              <div className='flex items-center space-x-2 text-sm'>
+                <span>Season:</span>
+                <ListBox
+                  buttonClasses='border'
+                  rootClasses='w-max !text-xs'
+                  value={selectedSeason ? selectedSeason.toString() : null}
+                  onChange={(value) =>
+                    router.push(
+                      pathname +
+                        '?' +
+                        createQueryString('season', value?.toString())
+                    )
+                  }
+                  buttonText={
+                    seasons.all_seasons.find(
+                      (season) => season.id === selectedSeason
+                    )?.name ?? 'Select a Season'
+                  }
+                  options={[
+                    ...transformIntoOptions(seasons.all_seasons, {
+                      labelKey: 'name',
+                      valueKey: 'id',
+                    }),
+                  ]}
+                />
+              </div>
+              {selectedSection === 'schedule' ? (
+                <div className='space-x-1'>
+                  <CalendarEventOptionFilter />
+                </div>
+              ) : null}
+
+              {selectedSection === 'roster' && (
+                <Button onClick={() => setShowFreeAgentsModal(true)}>
+                  Free Agents
+                </Button>
+              )}
+            </div>
+          )}
         </div>
 
         {status === 'success' && data ? (
@@ -130,7 +180,9 @@ export default function TeamManagementSection({ slug }: { slug: string }) {
               </>
             ) : (
               <div className='flex items-center justify-center p-7 py-10 text-lg font-medium'>
-                This team is not part of the selected season
+                {selectedSeason
+                  ? 'This team is not part of the selected season'
+                  : "A season hasn't been selected"}
               </div>
             )}
           </>
@@ -142,6 +194,14 @@ export default function TeamManagementSection({ slug }: { slug: string }) {
           </div>
         ) : null}
       </div>
+
+      {showFreeAgentsModal && selectedSeason && (
+        <FreeAgentsModal
+          isOpen={showFreeAgentsModal}
+          close={() => setShowFreeAgentsModal(false)}
+          slug={slug}
+        />
+      )}
     </div>
   );
 }

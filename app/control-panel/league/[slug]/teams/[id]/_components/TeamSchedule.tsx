@@ -51,7 +51,7 @@ export default function TeamSchdule({ slug }: Props) {
 
   const { events, status } = useEvents({
     date: selectedDate,
-    includeOnly: ['season', 'type', 'teams'],
+    includeOnly: ['season', 'type', 'team'],
     teamIds: [params.id as string],
   });
 

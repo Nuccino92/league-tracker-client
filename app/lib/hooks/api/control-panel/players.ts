@@ -35,6 +35,8 @@ export function usePlayers({
     queryFn: () => fetchControlPanelPlayers({ token, slug, params, paginate }),
     retry: 1,
     staleTime: 30000,
+    enabled,
+    cacheTime: enabled ? 5 * 60 * 1000 : 0,
   });
 
   return { data, status, isLoading };

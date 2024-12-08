@@ -45,7 +45,7 @@ export default function LeagueCalendar() {
 
   const { events, status } = useEvents({
     date: selectedDate,
-    includeOnly: ['season', 'type', 'teams'],
+    includeOnly: ['season', 'type', 'team'],
     teamIds: searchParams.get('teams')?.split(','),
   });
 

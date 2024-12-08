@@ -66,6 +66,7 @@ export const SIDEBAR_LINK_CLASSES = `flex items-center space-x-3 px-6 py-2 hover
  * app\control-panel\league\[slug]\teams\_components\Teams.tsx
  * app\control-panel\league\[slug]\players\_components\Players.tsx
  * app\control-panel\league\[slug]\members\_components\MembersList.tsx
+ * app\control-panel\league\[slug]\teams\[id]\_components\TeamRoster.tsx
  */
 
 export const MENU_ITEM_CLASSES = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
