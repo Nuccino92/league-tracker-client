@@ -133,10 +133,12 @@ export async function fetchFreeAgents({
   token,
   slug,
   paginate = true,
+  params,
 }: {
   token: string;
   slug: string;
   paginate: boolean;
+  params: string;
 }) {
   return new Promise<ControlPanelListPlayer[]>((resolve) => {
     setTimeout(() => {

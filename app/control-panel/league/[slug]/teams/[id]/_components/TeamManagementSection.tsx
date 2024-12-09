@@ -53,8 +53,6 @@ export default function TeamManagementSection({
       )?.id
     : null;
 
-  console.log(activeSeason, selectedSeason);
-
   const { data, status } = useCheckIfTeamIsInSeason({
     teamID: params.id as string,
     seasonID: selectedSeason ? selectedSeason.toString() : null,
@@ -69,13 +67,6 @@ export default function TeamManagementSection({
   useEffect(() => {
     router.push(pathname + '?' + createQueryString('search', debouncedSearch));
   }, [createQueryString, debouncedSearch, pathname, router]);
-
-  console.log(
-    'selectedSeason',
-    seasons.all_seasons.find(
-      (season) => season.id === parseInt(searchParams.get('season') as string)
-    )
-  );
 
   return (
     <div className='text-sm'>
@@ -173,7 +164,9 @@ export default function TeamManagementSection({
           <>
             {data?.is_team_involved_in_season ? (
               <>
-                {selectedSection === 'roster' ? <TeamRoster /> : null}
+                {selectedSection === 'roster' ? (
+                  <TeamRoster caresForTeamInsideParam />
+                ) : null}
                 {selectedSection === 'schedule' ? (
                   <TeamSchedule slug={slug} />
                 ) : null}
@@ -200,6 +193,8 @@ export default function TeamManagementSection({
           isOpen={showFreeAgentsModal}
           close={() => setShowFreeAgentsModal(false)}
           slug={slug}
+          seasonId={selectedSeason.toString()}
+          teamId={params.id as string}
         />
       )}
     </div>

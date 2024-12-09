@@ -7,6 +7,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
+import Image from 'next/image';
 
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import {
@@ -18,7 +19,6 @@ import {
 } from '@/app/lib/SVGs';
 import { usePlayers } from '@/app/lib/hooks/api/control-panel/players';
 import useQueryString from '@/app/lib/hooks/useQueryString';
-import Image from 'next/image';
 import getInitials from '@/app/lib/utils/getInitials';
 import { BasePlayer } from '@/app/lib/types/Models/Player';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
@@ -26,19 +26,17 @@ import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 import PlayerForm from '@/app/control-panel/league/[slug]/players/_components/PlayerForm';
 import RemoveFromRosterModal from '@/app/control-panel/league/[slug]/players/_components/RemoveFromRosterModal';
 
-export default function TeamRoster() {
+type Props = {
+  caresForTeamInsideParam?: boolean;
+};
+
+export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams();
   const pathname = usePathname();
 
-  const { leagueData, activeSeason, hasSeasons } = useLeagueControlPanel();
-
-  const selectedSeason = searchParams.get('season')
-    ? leagueData.seasons.all_seasons.find(
-        (season) => season.id === parseInt(searchParams.get('season') as string)
-      )?.id
-    : null;
+  const { leagueData, hasSeasons } = useLeagueControlPanel();
 
   const doesURLContainCorrectTeamSearchParam =
     !searchParams.get('team') || searchParams.get('team') !== params.id
@@ -48,13 +46,13 @@ export default function TeamRoster() {
   const { data, status } = usePlayers({
     slug: params.slug as string,
     includeOnly: ['season', 'team', 'search'],
-    enabled: doesURLContainCorrectTeamSearchParam,
+    enabled: doesURLContainCorrectTeamSearchParam || !caresForTeamInsideParam,
   });
 
   const { createQueryString } = useQueryString();
 
   useEffect(() => {
-    if (!doesURLContainCorrectTeamSearchParam) {
+    if (!doesURLContainCorrectTeamSearchParam && caresForTeamInsideParam) {
       router.push(pathname + '?' + createQueryString('team', params.id));
     }
   }, [
@@ -63,11 +61,8 @@ export default function TeamRoster() {
     params.id,
     pathname,
     router,
+    caresForTeamInsideParam,
   ]);
-
-  // if(!searchParams.get('team')|| searchParams.get('team') !== params.id) {
-  //   router.push('')
-  // }
 
   /**
    * If the team is involved in the season, display the roster. Only allow editing if they are in the active season

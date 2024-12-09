@@ -95,17 +95,24 @@ export function useArchivedPlayers({
 }
 
 export function useFreeAgents({
+  seasonId,
+  teamId,
   slug,
   paginate = true,
 }: {
+  seasonId: string | null | undefined;
+  teamId: string;
   slug: string;
   paginate?: boolean;
 }) {
   const { token } = useAuth();
 
+  //TODO: create the params with seasonid, teamId
+  const params = '';
+
   const { data, status, isLoading } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.FREE_AGENTS, slug],
-    queryFn: () => fetchFreeAgents({ token, slug, paginate }),
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.FREE_AGENTS, slug, params],
+    queryFn: () => fetchFreeAgents({ token, slug, params, paginate }),
     retry: 1,
     staleTime: 30000,
   });

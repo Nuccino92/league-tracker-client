@@ -3,7 +3,7 @@
 import { Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import classNames from 'classnames';
-import { IconClose } from '../SVGs';
+import { IconCloseR } from '../SVGs';
 import { ModalType } from '@/app/types';
 
 type Props = {
@@ -53,7 +53,7 @@ export default function Modal({
                     type='button'
                     className='absolute right-0 top-0 m-6 hover:text-zinc-600'
                   >
-                    <IconClose height={24} width={24} />
+                    <IconCloseR height={24} width={24} />
                   </button>
                   {children}
                 </Dialog.Panel>

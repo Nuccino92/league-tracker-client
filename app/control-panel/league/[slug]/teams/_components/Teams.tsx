@@ -215,7 +215,12 @@ function TeamCard({ team }: { team: ControlPanelListTeam }) {
   const dropdownOptions = [
     {
       label: 'Visit page',
-      action: () => router.push(`${pathname}/${team.id}`),
+      action: () =>
+        router.push(
+          generateNavLinkWithParams(`${pathname}/${team.id}`, {
+            season: searchParams.get('season') ?? null,
+          })
+        ),
       icon: <IconBoxArrowUpRight width={16} height={16} />,
     },
     {
