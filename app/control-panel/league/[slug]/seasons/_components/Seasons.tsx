@@ -88,12 +88,6 @@ export default function Seasons({ slug }: { slug: string }) {
     },
   ];
 
-  console.log(
-    'focusedSeason',
-    focusedSeason?.id,
-    seasonInformation.active_season_id
-  );
-
   return (
     <main className='space-y-6'>
       <div className='flex items-center justify-between space-x-4'>
