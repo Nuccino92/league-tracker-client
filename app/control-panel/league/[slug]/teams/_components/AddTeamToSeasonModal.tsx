@@ -35,9 +35,10 @@ export default function AddTeamToSeasonModal({ isOpen, close }: ModalType) {
   return (
     <Modal panelClasses='sm:w-[640px] w-full' isOpen={isOpen} close={close}>
       <div className='space-y-6'>
-        <h4 className='text-2xl font-bold'>Manage Season Teams</h4>
+        <h4 className='text-2xl font-bold'>
+          Add or remove teams to this season
+        </h4>
         <div className='flex items-center justify-between space-x-2'>
-          <span className='text-lg font-medium text-zinc-900'>All teams</span>
           <SearchBar
             containerClasses='border'
             inputValue={searchInputValue}

@@ -13,6 +13,7 @@ import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueCon
 import {
   EditIcon,
   IconEllipsisVertical,
+  IconPersonCircle,
   IconTeamLine,
   IconUserDelete,
   Spinner,
@@ -124,7 +125,7 @@ function Player({ player }: { player: BasePlayer }) {
 
   return (
     <>
-      <div key={player.id} className='flex items-center justify-between py-4'>
+      <div className='flex items-center justify-between py-4'>
         <div className='flex items-center gap-2'>
           {player.avatar ? (
             <Image
@@ -136,8 +137,12 @@ function Player({ player }: { player: BasePlayer }) {
               style={{ objectFit: 'cover' }}
             />
           ) : (
-            <div className='flex h-10 w-10 items-center justify-center rounded-md border bg-primary font-medium text-white'>
-              {getInitials(player.name)}
+            <div className='flex h-10 w-10 items-center justify-center rounded-md border bg-gray-500 font-medium text-white'>
+              <IconPersonCircle
+                height={30}
+                width={30}
+                color='rgb(209 213 219)'
+              />
             </div>
           )}
 

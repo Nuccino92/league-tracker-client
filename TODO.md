@@ -7,6 +7,7 @@ Registration should auto create a player. Also if don't want to auto create but 
 
 -implement auto scheduler
 -possibly add a seperate team page, teams/{team id} where you can edit the team info, roster, schedule
+-add teams ui inside the calendar selection
 
 Key Features:
 Calendar/Reminder System

@@ -21,6 +21,7 @@ export function useMembers({
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
+  // TODO: possibly move this outside and pass in the params to the hook
   const params = scopeQueryParams(includeOnly);
 
   const { data, status } = useQuery({

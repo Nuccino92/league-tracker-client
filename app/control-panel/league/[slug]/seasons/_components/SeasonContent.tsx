@@ -4,12 +4,7 @@ import { useEffect, useState } from 'react';
 
 import TeamList from '@/app/control-panel/league/[slug]/seasons/_components/TeamList';
 import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import FocusedTeamArea from './FocusedTeamArea';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import StyledBox from '@/app/lib/components/StyledBox';
@@ -19,7 +14,6 @@ import { IconAppstoreAdd, Spinner } from '@/app/lib/SVGs';
 import TeamRoster from '@/app/control-panel/league/[slug]/teams/[id]/_components/TeamRoster';
 import { Button } from '@/app/lib/components/Button';
 import FreeAgentsModal from '@/app/control-panel/league/[slug]/players/_components/FreeAgentsModal';
-import { createQueryString } from '@/app/lib/utils/createQueryString';
 import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
 import AddTeamToSeasonModal from '@/app/control-panel/league/[slug]/teams/_components/AddTeamToSeasonModal';
@@ -119,6 +113,17 @@ function Content({ slug }: Props) {
   //   router.push(pathname + '?' + createQueryString('search', debouncedSearch));
   // }, [debouncedSearch, pathname, router]);
 
+  useEffect(() => {
+    if (focusedTeam) {
+      setSelectedSection('roster');
+    }
+
+    if (!focusedTeam && selectedSection === 'roster') {
+      setSelectedSection('teams');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusedTeam]);
+
   //TODO: need to handle when the user puts in a random false season param value and it doesnt return anything
   return (
     <main className=''>
@@ -201,7 +206,11 @@ function Content({ slug }: Props) {
           <>
             {selectedSection === 'teams' && (
               //TODO: need to change styling, match team roster
-              <TeamList teams={teams} focusedTeamId={focusedTeamId} />
+              <TeamList
+                teams={teams}
+                focusedTeamId={focusedTeamId}
+                onTeamSelectionClick={() => setSelectedSection('roster')}
+              />
             )}
             {selectedSection === 'roster' && focusedTeam && <TeamRoster />}
           </>

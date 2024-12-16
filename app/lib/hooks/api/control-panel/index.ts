@@ -7,6 +7,8 @@ import {
   leagueControlPanelInformationRequest,
 } from '@/app/lib/requests/control-panel';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
+import { useEffect, useState } from 'react';
+import { IS_CONTROL_PANEL_SIDEBAR_OPEN } from '@/app/lib/globals/localStorage';
 
 export function useLeague(slug: string) {
   const { token } = useAuth();

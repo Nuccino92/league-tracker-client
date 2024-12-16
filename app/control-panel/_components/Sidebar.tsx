@@ -16,22 +16,20 @@ import { ControlPanelLeaguePages } from '@/app/lib/enums';
 
 export default function Sidebar({ view }: { view: ProfileViewType }) {
   const pathname = usePathname();
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-
-  const { leagueData } = useLeagueControlPanel(); //TODO: conditionally get league or org data
+  const { sidebar } = useLeagueControlPanel();
 
   return (
     <div
       className={classNames(
-        isSidebarExpanded ? 'w-[300px]' : 'w-[76px]',
+        sidebar.isSidebarExpanded ? 'w-[300px]' : 'w-[76px]',
         'fixed top-0 z-50 h-screen border-r bg-white lg:sticky lg:-mt-20'
       )}
     >
       <button
         className='absolute right-0 p-1 text-primary transition-colors duration-75 ease-out hover:text-secondary'
-        onClick={() => setIsSidebarExpanded((prev: boolean) => !prev)}
+        onClick={sidebar.toggleSidebar}
       >
-        {isSidebarExpanded ? (
+        {sidebar.isSidebarExpanded ? (
           <IconArrowLeftSquare height={26} width={26} />
         ) : (
           <IconArrowRightSquare height={26} width={26} />
@@ -39,29 +37,20 @@ export default function Sidebar({ view }: { view: ProfileViewType }) {
       </button>
 
       <ul className='control-options-container mt-[100px] space-y-2 font-bold text-primary/50'>
-        <ControlPanelRoutes
-          isSidebarExpanded={isSidebarExpanded}
-          pathname={pathname}
-          view={view}
-        />
+        <ControlPanelRoutes pathname={pathname} view={view} />
       </ul>
     </div>
   );
 }
 type ControlPanelTypes = {
-  isSidebarExpanded: boolean;
   pathname: string;
   view: ProfileViewType;
 };
 
-function ControlPanelRoutes({
-  isSidebarExpanded,
-  pathname,
-  view,
-}: ControlPanelTypes) {
+function ControlPanelRoutes({ pathname, view }: ControlPanelTypes) {
   const params = useParams();
 
-  const { leagueData, hasPageAccess } = useLeagueControlPanel();
+  const { leagueData, hasPageAccess, sidebar } = useLeagueControlPanel();
 
   const baseRoute = ROUTES.CONTROL_PANEL + '/' + view + '/' + params['slug'];
 
@@ -148,12 +137,12 @@ function ControlPanelRoutes({
                 : link.href
             }
             className={classNames(
-              isSidebarExpanded ? 'justify-start' : '',
+              sidebar.isSidebarExpanded ? 'justify-start' : '',
               SIDEBAR_LINK_CLASSES
             )}
           >
             <span className=''>{link.icon}</span>{' '}
-            {isSidebarExpanded ? <span>{link.label}</span> : null}
+            {sidebar.isSidebarExpanded ? <span>{link.label}</span> : null}
           </Link>
         </li>
       ))}

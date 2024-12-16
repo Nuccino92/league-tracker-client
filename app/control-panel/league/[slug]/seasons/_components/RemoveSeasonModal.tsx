@@ -30,8 +30,8 @@ export default function RemoveSeasonModal({
         <h1 className='text-lg font-bold'>Remove A Season</h1>
 
         <p className='text-center text-sm text-zinc-900'>
-          Deleting a season will archive or permanently remove depending on if
-          any games have been played. To restore a removed season click the
+          Deleting a season will archive or permanently remove it depending on
+          if any games have been played. To restore a removed season click the
           &quot;Archived Seasons&quot; option from the dropdown.
         </p>
 

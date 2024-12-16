@@ -168,7 +168,7 @@ function PlayersHeader({
   return (
     <div className='flex w-full items-center justify-between'>
       <div className='flex items-center space-x-4'>
-        <PageHeader text='League Players' />
+        <PageHeader text='Player Management' />
         <DropdownMenu
           items={pageOptions}
           itemClasses='p-2'

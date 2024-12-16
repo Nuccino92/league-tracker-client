@@ -28,6 +28,7 @@ export function usePlayers({
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
+  // TODO: possibly move this outside and pass in the params to the hook
   const params = scopeQueryParams(includeOnly);
 
   const { data, status, isLoading } = useQuery({

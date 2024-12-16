@@ -88,6 +88,12 @@ export default function Seasons({ slug }: { slug: string }) {
     },
   ];
 
+  console.log(
+    'focusedSeason',
+    focusedSeason?.id,
+    seasonInformation.active_season_id
+  );
+
   return (
     <main className='space-y-6'>
       <div className='flex items-center justify-between space-x-4'>
@@ -111,7 +117,16 @@ export default function Seasons({ slug }: { slug: string }) {
         <StyledBox classes='p-4 md:w-[500px] space-y-4 mb-3'>
           {hasSeasons ? (
             <>
-              <FormLabel label='Focused Season' htmlFor='' />
+              <div className='flex items-center justify-between'>
+                <FormLabel label='Select season' htmlFor='' />
+
+                {focusedSeason?.id === seasonInformation.active_season_id && (
+                  <span className=' text-sm font-medium text-secondary'>
+                    Active
+                  </span>
+                )}
+              </div>
+
               <div className='flex items-center space-x-2 text-sm'>
                 <ListBox
                   value={focusedSeason ? focusedSeason.id : null}
@@ -122,7 +137,9 @@ export default function Seasons({ slug }: { slug: string }) {
                     const newUrl = `${pathname}?${params.toString()}`;
                     router.push(newUrl);
                   }}
-                  buttonClasses={INPUT_CLASSES + ' !justify-center'}
+                  optionContainerClasses='p-2'
+                  optionClasees='rounded'
+                  buttonClasses={INPUT_CLASSES + ' !pl-4 '}
                   buttonText={
                     focusedSeason
                       ? focusedSeason.name

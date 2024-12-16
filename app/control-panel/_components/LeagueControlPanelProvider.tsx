@@ -1,6 +1,12 @@
 'use client';
 
-import { ReactNode, createContext, useContext } from 'react';
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useParams, usePathname } from 'next/navigation';
 import Lottie from 'react-lottie';
 
@@ -8,6 +14,7 @@ import animationData from '@/app/assets/animations/horizontal-moving-circles.jso
 import { ControlPanelInformation } from '@/app/lib/types/Responses/control-panel.types';
 import { useLeague } from '@/app/lib/hooks/api/control-panel/index';
 import { ControlPanelLeaguePages } from '@/app/lib/enums';
+import { IS_CONTROL_PANEL_SIDEBAR_OPEN } from '@/app/lib/globals/localStorage';
 
 export default function LeagueControlPanelProvider({
   children,
@@ -19,6 +26,8 @@ export default function LeagueControlPanelProvider({
   //TODO: handle if error redirect off page/show 404
 
   const { data: leagueData, status, error } = useLeague(params['slug']);
+
+  const { isOpen, toggleSidebar } = useControlPanelSidebar();
 
   if (status === 'loading')
     return (
@@ -40,19 +49,35 @@ export default function LeagueControlPanelProvider({
 
   return (
     <LeagueControlPanelContext.Provider
-      value={{ leagueData: leagueData as ControlPanelInformation }}
+      value={{
+        leagueData: leagueData as ControlPanelInformation,
+        isOpen,
+        toggleSidebar,
+      }}
     >
       {status === 'success' ? <>{children}</> : null}
     </LeagueControlPanelContext.Provider>
   );
 }
 
-export const LeagueControlPanelContext = createContext({
-  leagueData: {} as ControlPanelInformation,
-});
+interface LeagueControlPanelContextType {
+  leagueData: ControlPanelInformation;
+  isOpen: boolean;
+  toggleSidebar: () => void;
+}
+
+export const LeagueControlPanelContext =
+  createContext<LeagueControlPanelContextType | null>(null);
 
 export function useLeagueControlPanel() {
-  const { leagueData } = useContext(LeagueControlPanelContext);
+  const context = useContext(LeagueControlPanelContext);
+  if (!context) {
+    throw new Error(
+      'useLeagueControlPanel must be used within a LeagueControlPanelProvider'
+    );
+  }
+
+  const { leagueData, isOpen: isSidebarExpanded, toggleSidebar } = context;
 
   const slug = leagueData.league_info.slug;
 
@@ -154,5 +179,40 @@ export function useLeagueControlPanel() {
     slug,
     hasPageAccess,
     isAdministrator,
+    sidebar: { isSidebarExpanded, toggleSidebar },
   };
 }
+
+export const useControlPanelSidebar = () => {
+  // Initialize state with a function to avoid unnecessary localStorage reads
+  const [isOpen, setIsOpen] = useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem(IS_CONTROL_PANEL_SIDEBAR_OPEN);
+      return stored ? JSON.parse(stored) : false;
+    } catch (error) {
+      console.error('Error reading from localStorage:', error);
+      return false;
+    }
+  });
+
+  // Update localStorage whenever isOpen changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        IS_CONTROL_PANEL_SIDEBAR_OPEN,
+        JSON.stringify(isOpen)
+      );
+    } catch (error) {
+      console.error('Error writing to localStorage:', error);
+    }
+  }, [isOpen]);
+
+  const toggleSidebar = () => {
+    setIsOpen((prevState) => !prevState);
+  };
+
+  return {
+    isOpen,
+    toggleSidebar,
+  } as const;
+};

@@ -1,6 +1,5 @@
 import '@/app/globals.css';
 import type { Metadata } from 'next';
-import Providers from '@/app/providers';
 import ScheduleBar from './_components/ScheduleBar';
 import AppNav from '../lib/components/AppNav';
 import Footer from '../lib/components/Footer';

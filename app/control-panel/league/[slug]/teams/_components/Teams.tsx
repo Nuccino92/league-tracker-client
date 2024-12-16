@@ -2,7 +2,13 @@
 
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useParams, usePathname, useSearchParams } from 'next/navigation';
+import {
+  useParams,
+  usePathname,
+  useSearchParams,
+  useRouter,
+} from 'next/navigation';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 import PageHeader from '@/app/control-panel/_components/PageHeader';
@@ -20,18 +26,17 @@ import {
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import useDebounce from '@/app/lib/hooks/useDebounce';
 import SearchBar from '@/app/lib/components/SearchBar';
-import { useRouter } from 'next/navigation';
+
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
 import { ControlPanelListTeam } from '@/app/lib/types/Responses/control-panel.types';
-import DeleteTeamModal from './DeleteTeamModal';
-import AchivedTeamsModal from './ArchivedTeamsModal';
+import DeleteTeamModal from '@/app/control-panel/league/[slug]/teams/_components/DeleteTeamModal';
+import AchivedTeamsModal from '@/app/control-panel/league/[slug]/teams/_components/ArchivedTeamsModal';
 import MissingList from '@/app/control-panel/_components/MissingList';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
-import Link from 'next/link';
 import generateNavLinkWithParams from '@/app/lib/utils/generateNavLinkWithParams';
 
 const TeamForm = dynamic(
@@ -153,7 +158,7 @@ function TeamsHeader({
   return (
     <div className='flex w-full items-center justify-between'>
       <div className='flex items-center space-x-4'>
-        <PageHeader text='League Teams' />
+        <PageHeader text='Team Management' />
 
         <DropdownMenu
           items={pageOptions}
