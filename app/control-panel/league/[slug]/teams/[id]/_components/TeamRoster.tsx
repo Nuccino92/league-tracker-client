@@ -74,7 +74,7 @@ export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
   return (
     <div>
       {hasSeasons ? (
-        <div className='p-8'>
+        <div className='px-8 py-4'>
           {status === 'success' && data && (
             <div className='divide-y'>
               {data.length > 0 &&

@@ -34,8 +34,6 @@ import DeleteTeamModal from '@/app/control-panel/league/[slug]/teams/_components
 import AchivedTeamsModal from '@/app/control-panel/league/[slug]/teams/_components/ArchivedTeamsModal';
 import MissingList from '@/app/control-panel/_components/MissingList';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
-import ListBox from '@/app/lib/components/Listbox';
-import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 import generateNavLinkWithParams from '@/app/lib/utils/generateNavLinkWithParams';
 
@@ -50,7 +48,7 @@ export default function Teams({ slug }: { slug: string }) {
 
   const { data: teams, status } = useTeams({
     slug,
-    includeOnly: ['season', 'search'],
+    includeOnly: ['search', 'page'],
   });
 
   const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
@@ -70,7 +68,7 @@ export default function Teams({ slug }: { slug: string }) {
       {status === 'success' && teams ? (
         <>
           <div className='h-full max-h-full'>
-            <div className='swatches-picker h-[95%] max-h-[95%] space-y-6 overflow-y-auto'>
+            <div className='swatches-picker h-[95%] max-h-[95%] space-y-4 overflow-y-auto'>
               {teams.length > 0 ? (
                 teams.map((team) => <TeamCard team={team} key={team.id} />)
               ) : (
@@ -119,7 +117,7 @@ function TeamsHeader({
   setShowCreateTeamModal: Dispatch<SetStateAction<boolean>>;
   setShowArchivedTeamsModal: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { leagueData, activeSeason } = useLeagueControlPanel();
+  const { leagueData } = useLeagueControlPanel();
   const { seasons } = leagueData;
   const router = useRouter();
   const pathname = usePathname();
@@ -174,31 +172,10 @@ function TeamsHeader({
       </div>
 
       <div className='flex items-center space-x-6'>
-        <span className='-mr-2 text-sm font-medium italic'>Filters:</span>
-        <ListBox
-          value={selectedSeason ? selectedSeason.toString() : null}
-          onChange={(value) =>
-            router.push(
-              pathname + '?' + createQueryString('season', value?.toString())
-            )
-          }
-          buttonText={
-            seasons.all_seasons.find((season) => season.id === selectedSeason)
-              ?.name ?? 'All Seasons'
-          }
-          options={[
-            { label: 'All Seasons', value: null },
-            ...transformIntoOptions(seasons.all_seasons, {
-              labelKey: 'name',
-              valueKey: 'id',
-            }),
-          ]}
-        />
-
         <SearchBar
           inputValue={searchInputValue}
           setInputValue={setSearchInputValue}
-          placeholder='Search for a team...'
+          placeholder='Search for teams...'
           searchIconSize={22}
           closeIconSize={20}
         />

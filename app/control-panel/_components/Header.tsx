@@ -11,21 +11,22 @@ export default function Header() {
 
   return (
     <header className='flex h-20 items-center justify-between border-b px-10'>
-      {activeSeason ? (
-        <div
-          className={classNames(
-            sidebar.isSidebarExpanded ? 'ml-[300px]' : 'ml-[76px]',
-            'text-sm'
-          )}
-        >
-          <span className='text-zinc-900'>Active Season </span>{' '}
+      <div
+        className={classNames(
+          sidebar.isSidebarExpanded ? 'ml-[250px]' : 'ml-[60px]',
+          'text-sm'
+        )}
+      >
+        <span className='text-zinc-900'>
+          {activeSeason ? 'Active season' : 'No active season'}{' '}
+        </span>{' '}
+        {activeSeason && (
           <span className='font-medium text-secondary'>
             {activeSeason.name}
           </span>
-        </div>
-      ) : (
-        <div aria-hidden='true' />
-      )}{' '}
+        )}
+      </div>
+
       <UserDropdown />
     </header>
   );

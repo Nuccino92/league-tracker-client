@@ -5,8 +5,6 @@ create mass generators where you just type in a name and it adds the player/team
 
 Registration should auto create a player. Also if don't want to auto create but link to an already created player that should be an option
 
--implement auto scheduler
--possibly add a seperate team page, teams/{team id} where you can edit the team info, roster, schedule
 -add teams ui inside the calendar selection
 
 Key Features:

@@ -64,9 +64,7 @@ export type ControlPanelCheckIfTeamIsInSeason = z.infer<
 // ---- endregion
 
 // ---- region - players
-export const controlPanelListPlayerSchema = basePlayerSchema.merge(
-  z.object({ team: z.string().nullable() })
-);
+export const controlPanelListPlayerSchema = basePlayerSchema;
 export const controlPanelArchivedPlayerSchema = basePlayerSchema;
 
 export type ControlPanelListPlayer = z.infer<

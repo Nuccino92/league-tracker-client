@@ -184,77 +184,65 @@ const mockPlayerList = [
     id: 1,
     name: 'Leaky Black',
     avatar: null,
-    team: null,
   },
   {
     id: 2,
     name: 'Jimmy Smithers',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    team: 'Brooklyn Nets',
   },
   {
     id: 3,
     name: 'Anthony Ronaldo',
     avatar: null,
-    team: null,
   },
   {
     id: 4,
     name: 'Corey Hamal',
     avatar: null,
-    team: 'Toronto Raptors',
   },
   {
     id: 5,
     name: 'Luke Walton',
     avatar: null,
-    team: null,
   },
   {
     id: 6,
     name: 'Jerry Jones',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    team: 'Brooklyn Nets',
   },
   {
     id: 7,
     name: 'Colin Jones',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    team: 'Brooklyn Nets',
   },
   {
     id: 8,
     name: 'Zack Wilson',
     avatar: null,
-    team: null,
   },
   {
     id: 9,
     name: 'Harriet Tubman',
     avatar: null,
-    team: null,
   },
   {
     id: 10,
     name: 'Bill Walton',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    team: null,
   },
   {
     id: 11,
     name: 'Truman Larold',
     avatar: null,
-    team: 'Toronto Raptors',
   },
   {
     id: 12,
     name: 'Harry Potter',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    team: null,
   },
 ] as ControlPanelListPlayer[];

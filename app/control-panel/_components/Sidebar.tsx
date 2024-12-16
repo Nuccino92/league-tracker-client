@@ -127,7 +127,13 @@ function ControlPanelRoutes({ pathname, view }: ControlPanelTypes) {
             href={
               link.withSeasonParam
                 ? generateNavLinkWithParams(link.href, {
-                    season: leagueData.seasons.active_season_id,
+                    season:
+                      link.href.includes(
+                        ROUTES.CONTROL_PANEL_SUBROUTES.SCHEDULE
+                      ) ||
+                      link.href.includes(ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS)
+                        ? leagueData.seasons.active_season_id
+                        : undefined,
                     type: link.href.includes(
                       ROUTES.CONTROL_PANEL_SUBROUTES.SCHEDULE
                     )

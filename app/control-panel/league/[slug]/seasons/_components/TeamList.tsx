@@ -31,27 +31,25 @@ export default function TeamList({
   onTeamSelectionClick,
 }: Props) {
   return (
-    <div className='flex h-max w-full flex-col space-y-6 p-6'>
-      <div className='flex flex-col gap-2 rounded p-4'>
-        {teams.length > 0 ? (
-          <div className='divide-y'>
-            {teams.map((team) => (
-              <TeamCard
-                key={team.id}
-                team={team}
-                focsedTeamId={focusedTeamId}
-                onTeamSelectionClick={onTeamSelectionClick}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className='text-sm italic'>
-            There are no teams added to this season. Click the{' '}
-            <span className='font-medium'>Manage Teams</span> button to add
-            teams to this season
-          </div>
-        )}
-      </div>
+    <div className='flex h-max w-full flex-col space-y-6 px-8 py-4'>
+      {teams.length > 0 ? (
+        <div className='divide-y'>
+          {teams.map((team) => (
+            <TeamCard
+              key={team.id}
+              team={team}
+              focsedTeamId={focusedTeamId}
+              onTeamSelectionClick={onTeamSelectionClick}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className='text-sm italic'>
+          There are no teams added to this season. Click the{' '}
+          <span className='font-medium'>Manage Teams</span> button to add teams
+          to this season
+        </div>
+      )}
     </div>
   );
 }

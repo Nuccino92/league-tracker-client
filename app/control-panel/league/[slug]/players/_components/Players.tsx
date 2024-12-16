@@ -22,6 +22,7 @@ import {
   IconEllipsisVertical,
   IconListAdd,
   IconOptionsOutline,
+  IconPersonCircle,
   Spinner,
 } from '@/app/lib/SVGs';
 import SearchBar from '@/app/lib/components/SearchBar';
@@ -33,8 +34,6 @@ import AchivedPlayersModal from './ArchivedPlayersModal';
 import DeletePlayerModal from './DeletePlayerModal';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
-import ListBox from '@/app/lib/components/Listbox';
-import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 
 const PlayerForm = dynamic(
@@ -46,15 +45,12 @@ export default function Players({ slug }: { slug: string }) {
   const params = useParams();
   const { data, status, isLoading } = usePlayers({
     slug,
-    includeOnly: ['season', 'page', 'search', 'team'],
+    includeOnly: ['page', 'search'],
   });
 
   const [showCreatePlayerModal, setShowCreatePlayerModal] = useState(false);
   const [showArchivedPlayersModal, setShowArchivedPlayersModal] =
     useState(false);
-  const [page, setPage] = useState(
-    params?.page ? parseInt(params?.page as string) : 1
-  );
 
   const shouldDisplayContent = status === 'success' && data;
 
@@ -182,58 +178,10 @@ function PlayersHeader({
         />
       </div>
       <div className='flex items-center space-x-6'>
-        <span className='-mr-2 text-sm font-medium italic'>Filters:</span>
-        {/* Season dropdown */}
-        <ListBox
-          value={selectedSeason ? selectedSeason.toString() : null}
-          onChange={(value) =>
-            router.push(
-              pathname + '?' + createQueryString('season', value?.toString())
-            )
-          }
-          buttonText={
-            seasons.all_seasons.find((season) => season.id === selectedSeason)
-              ?.name ?? 'All Seasons'
-          }
-          options={[
-            { label: 'All Seasons', value: null },
-            ...transformIntoOptions(seasons.all_seasons, {
-              labelKey: 'name',
-              valueKey: 'id',
-            }),
-          ]}
-        />
-
-        {/* Team dropdown */}
-        <ListBox
-          value={selectedTeam}
-          onChange={(value) =>
-            router.push(
-              pathname + '?' + createQueryString('team', value?.toString())
-            )
-          }
-          buttonText={
-            teamsDropdownList?.find((team) => team.id === selectedTeam)?.name ??
-            'All Teams'
-          }
-          options={
-            hasFinishedFetching
-              ? [
-                  { label: 'All Teams', value: null },
-                  ...transformIntoOptions(teamsDropdownList as any, {
-                    labelKey: 'name',
-                    valueKey: 'id',
-                  }),
-                ]
-              : []
-          }
-          status={status}
-        />
-
         <SearchBar
           inputValue={searchInputValue}
           setInputValue={setSearchInputValue}
-          placeholder='Search for a player...'
+          placeholder='Search for players...'
           searchIconSize={22}
           closeIconSize={20}
         />
@@ -279,22 +227,16 @@ function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
               />
             </div>
           ) : (
-            <div className='flex h-12 w-12 items-center justify-center rounded border bg-primary text-sm font-medium text-white'>
-              N/A
+            <div className='flex h-12 w-12 items-center justify-center rounded-md border bg-gray-500 font-medium text-white'>
+              <IconPersonCircle
+                height={30}
+                width={30}
+                color='rgb(209 213 219)'
+              />
             </div>
           )}
           <div className='flex flex-col'>
-            <span className='text-lg font-medium'>{player.name}</span>
-            <span className='text-sm italic text-zinc-900'>
-              <span className='font-medium'>Team:</span>{' '}
-              <span
-                className={classNames(
-                  player.team ? 'font-bold' : 'text-gray-400 '
-                )}
-              >
-                {player.team ? player.team : 'None'}
-              </span>
-            </span>
+            <span className='font-medium'>{player.name}</span>
           </div>
         </div>
 
