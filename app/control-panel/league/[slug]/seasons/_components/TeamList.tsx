@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -12,42 +11,45 @@ import {
   EditIcon,
   IconEllipsisVertical,
   IconTeamLine,
-  IconUserDelete,
+  Spinner,
 } from '@/app/lib/SVGs';
 import getInitials from '@/app/lib/utils/getInitials';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 import TeamForm from '@/app/control-panel/league/[slug]/teams/_components/TeamForm';
+import classNames from 'classnames';
 
 type Props = {
-  teams: BaseTeam[];
-  focusedTeamId: number | null;
-  onTeamSelectionClick: () => void;
+  slug: string;
+  teams: BaseTeam[] | undefined;
+  status: 'loading' | 'error' | 'success';
+  onLinkClick: () => void;
 };
 
-export default function TeamList({
-  teams,
-  focusedTeamId,
-  onTeamSelectionClick,
-}: Props) {
+export default function TeamList({ slug, teams, status, onLinkClick }: Props) {
   return (
-    <div className='flex h-max w-full flex-col space-y-6 px-8 py-4'>
-      {teams.length > 0 ? (
-        <div className='divide-y'>
-          {teams.map((team) => (
-            <TeamCard
-              key={team.id}
-              team={team}
-              focsedTeamId={focusedTeamId}
-              onTeamSelectionClick={onTeamSelectionClick}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className='text-sm italic'>
-          There are no teams added to this season. Click the{' '}
-          <span className='font-medium'>Manage Teams</span> button to add teams
-          to this season
+    <div className='flex h-max w-full flex-col'>
+      <div className='w-full border-b py-4 pl-20 font-medium'>
+        Team Name players created at
+      </div>
+      {teams &&
+        status === 'success' &&
+        (teams.length > 0 ? (
+          <div className='divide-y'>
+            {teams.map((team) => (
+              <TeamCard key={team.id} team={team} onLinkClick={onLinkClick} />
+            ))}
+          </div>
+        ) : (
+          <div className='px-8 py-10 text-sm italic'>
+            There are no teams added to this season. Click the{' '}
+            <span className='font-medium'>Manage Teams</span> button to add
+            teams to this season
+          </div>
+        ))}
+      {status === 'loading' && (
+        <div className='flex items-center justify-center p-8 py-[300px]'>
+          <Spinner height={30} width={30} />
         </div>
       )}
     </div>
@@ -56,12 +58,10 @@ export default function TeamList({
 
 function TeamCard({
   team,
-  focsedTeamId,
-  onTeamSelectionClick,
+  onLinkClick,
 }: {
   team: BaseTeam;
-  focsedTeamId: number | null;
-  onTeamSelectionClick: () => void;
+  onLinkClick: () => void;
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -70,15 +70,17 @@ function TeamCard({
 
   const [showTeamEditModal, setShowTeamEditModal] = useState(false);
 
+  const seasonParam = searchParams.get('season');
+  const teamParam = searchParams.get('team');
+
   const dropdownOption = [
     {
       label: 'View Roster',
       action: () => {
-        router.push(
-          pathname + '?' + createQueryString('team', team.id.toString())
-        );
-        if (Number(searchParams.get('team')) === team.id)
-          onTeamSelectionClick();
+        router.push(pathname + '?' + `season=${seasonParam}&team=${team.id}`);
+        if (teamParam === team.id.toString()) {
+          onLinkClick();
+        }
       },
       icon: <IconTeamLine width={20} height={20} />,
     },
@@ -91,7 +93,7 @@ function TeamCard({
 
   return (
     <>
-      <div className='flex items-center justify-between py-4'>
+      <div className='flex items-center justify-between px-8 py-4'>
         <div className='flex items-center gap-2'>
           {team.logo ? (
             <Image
@@ -110,14 +112,18 @@ function TeamCard({
 
           <Link
             onClick={() => {
-              if (Number(searchParams.get('team')) === team.id)
-                onTeamSelectionClick();
+              if (teamParam === team.id.toString()) {
+                onLinkClick();
+              }
             }}
             href={
               pathname + '?' + createQueryString('team', team.id.toString())
             }
             key={team.id}
-            className='hover:text-secondary'
+            className={classNames(
+              teamParam === team.id.toString() && 'font-medium text-secondary',
+              'hover:text-secondary'
+            )}
           >
             {team.name}
           </Link>

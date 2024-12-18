@@ -1,10 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
-import { INPUT_CLASSES } from '@/app/lib/globals/styles';
-import FormLabel from '@/app/control-panel/_components/FormLabel';
 import {
   IconOptionsOutline,
   IconBxCalendarMinus,
@@ -12,27 +9,20 @@ import {
   IconBxCalendarStar,
   IconBxCalendarExclamation,
   IconBackupRestore,
+  IconPlus,
 } from '@/app/lib/SVGs';
 import CreateNewSeasonModal from './CreateNewSeasonModal';
 import ConcludeSeasonModal from './ConcludeSeasonModal';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
-import StyledBox from '@/app/lib/components/StyledBox';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import ActivateSeasonModal from './ActivateSeasonModal';
 import RemoveSeasonModal from './RemoveSeasonModal';
 import ArchivedSeasonsModal from './ArchivedSeasonsModal';
+import StyledBox from '@/app/lib/components/StyledBox';
 import { Button } from '@/app/lib/components/Button';
-import ListBox from '@/app/lib/components/Listbox';
-import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
-
 export default function Seasons({ slug }: { slug: string }) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const { leagueData, activeSeason, hasSeasons } = useLeagueControlPanel();
-  const { seasons: seasonInformation } = leagueData;
+  const { activeSeason, hasSeasons } = useLeagueControlPanel();
 
   const [showConcludeSeasonModal, setShowConcludeSeasonModal] = useState(false);
   const [showCreateNewSeasonModal, setCreateNewSeasonModal] = useState(false);
@@ -41,14 +31,6 @@ export default function Seasons({ slug }: { slug: string }) {
   const [showRemoveSeasonModal, setRemoveSeasonModal] = useState(false);
   const [showArchivedSeasonsModal, setShowArchivedSeasonsModal] =
     useState(false);
-
-  const seasonParam = searchParams.get('season');
-
-  const focusedSeason = seasonParam
-    ? seasonInformation.all_seasons.find(
-        (season) => parseInt(seasonParam) === season.id
-      ) || null
-    : null;
 
   const pageOptions = [
     ...(hasSeasons && !activeSeason
@@ -107,69 +89,16 @@ export default function Seasons({ slug }: { slug: string }) {
           />
         </div>
       </div>
+
       <div className='flex h-max w-full flex-col-reverse justify-between md:flex-row'>
-        <StyledBox classes='p-4 md:w-[500px] space-y-4 mb-3'>
-          {hasSeasons ? (
-            <>
-              <div className='flex items-center justify-between'>
-                <FormLabel label='Select season' htmlFor='' />
-
-                {focusedSeason?.id === seasonInformation.active_season_id && (
-                  <span className=' text-sm font-medium text-secondary'>
-                    Active
-                  </span>
-                )}
-              </div>
-
-              <div className='flex items-center space-x-2 text-sm'>
-                <ListBox
-                  value={focusedSeason ? focusedSeason.id : null}
-                  onChange={(val) => {
-                    if (!val) return;
-                    const params = new URLSearchParams();
-                    params.set('season', val.toString());
-                    const newUrl = `${pathname}?${params.toString()}`;
-                    router.push(newUrl);
-                  }}
-                  optionContainerClasses='p-2'
-                  optionClasees='rounded'
-                  buttonClasses={INPUT_CLASSES + ' !pl-4 '}
-                  buttonText={
-                    focusedSeason
-                      ? focusedSeason.name
-                      : 'Select a season from the dropdown for management'
-                  }
-                  options={transformIntoOptions(seasonInformation.all_seasons, {
-                    labelKey: 'name',
-                    valueKey: 'id',
-                  })}
-                />
-              </div>
-            </>
-          ) : (
-            <div className='flex items-center justify-between space-x-2'>
-              <span className='whitespace-nowrap font-bold text-zinc-600'>
-                You don&apos;t have any seasons
-              </span>
-
-              <Button
-                variant={'secondary'}
-                onClick={() => setCreateNewSeasonModal(true)}
-              >
-                Create a season
-              </Button>
-            </div>
-          )}
+        <StyledBox classes='w-full p-4 flex justify-end'>
+          <Button
+            onClick={() => setCreateNewSeasonModal(true)}
+            className='flex !h-10 items-center justify-center gap-2'
+          >
+            <IconPlus /> <span>Create a new Season</span>
+          </Button>
         </StyledBox>
-
-        <div>
-          <span className='italic text-zinc-600'>Active season:</span>{' '}
-          <span className='font-bold'>
-            &nbsp;
-            {activeSeason ? activeSeason.name : 'No Active Season'}
-          </span>
-        </div>
-
         {showCreateNewSeasonModal ? (
           <CreateNewSeasonModal
             updateSeasons={(newSeason, shouldNewSeasonBeActive) => {
@@ -180,7 +109,6 @@ export default function Seasons({ slug }: { slug: string }) {
             close={() => setCreateNewSeasonModal(false)}
           />
         ) : null}
-
         {showConcludeSeasonModal ? (
           <ConcludeSeasonModal
             panelClasses='sm:w-[450px] w-full'
@@ -191,7 +119,6 @@ export default function Seasons({ slug }: { slug: string }) {
             }}
           />
         ) : null}
-
         {showSelectSeasonModal ? (
           <ActivateSeasonModal
             isOpen={showSelectSeasonModal}
@@ -202,7 +129,6 @@ export default function Seasons({ slug }: { slug: string }) {
             }}
           />
         ) : null}
-
         {showRemoveSeasonModal ? (
           <RemoveSeasonModal
             isOpen={showRemoveSeasonModal}
@@ -213,7 +139,6 @@ export default function Seasons({ slug }: { slug: string }) {
             }}
           />
         ) : null}
-
         {showArchivedSeasonsModal ? (
           <ArchivedSeasonsModal
             isOpen={showArchivedSeasonsModal}

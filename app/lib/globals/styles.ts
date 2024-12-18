@@ -14,6 +14,7 @@
  * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
  * app\lib\components\_scheduler\EventFormModal.tsx
  * app\control-panel\league\[slug]\schedule\_components\ScheduleGenerationForm.tsx
+ * app\lib\components\RegistrationForm.tsx
  */
 
 export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
@@ -33,6 +34,8 @@ export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
  * app\control-panel\league\[slug]\seasons\_components\Seasons.tsx
  * app\control-panel\league\[slug]\seasons\_components\ActivateSeasonModal.tsx
  * app\lib\components\_scheduler\EventFormModal.tsx
+ * app\control-panel\league\[slug]\registrations\_components\CreateRegistrationFormModal.tsx
+ * app\lib\components\RegistrationForm.tsx
  */
 
 export const INPUT_CLASSES =
@@ -91,7 +94,7 @@ export const CUSTOM_EVENT_BACKGROUND_COLOR = 'bg-green-300';
  * @locations
  * app\lib\types\Resources\GenerateGameShedule.ts
  * app\lib\components\_scheduler\CustomRecurrenceForm.tsx
- *
+ * app\control-panel\league\[slug]\registrations\_components\CreateRegistrationFormModal.tsx
  */
 
 export const GRAY_BOX_CLASSES =

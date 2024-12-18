@@ -183,29 +183,41 @@ export function useLeagueControlPanel() {
   };
 }
 
-export const useControlPanelSidebar = () => {
-  // Initialize state with a function to avoid unnecessary localStorage reads
-  const [isOpen, setIsOpen] = useState<boolean>(() => {
-    try {
-      const stored = localStorage.getItem(IS_CONTROL_PANEL_SIDEBAR_OPEN);
-      return stored ? JSON.parse(stored) : false;
-    } catch (error) {
-      console.error('Error reading from localStorage:', error);
-      return false;
-    }
-  });
+const getInitialState = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    const stored = window.localStorage.getItem(IS_CONTROL_PANEL_SIDEBAR_OPEN);
+    return stored ? JSON.parse(stored) : true; // Default to true if no value exists
+  } catch (error) {
+    console.error('Error reading from localStorage:', error);
+    return false;
+  }
+};
 
-  // Update localStorage whenever isOpen changes
+export const useControlPanelSidebar = () => {
+  const [isClient, setIsClient] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  // Set up client-side state
   useEffect(() => {
+    setIsClient(true);
+    const initialState = getInitialState();
+    setIsOpen(initialState);
+  }, []);
+
+  // Sync with localStorage when state changes
+  useEffect(() => {
+    if (!isClient) return;
+
     try {
-      localStorage.setItem(
+      window.localStorage.setItem(
         IS_CONTROL_PANEL_SIDEBAR_OPEN,
         JSON.stringify(isOpen)
       );
     } catch (error) {
       console.error('Error writing to localStorage:', error);
     }
-  }, [isOpen]);
+  }, [isOpen, isClient]);
 
   const toggleSidebar = () => {
     setIsOpen((prevState) => !prevState);

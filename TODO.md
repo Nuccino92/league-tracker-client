@@ -6,6 +6,7 @@ create mass generators where you just type in a name and it adds the player/team
 Registration should auto create a player. Also if don't want to auto create but link to an already created player that should be an option
 
 -add teams ui inside the calendar selection
+-Create a page on the site where users can search for their league to view their league web page with all their stats etc
 
 Key Features:
 Calendar/Reminder System

@@ -103,5 +103,45 @@ export type ControlPanelMembersList = z.infer<typeof memberSchema>;
 export type ControlPanelMemberForEdit = z.infer<
   typeof controlPanelMemberForEdit
 >;
+// ---- endregion
 
+// ---- region - registrations
+
+export const registrationItemSchema = z.object({});
+export type RegistrationItem = z.infer<typeof registrationItemSchema>;
+
+export const registrantItemSchema = z.object({});
+export type RegistrantItem = z.infer<typeof registrantItemSchema>;
+
+export const createRegistrationFormSchema = z
+  .object({
+    seasonId: z
+      .string({
+        required_error: 'Please select a season',
+      })
+      .min(1, 'Please select a season'),
+    price: z
+      .number()
+      .min(0, 'Price must be greater than or equal to 0')
+      .or(z.string().regex(/^\d+$/).transform(Number)),
+    openDate: z.date().nullable(),
+    closeDate: z.date().nullable(),
+  })
+  .refine(
+    (data) => {
+      // Only validate dates if both are set
+      if (data.openDate && data.closeDate) {
+        return data.closeDate > data.openDate;
+      }
+      return true;
+    },
+    {
+      message: 'Close date must be after open date',
+      path: ['closeDate'],
+    }
+  );
+
+export type CreateRegistrationFormValues = z.infer<
+  typeof createRegistrationFormSchema
+>;
 // ---- endregion

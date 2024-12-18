@@ -17,6 +17,9 @@ const QUERY_KEYS = {
 
     MEMBERS: 'members-control-panel',
     MEMBER: 'member-control-panel',
+
+    REGISTRATIONS: 'registrations-control-panel',
+    REGISTRANTS: 'registrants-control-panel',
   },
 
   EVENTS: {

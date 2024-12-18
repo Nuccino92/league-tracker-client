@@ -22,6 +22,17 @@ type Props = {
   ) => void;
 };
 
+/**
+ *
+ * @param param0
+ * @returns
+ *
+ * @TODO
+ * - conditionally render active season when created checkbox if the league has an active season
+ * - attach registration form to this season
+ * -
+ */
+
 export default function CreateNewSeasonModal({
   panelClasses,
   isOpen,

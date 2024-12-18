@@ -73,21 +73,21 @@ function ControlPanelRoutes({ pathname, view }: ControlPanelTypes) {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS,
       label: 'Seasons',
       icon: seasonsIcon,
-      withSeasonParam: true,
+      withSeasonParam: false,
       access: hasPageAccess(ControlPanelLeaguePages.SEASONS),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.TEAMS,
       label: 'Teams',
       icon: teamIcon,
-      withSeasonParam: true,
+      withSeasonParam: false,
       access: hasPageAccess(ControlPanelLeaguePages.TEAMS),
     },
     {
       href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.PLAYERS,
       label: 'Players',
       icon: playerIcon,
-      withSeasonParam: true,
+      withSeasonParam: false,
       access: hasPageAccess(ControlPanelLeaguePages.PLAYERS),
     },
     {
@@ -127,13 +127,11 @@ function ControlPanelRoutes({ pathname, view }: ControlPanelTypes) {
             href={
               link.withSeasonParam
                 ? generateNavLinkWithParams(link.href, {
-                    season:
-                      link.href.includes(
-                        ROUTES.CONTROL_PANEL_SUBROUTES.SCHEDULE
-                      ) ||
-                      link.href.includes(ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS)
-                        ? leagueData.seasons.active_season_id
-                        : undefined,
+                    season: link.href.includes(
+                      ROUTES.CONTROL_PANEL_SUBROUTES.SCHEDULE
+                    )
+                      ? leagueData.seasons.active_season_id
+                      : undefined,
                     type: link.href.includes(
                       ROUTES.CONTROL_PANEL_SUBROUTES.SCHEDULE
                     )

@@ -60,6 +60,8 @@ export default function PlayerForm({
       ...values,
       // number: values.number === '' ? null : values.number,
       // age: values.age === '' ? null : values.age,
+
+      //TODO: this needs to be unique, no player can have matching emails, need to validate on backend and return if email is no available and show on front end
       email: values.email === '' ? null : values.email,
       phoneNumber: values.phoneNumber === '' ? null : values.phoneNumber,
     } as PlayerInformationResource;

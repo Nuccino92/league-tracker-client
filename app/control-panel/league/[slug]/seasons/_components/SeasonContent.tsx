@@ -3,60 +3,25 @@
 import { useEffect, useState } from 'react';
 
 import TeamList from '@/app/control-panel/league/[slug]/seasons/_components/TeamList';
-import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
 import { useSearchParams } from 'next/navigation';
-import FocusedTeamArea from './FocusedTeamArea';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
-import StyledBox from '@/app/lib/components/StyledBox';
-import PersonSelecting from '@/app/assets/vectors/PersonSelecting';
 import classNames from 'classnames';
-import { IconAppstoreAdd, Spinner } from '@/app/lib/SVGs';
+import { IconAppstoreAdd } from '@/app/lib/SVGs';
 import TeamRoster from '@/app/control-panel/league/[slug]/teams/[id]/_components/TeamRoster';
 import { Button } from '@/app/lib/components/Button';
 import FreeAgentsModal from '@/app/control-panel/league/[slug]/players/_components/FreeAgentsModal';
 import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
 import AddTeamToSeasonModal from '@/app/control-panel/league/[slug]/teams/_components/AddTeamToSeasonModal';
+import SeasonsList from '@/app/control-panel/league/[slug]/seasons/_components/SeasonsList';
+import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
 
 type Props = {
   slug: string;
 };
 
 export default function SeasonContent({ slug }: Props) {
-  const {
-    leagueData: { seasons },
-    hasSeasons,
-  } = useLeagueControlPanel();
-
-  const searchParams = useSearchParams();
-  const seasonParam = searchParams.get('season');
-
-  const shouldRenderContent = seasonParam
-    ? seasons.all_seasons.find((season) => season.id === parseInt(seasonParam))
-      ? true
-      : false
-    : false;
-
-  //TODO: test w/ empty string or letters
-
-  return (
-    <>
-      {shouldRenderContent ? (
-        <Content slug={slug} />
-      ) : (
-        <StyledBox classes='flex items-center justify-center flex-col py-10'>
-          <div className='text-xl font-medium'>
-            {hasSeasons
-              ? 'Select a season from the dropdown to start managing'
-              : 'Create a new season to begin managing'}
-          </div>
-          <div className='-mb-6'>
-            <PersonSelecting height={220} width={220} fill='secondary' />
-          </div>
-        </StyledBox>
-      )}
-    </>
-  );
+  return <Content slug={slug} />;
 }
 
 function Content({ slug }: Props) {
@@ -68,37 +33,30 @@ function Content({ slug }: Props) {
 
   const seasonParam = searchParams.get('season') as string;
   const focusedTeamParam = searchParams.get('team');
-  const hasSeasonParam = seasonParam ? true : false;
-  // fetch both teams for season & roster for selected team & free agents
-
-  // use state or params for the selected team!
-
-  const { data: teams, status: teamStatus } = useTeams({
-    slug,
-    paginate: false,
-    enabled: hasSeasonParam,
-    includeOnly: ['season'],
-  });
 
   const focusedSeason = seasons.all_seasons.find(
     (season) => season.id === parseInt(seasonParam)
   );
 
-  const focusedTeamId = focusedTeamParam ? parseInt(focusedTeamParam) : null;
-  const focusedTeam =
-    teams && focusedTeamId
-      ? teams.find((team) => team.id === focusedTeamId) || null
-      : null;
-
-  const [selectedSection, setSelectedSection] = useState<'teams' | 'roster'>(
-    'teams'
-  );
+  const [selectedSection, setSelectedSection] = useState<
+    'seasons' | 'teams' | 'roster'
+  >('seasons');
 
   const selectedSeason = searchParams.get('season')
     ? seasons.all_seasons.find(
         (season) => season.id === parseInt(searchParams.get('season') as string)
       )?.id
     : null;
+
+  const { data: teams, status: teamStatus } = useTeams({
+    slug,
+    paginate: false,
+    enabled: selectedSeason ? true : false,
+    includeOnly: ['season'],
+  });
+
+  const focusedTeam =
+    teams && teams.find((team) => team.id.toString() === focusedTeamParam);
 
   const [searchInputValue, setSearchInputValue] = useState(
     searchParams.get('search') ?? ''
@@ -114,60 +72,79 @@ function Content({ slug }: Props) {
   // }, [debouncedSearch, pathname, router]);
 
   useEffect(() => {
-    if (focusedTeam) {
+    if (focusedTeamParam) {
       setSelectedSection('roster');
-    }
-
-    if (!focusedTeam && selectedSection === 'roster') {
+    } else if (seasonParam) {
       setSelectedSection('teams');
+    } else {
+      setSelectedSection('seasons');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusedTeam]);
+  }, [focusedTeamParam, searchParams, seasonParam]);
 
-  //TODO: need to handle when the user puts in a random false season param value and it doesnt return anything
   return (
-    <main className=''>
-      <h4 className='mb-6 text-xl font-bold text-zinc-900'>
-        {focusedSeason?.name}
-      </h4>
+    <main className='pb-10'>
+      <div className='mb-4 flex h-10 items-center gap-2'>
+        {focusedSeason && (
+          <div className='flex h-8 items-center justify-center rounded-xl border bg-white px-4 text-sm font-medium text-secondary'>
+            {focusedSeason.name}
+          </div>
+        )}{' '}
+        {focusedTeam && (
+          <div className='flex h-8 items-center justify-center rounded-full border bg-white px-4 text-sm font-medium text-secondary'>
+            {focusedTeam.name}
+          </div>
+        )}
+      </div>
 
       <div className='flex space-x-4 '>
         <button
           className={classNames(
-            selectedSection === 'teams'
+            selectedSection === 'seasons'
               ? 'bg-white'
               : 'bg-primary/50 text-white',
             'w-max rounded-t-lg  px-6 py-2 font-medium'
+          )}
+          onClick={() => setSelectedSection('seasons')}
+        >
+          Seasons
+        </button>
+
+        <button
+          disabled={!selectedSeason}
+          className={classNames(
+            selectedSection === 'teams'
+              ? 'bg-white'
+              : 'bg-primary/50 text-white',
+            'w-max rounded-t-lg px-6 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50'
           )}
           onClick={() => setSelectedSection('teams')}
         >
           Teams
         </button>
 
-        {focusedTeam && (
-          <button
-            disabled={!focusedTeam}
-            className={classNames(
-              selectedSection === 'roster'
-                ? 'bg-white'
-                : 'bg-primary/50 text-white',
-              'w-max rounded-t-lg px-6 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50'
-            )}
-            onClick={() => {
-              if (!focusedTeam) return;
+        <button
+          disabled={!focusedTeamParam}
+          className={classNames(
+            selectedSection === 'roster'
+              ? 'bg-white'
+              : 'bg-primary/50 text-white',
+            'w-max rounded-t-lg px-6 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50'
+          )}
+          onClick={() => {
+            if (!focusedTeamParam) return;
 
-              setSelectedSection('roster');
-            }}
-          >
-            {focusedTeam.name}
-          </button>
-        )}
+            setSelectedSection('roster');
+          }}
+        >
+          Roster
+        </button>
       </div>
 
       <div className='bg-white text-sm'>
-        <div className='flex items-center justify-between space-x-6 border-b p-8 text-xl font-bold'>
+        <div className='flex h-[90px] items-center justify-between space-x-6 border-b p-8 text-xl font-bold'>
           <div className='flex items-center gap-6'>
-            <div className='text-xl font-bold'>
+            <div className=' text-xl font-bold'>
+              {selectedSection === 'seasons' ? 'Seasons' : null}
               {selectedSection === 'teams' ? 'Teams' : null}
               {selectedSection === 'roster' ? 'Roster' : null}
             </div>
@@ -202,36 +179,28 @@ function Content({ slug }: Props) {
           )}
         </div>
 
-        {teams && teamStatus === 'success' && (
-          <>
-            {selectedSection === 'teams' && (
-              //TODO: need to change styling, match team roster
-              <TeamList
-                teams={teams}
-                focusedTeamId={focusedTeamId}
-                onTeamSelectionClick={() => setSelectedSection('roster')}
-              />
-            )}
-            {selectedSection === 'roster' && focusedTeam && <TeamRoster />}
-          </>
+        {/* Lists */}
+        {selectedSection === 'seasons' && (
+          <SeasonsList onLinkClick={() => setSelectedSection('teams')} />
         )}
-
-        {teamStatus === 'loading' && (
-          <div className='flex items-center justify-center p-8 py-14'>
-            <Spinner height={30} width={30} />
-          </div>
+        {selectedSection === 'teams' && (
+          <TeamList
+            slug={slug}
+            teams={teams}
+            status={teamStatus}
+            onLinkClick={() => setSelectedSection('roster')}
+          />
         )}
+        {selectedSection === 'roster' && focusedTeamParam && <TeamRoster />}
       </div>
 
-      {/* TODO: possibly fetch the roster/free agents in here and wait for the response before rendering  */}
-
-      {showFreeAgentsModal && selectedSeason && focusedTeam && (
+      {showFreeAgentsModal && selectedSeason && focusedTeamParam && (
         <FreeAgentsModal
           isOpen={showFreeAgentsModal}
           close={() => setShowFreeAgentsModal(false)}
           slug={slug}
           seasonId={selectedSeason.toString()}
-          teamId={focusedTeam.id.toString()}
+          teamId={focusedTeamParam}
         />
       )}
 

@@ -74,9 +74,10 @@ export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
   return (
     <div>
       {hasSeasons ? (
-        <div className='px-8 py-4'>
+        <div>
           {status === 'success' && data && (
             <div className='divide-y'>
+              <div className='w-full py-4 pl-20 font-medium'>Player Name</div>
               {data.length > 0 &&
                 data.map((player) => (
                   <Player key={player.id} player={player} />
@@ -84,7 +85,6 @@ export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
               {data.length === 0 && <div>empty</div>}
             </div>
           )}
-
           {status === 'loading' ? (
             <div className='flex items-center justify-center py-[300px]'>
               <Spinner height={30} width={30} />
@@ -125,7 +125,7 @@ function Player({ player }: { player: BasePlayer }) {
 
   return (
     <>
-      <div className='flex items-center justify-between py-4'>
+      <div className='flex items-center justify-between px-8 py-4'>
         <div className='flex items-center gap-2'>
           {player.avatar ? (
             <Image
