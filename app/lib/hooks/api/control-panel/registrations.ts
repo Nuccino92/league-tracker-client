@@ -35,8 +35,6 @@ export function useRegistrationForms({
   return { data, status };
 }
 
-export function useRegistrationForm() {}
-
 export function useRegistrantsList({
   slug,
   paginate = true,
@@ -68,6 +66,22 @@ export function useCreateRegistrationForm({ slug }: { slug: string }) {
 
   return useMutation({
     mutationFn: (formValues: CreateRegistrationFormValues) =>
+      createRegistrationForm({ formValues, slug, token }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRANTS],
+      });
+    },
+  });
+}
+
+export function useUpdateRegistrationForm({ slug }: { slug: string }) {
+  const { token } = useAuth();
+
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (formValues: CreateRegistrationFormValues & { id: number }) =>
       createRegistrationForm({ formValues, slug, token }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({

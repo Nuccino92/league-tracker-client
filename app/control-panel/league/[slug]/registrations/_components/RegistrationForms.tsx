@@ -6,9 +6,10 @@ import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueCon
 import { Button } from '@/app/lib/components/Button';
 import StyledBox from '@/app/lib/components/StyledBox';
 import { useRegistrationForms } from '@/app/lib/hooks/api/control-panel/registrations';
-import { IconPlus } from '@/app/lib/SVGs';
+import { IconPlus, Spinner } from '@/app/lib/SVGs';
 import CreateRegistrationFormModal from './CreateRegistrationFormModal';
 import RegistrationForm from '@/app/lib/components/RegistrationForm';
+import RegistrationFormsList from '@/app/control-panel/league/[slug]/registrations/_components/RegistrationFormsList';
 
 type Props = {
   slug: string;
@@ -28,7 +29,8 @@ export default function RegistrationForms({ slug }: Props) {
   //TODO: exclude the seasons where they already have a registration form
   return (
     <div className='space-y-6'>
-      <RegistrationForm onSubmit={async () => {}} />
+      {/* 
+      <RegistrationForm id={1} onSubmit={async () => {}} /> */}
 
       <StyledBox classes='flex items-center justify-end p-4'>
         <Button
@@ -40,7 +42,15 @@ export default function RegistrationForms({ slug }: Props) {
         </Button>
       </StyledBox>
 
-      <StyledBox>get forms boi</StyledBox>
+      {data && status === 'success' && (
+        <RegistrationFormsList slug={slug} forms={data} />
+      )}
+
+      {status === 'loading' && (
+        <StyledBox classes='flex items-center justify-center py-10'>
+          <Spinner height={32} width={32} />
+        </StyledBox>
+      )}
 
       {showRegistrationFormModal && (
         <CreateRegistrationFormModal

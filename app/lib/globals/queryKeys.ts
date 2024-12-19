@@ -18,12 +18,17 @@ const QUERY_KEYS = {
     MEMBERS: 'members-control-panel',
     MEMBER: 'member-control-panel',
 
+    REGISTRATION: 'registration-control-pane',
     REGISTRATIONS: 'registrations-control-panel',
     REGISTRANTS: 'registrants-control-panel',
   },
 
   EVENTS: {
     LEAGUE_EVENTS: 'league-events',
+  },
+
+  REGISTRATION: {
+    FIND: 'registration',
   },
 };
 

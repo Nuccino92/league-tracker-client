@@ -6,6 +6,7 @@ import { baseTeamSchema } from '@/app/lib/types/Models/Team';
 import { Season, seasonSchema } from '../Models/Season';
 import { memberSchema } from '../Models/Member';
 import { Role } from '../Models/Role';
+import { registrationSchema } from '@/app/lib/types/Responses/registration';
 
 // TODO: possibly seperate each region into its own file, follow the requests/control-panel folder structure
 
@@ -107,7 +108,7 @@ export type ControlPanelMemberForEdit = z.infer<
 
 // ---- region - registrations
 
-export const registrationItemSchema = z.object({});
+export const registrationItemSchema = registrationSchema;
 export type RegistrationItem = z.infer<typeof registrationItemSchema>;
 
 export const registrantItemSchema = z.object({});
@@ -120,11 +121,15 @@ export const createRegistrationFormSchema = z
         required_error: 'Please select a season',
       })
       .min(1, 'Please select a season'),
+    description: z
+      .string()
+      .max(500, { message: 'The description must be less than 500 characters' })
+      .optional(),
     price: z
       .number()
       .min(0, 'Price must be greater than or equal to 0')
       .or(z.string().regex(/^\d+$/).transform(Number)),
-    openDate: z.date().nullable(),
+    openDate: z.date({ message: 'Please select a starting date' }),
     closeDate: z.date().nullable(),
   })
   .refine(

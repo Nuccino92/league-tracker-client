@@ -18,11 +18,17 @@ import FormLabel from '@/app/control-panel/_components/FormLabel';
 import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { Button } from '@/app/lib/components/Button';
-import { useCreateRegistrationForm } from '@/app/lib/hooks/api/control-panel/registrations';
+import {
+  useCreateRegistrationForm,
+  useUpdateRegistrationForm,
+} from '@/app/lib/hooks/api/control-panel/registrations';
 import { Spinner } from '@/app/lib/SVGs';
 
 type Props = {
   slug: string;
+  renderAsUpdate?: {
+    initialValues: CreateRegistrationFormValues & { id: number };
+  };
 };
 
 export default function CreateRegistrationFormModal({
@@ -30,15 +36,19 @@ export default function CreateRegistrationFormModal({
   close,
   panelClasses,
   slug,
+  renderAsUpdate,
 }: Props & ModalType) {
   const { leagueData } = useLeagueControlPanel();
 
-  const initialValues: CreateRegistrationFormValues = {
-    seasonId: '',
-    price: 0,
-    openDate: null,
-    closeDate: null,
-  };
+  const initialValues: CreateRegistrationFormValues = renderAsUpdate
+    ? renderAsUpdate.initialValues
+    : {
+        seasonId: '',
+        price: 0,
+        description: '',
+        openDate: new Date(),
+        closeDate: null,
+      };
 
   const seasonOptions = transformIntoOptions(leagueData.seasons.all_seasons, {
     labelKey: 'name',
@@ -46,12 +56,24 @@ export default function CreateRegistrationFormModal({
   });
 
   const createRegistrationFormMutation = useCreateRegistrationForm({ slug });
+  const updateRegistrationFormMutation = useUpdateRegistrationForm({ slug });
 
-  async function handleSubmit(values: any) {
-    await createRegistrationFormMutation.mutateAsync(values);
+  async function handleSubmit(
+    values: CreateRegistrationFormValues & { id?: number }
+  ) {
+    if (renderAsUpdate && values.id) {
+      //todo: set to update
+      await updateRegistrationFormMutation.mutateAsync(
+        values as CreateRegistrationFormValues & { id: number }
+      );
+    } else {
+      await createRegistrationFormMutation.mutateAsync(values);
+    }
 
     close();
   }
+
+  console.log(initialValues);
 
   return (
     <Modal
@@ -62,7 +84,9 @@ export default function CreateRegistrationFormModal({
       isOpen={isOpen}
       close={close}
     >
-      <div className='mb-6 text-lg font-bold'>New Registration Form</div>
+      <div className='mb-6 text-lg font-bold'>
+        {renderAsUpdate ? `Update Registration Form` : 'New Registration Form'}
+      </div>
 
       <Formik
         initialValues={initialValues}
@@ -91,6 +115,24 @@ export default function CreateRegistrationFormModal({
               />
               <ErrorMessage
                 name='seasonId'
+                component='div'
+                className='text-sm text-red-500'
+              />
+            </div>
+
+            <div className='flex flex-col space-y-1'>
+              <FormLabel label='Description (optional)' htmlFor='description' />
+              <Field
+                as='textarea'
+                className={classNames(
+                  'swatches-picker h-[150px] resize-none py-2',
+                  INPUT_CLASSES
+                )}
+                name='description'
+                placeholder='Write a descrption about your season...'
+              />
+              <ErrorMessage
+                name='description'
                 component='div'
                 className='text-sm text-red-500'
               />
@@ -128,8 +170,9 @@ export default function CreateRegistrationFormModal({
 
             <div className='space-y-1'>
               <FormLabel
-                label='Registration Open Date (optional)'
+                label='Registration Open Date'
                 htmlFor='openDate'
+                required
               />
               <Popover
                 as='div'
@@ -166,7 +209,7 @@ export default function CreateRegistrationFormModal({
               </Popover>
 
               <ErrorMessage
-                name='closeDate'
+                name='openDate'
                 component='div'
                 className='text-sm text-red-500'
               />
@@ -229,22 +272,26 @@ export default function CreateRegistrationFormModal({
                 Cancel
               </Button>
               <Button
-                disabled={createRegistrationFormMutation.isLoading}
+                disabled={
+                  createRegistrationFormMutation.isLoading ||
+                  updateRegistrationFormMutation.isLoading
+                }
                 type='submit'
                 className='rounded px-4 py-2 text-white'
               >
-                Create Form
+                {renderAsUpdate ? 'Update Form' : 'Create Form'}
               </Button>
             </div>
           </Form>
         )}
       </Formik>
 
-      {createRegistrationFormMutation.isLoading && (
-        <div className='absolute left-1/2 top-1/2 z-10 flex h-full w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-slate-300/40'>
-          <Spinner width={42} height={42} />
-        </div>
-      )}
+      {createRegistrationFormMutation.isLoading ||
+        (updateRegistrationFormMutation.isLoading && (
+          <div className='absolute left-1/2 top-1/2 z-10 flex h-full w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-slate-300/40'>
+            <Spinner width={42} height={42} />
+          </div>
+        ))}
     </Modal>
   );
 }

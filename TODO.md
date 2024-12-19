@@ -8,6 +8,8 @@ Registration should auto create a player. Also if don't want to auto create but 
 -add teams ui inside the calendar selection
 -Create a page on the site where users can search for their league to view their league web page with all their stats etc
 
+-replace home with dashboard
+
 Key Features:
 Calendar/Reminder System
 Facility Scheduling
