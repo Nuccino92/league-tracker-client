@@ -107,11 +107,61 @@ export type ControlPanelMemberForEdit = z.infer<
 // ---- endregion
 
 // ---- region - registrations
-
 export const registrationItemSchema = registrationSchema;
 export type RegistrationItem = z.infer<typeof registrationItemSchema>;
 
-export const registrantItemSchema = z.object({});
+export const registrantItemSchema = z.object({
+  id: z.number(),
+  firstName: z
+    .string({
+      required_error: 'First name is required',
+    })
+    .min(1, 'First name is required')
+    .max(50, 'First name is too long'),
+  lastName: z
+    .string({
+      required_error: 'Last name is required',
+    })
+    .min(1, 'Last name is required')
+    .max(50, 'Last name is too long'),
+  email: z
+    .string({
+      required_error: 'Email is required',
+    })
+    .min(1, 'Email is required')
+    .email('Invalid email address'),
+  phone: z
+    .string({
+      required_error: 'Phone number is required',
+    })
+    .min(10, 'Phone number is too short')
+    .max(15, 'Phone number is too long')
+    .regex(/^\d+$/, 'Phone number can only contain digits'),
+  photo: z.string().max(500, 'Photo link is too long').optional(),
+  // Optional emergency contact
+  emergencyContactName: z
+    .string()
+    .max(100, 'Emergency contact name is too long')
+    .optional(),
+  emergencyContactPhone: z
+    .string()
+    .max(15, 'Emergency contact phone is too long')
+    .regex(/^\d+$/, 'Phone number can only contain digits')
+    .optional()
+    .nullable(),
+  payment: z
+    .object({
+      amount: z.number(),
+      tax: z.number(),
+      total: z.number(),
+      currency: z.string(),
+      status: z.enum(['succeeded', 'pending', 'failed']),
+      created: z.string(),
+      receipt_url: z.string().optional(),
+    })
+    .optional(),
+  created_at: z.string(),
+});
 export type RegistrantItem = z.infer<typeof registrantItemSchema>;
 
 export const createRegistrationFormSchema = z

@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.firstwefeast.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'as1.ftcdn.net',
+      },
     ],
   },
 };

@@ -7,8 +7,7 @@ import { Button } from '@/app/lib/components/Button';
 import StyledBox from '@/app/lib/components/StyledBox';
 import { useRegistrationForms } from '@/app/lib/hooks/api/control-panel/registrations';
 import { IconPlus, Spinner } from '@/app/lib/SVGs';
-import CreateRegistrationFormModal from './CreateRegistrationFormModal';
-import RegistrationForm from '@/app/lib/components/RegistrationForm';
+import CreateRegistrationFormModal from '@/app/control-panel/league/[slug]/registrations/_components/CreateRegistrationFormModal';
 import RegistrationFormsList from '@/app/control-panel/league/[slug]/registrations/_components/RegistrationFormsList';
 
 type Props = {
@@ -29,9 +28,6 @@ export default function RegistrationForms({ slug }: Props) {
   //TODO: exclude the seasons where they already have a registration form
   return (
     <div className='space-y-6'>
-      {/* 
-      <RegistrationForm id={1} onSubmit={async () => {}} /> */}
-
       <StyledBox classes='flex items-center justify-end p-4'>
         <Button
           className='flex !h-10 items-center gap-2'

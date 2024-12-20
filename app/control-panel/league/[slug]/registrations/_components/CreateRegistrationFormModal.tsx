@@ -73,8 +73,6 @@ export default function CreateRegistrationFormModal({
     close();
   }
 
-  console.log(initialValues);
-
   return (
     <Modal
       panelClasses={classNames(

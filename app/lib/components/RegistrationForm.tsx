@@ -58,7 +58,6 @@ import ControlPanelTooltip from '@/app/control-panel/_components/ControlPanelToo
 type Props = {
   id: number;
   onSubmit: (formValues: RegistrationFormValues) => Promise<void>;
-  isPreview?: boolean;
 };
 
 //TODO: take in the form information as a props/take in a registration form id and fetch this formation before loading it (see the CreateRegistrationFormModal).
@@ -70,7 +69,7 @@ enum RegistrationStep {
   PAYMENT,
 }
 
-export default function RegistrationForm({ id, onSubmit, isPreview }: Props) {
+export default function RegistrationForm({ id, onSubmit }: Props) {
   const { data, status } = useRegistrationForm({ id });
 
   const stripePromise = loadStripe(

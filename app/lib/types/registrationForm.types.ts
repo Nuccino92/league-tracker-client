@@ -38,7 +38,8 @@ export const registrationFormSchema = z.object({
     .string()
     .max(15, 'Emergency contact phone is too long')
     .regex(/^\d+$/, 'Phone number can only contain digits')
-    .optional(),
+    .optional()
+    .nullable(),
 
   // Required waiver
   waiverAccepted: z
