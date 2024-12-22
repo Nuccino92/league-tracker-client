@@ -176,72 +176,86 @@ const mockPlayer = {
   name: 'Jimmeh Johns',
   avatar: null,
   email: 'cashNasty@gmail.com',
-  phoneNumber: null,
+  phoneNumber: '423424234',
+  emergencyContactName: 'Anthony Garry',
+  emergencyContactPhone: '423424234',
 } as Player;
 
 const mockPlayerList = [
   {
     id: 1,
     name: 'Leaky Black',
+    email: 'leakyb@gmail.com',
     avatar: null,
   },
   {
     id: 2,
     name: 'Jimmy Smithers',
+    email: 'jimmy@gmail.com',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
   },
   {
     id: 3,
     name: 'Anthony Ronaldo',
+    email: 'ar99@gmail.com',
     avatar: null,
   },
   {
     id: 4,
     name: 'Corey Hamal',
+    email: 'corey@gmail.com',
     avatar: null,
   },
   {
     id: 5,
     name: 'Luke Walton',
+    email: 'luke@gmail.com',
     avatar: null,
   },
   {
     id: 6,
     name: 'Jerry Jones',
+    email: 'jjones@gmail.com',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
   },
   {
     id: 7,
     name: 'Colin Jones',
+    email: 'colinj@gmail.com',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
   },
   {
     id: 8,
     name: 'Zack Wilson',
+    email: 'wilsonz@gmail.com',
     avatar: null,
   },
   {
     id: 9,
     name: 'Harriet Tubman',
+    email: 'htubb@gmail.com',
     avatar: null,
   },
   {
     id: 10,
     name: 'Bill Walton',
+    email: 'billyw@gmail.com',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
   },
   {
     id: 11,
     name: 'Truman Larold',
+    email: 'trul@gmail.com',
     avatar: null,
   },
   {
     id: 12,
     name: 'Harry Potter',
+    email: 'hpp@gmail.com',
     avatar:
       'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
   },

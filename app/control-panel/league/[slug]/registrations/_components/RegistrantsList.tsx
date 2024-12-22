@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 import StyledBox from '@/app/lib/components/StyledBox';
 import { useRegistrantsList } from '@/app/lib/hooks/api/control-panel/registrations';
@@ -9,20 +10,90 @@ import { IconEye, IconLink45deg, Spinner } from '@/app/lib/SVGs';
 import { RegistrantItem } from '@/app/lib/types/Responses/control-panel.types';
 import RegistrationSummaryModal from '@/app/control-panel/league/[slug]/registrations/_components/RegistrationSummaryModal';
 import LinkRegistrationModal from '@/app/control-panel/league/[slug]/registrations/_components/LinkRegistrationModal';
+import useDebounce from '@/app/lib/hooks/useDebounce';
+import useQueryString from '@/app/lib/hooks/useQueryString';
+import SearchBar from '@/app/lib/components/SearchBar';
+import ListBox from '@/app/lib/components/Listbox';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
+import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 
 type Props = {
   slug: string;
 };
 
 export default function RegistrantsList({ slug }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const { data, status } = useRegistrantsList({
     slug,
     includeOnly: ['page', 'search', 'season'],
   });
 
+  const { leagueData } = useLeagueControlPanel();
+  const { seasons } = leagueData;
+
+  const selectedSeason = searchParams.get('season')
+    ? seasons.all_seasons.find(
+        (season) => season.id === parseInt(searchParams.get('season') as string)
+      )?.id
+    : null;
+
+  const [searchInputValue, setSearchInputValue] = useState(
+    searchParams.get('search') ?? ''
+  );
+  const debouncedSearch = useDebounce(searchInputValue, 750);
+
+  const { createQueryString } = useQueryString();
+
+  useEffect(() => {
+    router.push(pathname + '?' + createQueryString('search', debouncedSearch));
+  }, [createQueryString, debouncedSearch, pathname, router]);
+
+  /**
+   * @todo add header to select season + search for a player
+   */
+
   return (
-    //TODO: figure out what to put here, what buttons etc. make grid like above, Add link to player option
     <StyledBox classes=''>
+      <div className='flex items-center justify-between p-4'>
+        <div className='font-bold'>Registrants</div>
+
+        <div className='flex items-center gap-4'>
+          <div className='flex items-center space-x-6'>
+            <SearchBar
+              inputValue={searchInputValue}
+              setInputValue={setSearchInputValue}
+              placeholder='Search for registrants...'
+              searchIconSize={22}
+              closeIconSize={20}
+            />
+          </div>
+
+          <ListBox
+            buttonClasses='border'
+            rootClasses='w-max !text-xs'
+            value={selectedSeason ? selectedSeason.toString() : null}
+            onChange={(value) =>
+              router.push(
+                pathname + '?' + createQueryString('season', value?.toString())
+              )
+            }
+            buttonText={
+              seasons.all_seasons.find((season) => season.id === selectedSeason)
+                ?.name ?? 'Select a Season'
+            }
+            options={[
+              { label: 'All seasons', value: null },
+              ...transformIntoOptions(seasons.all_seasons, {
+                labelKey: 'name',
+                valueKey: 'id',
+              }),
+            ]}
+          />
+        </div>
+      </div>
       {data && status === 'success' && (
         <div>
           <div className='grid grid-cols-5 gap-4 border-b p-4 text-sm font-medium'>
@@ -32,9 +103,15 @@ export default function RegistrantsList({ slug }: Props) {
             <div>Registraion Date</div>
             <div></div>
           </div>
-          {data.map((registrant) => (
-            <Registrant key={registrant.id} registrant={registrant} />
-          ))}
+          <div className='divide-y'>
+            {data.map((registrant) => (
+              <Registrant
+                key={registrant.id}
+                registrant={registrant}
+                slug={slug}
+              />
+            ))}
+          </div>
         </div>
       )}
 
@@ -48,7 +125,10 @@ export default function RegistrantsList({ slug }: Props) {
   );
 }
 
-function Registrant({ registrant }: { registrant: RegistrantItem }) {
+function Registrant({
+  registrant,
+  slug,
+}: { registrant: RegistrantItem } & Props) {
   //ADD SUMMARY MODAL + LINK TO PROFILE FUNCTIONALITY
 
   const [showSummaryModal, setShowSummaryModal] = useState(false);
@@ -56,12 +136,12 @@ function Registrant({ registrant }: { registrant: RegistrantItem }) {
 
   return (
     <>
-      <div className='grid grid-cols-5 items-center gap-4 p-4 text-sm'>
+      <div className='grid grid-cols-5 items-center gap-4 px-4 py-2 text-sm'>
         <div>
           {registrant.firstName} {registrant.lastName}
         </div>
         <div>{registrant.email}</div>
-        <div>{'registrant.season'}</div>
+        <div>{registrant.season.name}</div>
         <div>{format(registrant.created_at, 'PPP')}</div>
 
         <div className='flex justify-end gap-2'>
@@ -91,6 +171,8 @@ function Registrant({ registrant }: { registrant: RegistrantItem }) {
         <LinkRegistrationModal
           isOpen={showLink}
           close={() => setShowLink(false)}
+          registrant={registrant}
+          slug={slug}
         />
       )}
     </>

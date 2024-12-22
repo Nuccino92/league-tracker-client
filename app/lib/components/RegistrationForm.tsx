@@ -89,7 +89,6 @@ export default function RegistrationForm({ id, onSubmit }: Props) {
     emergencyContactName: '',
     emergencyContactPhone: '',
     waiverAccepted: false,
-    waiverSignature: '',
     //todo add paid amount
   };
 
@@ -404,25 +403,6 @@ export default function RegistrationForm({ id, onSubmit }: Props) {
                           className='text-sm text-red-500'
                         />
                       </div>
-                    </div>
-
-                    <div className={INPUT_CONTAINER_CLASSES}>
-                      <FormLabel
-                        label='Digital Signature'
-                        htmlFor='waiverSignature'
-                        required
-                      />
-                      <Field
-                        type='text'
-                        id='waiverSignature'
-                        name='waiverSignature'
-                        className={INPUT_CLASSES}
-                      />
-                      <ErrorMessage
-                        name='waiverSignature'
-                        component='div'
-                        className='text-sm text-red-500'
-                      />
                     </div>
 
                     <Button

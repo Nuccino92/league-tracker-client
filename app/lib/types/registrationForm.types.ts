@@ -45,11 +45,6 @@ export const registrationFormSchema = z.object({
   waiverAccepted: z
     .boolean()
     .refine((val) => val === true, 'You must accept the waiver to register'),
-  waiverSignature: z
-    .string({
-      required_error: 'Digital signature is required',
-    })
-    .min(1, 'Digital signature is required'),
 });
 
 export type RegistrationFormValues = z.infer<typeof registrationFormSchema>;

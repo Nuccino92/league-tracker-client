@@ -20,6 +20,7 @@ import {
   EmptyListIcon,
   IconBackupRestore,
   IconEllipsisVertical,
+  IconEye,
   IconListAdd,
   IconOptionsOutline,
   IconPersonCircle,
@@ -35,6 +36,7 @@ import DeletePlayerModal from './DeletePlayerModal';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
+import PlayerSummary from '@/app/control-panel/league/[slug]/players/_components/PlayerSummary';
 
 const PlayerForm = dynamic(
   () =>
@@ -191,10 +193,16 @@ function PlayersHeader({
 }
 
 function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
+  const [showPlayerSummaryModal, setShowPlayerSummaryModal] = useState(false);
   const [showPlayerEditModal, setShowPlayerEditModal] = useState(false);
   const [showPlayerDeleteModal, setShowPlayerDeleteModal] = useState(false);
 
   const dropdownOption = [
+    {
+      label: 'View',
+      action: () => setShowPlayerSummaryModal(true),
+      icon: <IconEye width={20} height={20} />,
+    },
     {
       label: 'Edit',
       action: () => setShowPlayerEditModal(true),
@@ -206,6 +214,8 @@ function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
       icon: <DeleteIcon width={20} height={20} />,
     },
   ];
+
+  //TODO: add emails
 
   return (
     <>
@@ -237,6 +247,7 @@ function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
           )}
           <div className='flex flex-col'>
             <span className='font-medium'>{player.name}</span>
+            <span className='text-sm text-gray-500'>{player.email}</span>
           </div>
         </div>
 
@@ -249,6 +260,14 @@ function PlayerCard({ player }: { player: ControlPanelListPlayer }) {
           itemClasses={`${MENU_ITEM_CLASSES}`}
         />
       </div>
+
+      {showPlayerSummaryModal ? (
+        <PlayerSummary
+          isOpen={showPlayerSummaryModal}
+          close={() => setShowPlayerSummaryModal(false)}
+          playerId={player.id}
+        />
+      ) : null}
 
       {showPlayerEditModal ? (
         <PlayerForm

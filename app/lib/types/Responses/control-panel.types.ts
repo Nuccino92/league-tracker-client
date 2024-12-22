@@ -149,6 +149,7 @@ export const registrantItemSchema = z.object({
     .regex(/^\d+$/, 'Phone number can only contain digits')
     .optional()
     .nullable(),
+  playerId: z.number().nullable(),
   payment: z
     .object({
       amount: z.number(),
@@ -161,6 +162,10 @@ export const registrantItemSchema = z.object({
     })
     .optional(),
   created_at: z.string(),
+  season: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
 });
 export type RegistrantItem = z.infer<typeof registrantItemSchema>;
 

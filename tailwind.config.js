@@ -27,9 +27,19 @@ module.exports = {
           '3.5%': { transform: 'rotate(3deg)' },
           '5%': { transform: 'rotate(0deg)' },
         },
+        'slide-in-right': {
+          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        'fade-out': {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
       },
       animation: {
         wiggle: 'wiggle 6.5s ease-in-out infinite',
+        'slide-in-right': 'slide-in-right 0.3s ease-out',
+        'fade-out': 'fade-out 0.2s ease-in-out',
       },
     },
   },

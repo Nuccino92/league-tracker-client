@@ -144,7 +144,10 @@ export default function PlayerForm({
                 {shouldShowAdditionalOptions ? (
                   <div className='space-y-4'>
                     <div className={INPUT_CONTAINER_CLASSES}>
-                      <FormLabel label='Player Image' htmlFor='logo' />
+                      <FormLabel
+                        label='Player Image (optional)'
+                        htmlFor='logo'
+                      />
                       <div className='flex h-[200px] items-center justify-center space-x-2'>
                         {props.values.avatar ? (
                           <div className='relative h-[200px] w-full  rounded-md border border-slate-200 bg-white'>
@@ -226,7 +229,10 @@ export default function PlayerForm({
                     </div> */}
 
                     <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
-                      <FormLabel label='Email Address' htmlFor='email' />
+                      <FormLabel
+                        label='Email Address (optional)'
+                        htmlFor='email'
+                      />
                       <FastField
                         className={INPUT_CLASSES}
                         name='email'
@@ -241,7 +247,10 @@ export default function PlayerForm({
                     </div>
 
                     <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
-                      <FormLabel label='Phone Number' htmlFor='phoneNumber' />
+                      <FormLabel
+                        label='Phone Number (optional)'
+                        htmlFor='phoneNumber'
+                      />
                       <FastField
                         className={INPUT_CLASSES}
                         name='phoneNumber'
@@ -254,8 +263,46 @@ export default function PlayerForm({
                         name='phoneNumber'
                       />
                     </div>
+
+                    <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
+                      <FormLabel
+                        label='Emergency Contact Name (optional)'
+                        htmlFor='emergencyContactName'
+                      />
+                      <FastField
+                        className={INPUT_CLASSES}
+                        name='emergencyContactName'
+                        placeholder='Enter name here...'
+                        type='text'
+                      />
+                      <ErrorMessage
+                        component={'span'}
+                        className='text-sm text-red-500'
+                        name='email'
+                      />
+                    </div>
+
+                    <div className={'w-full ' + INPUT_CONTAINER_CLASSES}>
+                      <FormLabel
+                        label='Emergency Contact Phone (optional)'
+                        htmlFor='emergencyContactPhone'
+                      />
+                      <FastField
+                        className={INPUT_CLASSES}
+                        name='emergencyContactPhone'
+                        placeholder='Enter phone number here...'
+                        type='text'
+                      />
+                      <ErrorMessage
+                        component={'span'}
+                        className='text-sm text-red-500'
+                        name='phoneNumber'
+                      />
+                    </div>
                   </div>
                 ) : null}
+
+                {/* TODO: show emergency contact information */}
 
                 <div className='flex w-full justify-end'>
                   <Button

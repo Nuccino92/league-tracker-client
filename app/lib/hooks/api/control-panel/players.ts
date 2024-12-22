@@ -19,19 +19,20 @@ export function usePlayers({
   paginate = true,
   enabled = true,
   includeOnly = [],
+  givenParams,
 }: {
   slug: string;
   paginate?: boolean;
   enabled?: boolean;
   includeOnly?: SearchParamScope;
+  givenParams?: string;
 }) {
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
-  // TODO: possibly move this outside and pass in the params to the hook
-  const params = scopeQueryParams(includeOnly);
+  const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
 
-  const { data, status, isLoading } = useQuery({
+  const { data, status, isLoading, isInitialLoading } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.PLAYERS, slug, params, paginate],
     queryFn: () => fetchControlPanelPlayers({ token, slug, params, paginate }),
     retry: 1,
@@ -40,19 +41,25 @@ export function usePlayers({
     cacheTime: enabled ? 5 * 60 * 1000 : 0,
   });
 
-  return { data, status, isLoading };
+  return { data, status, isLoading, isInitialLoading };
 }
 
 export function usePlayer({
   slug,
   playerId,
+  enabled = true,
 }: {
   slug: string;
   playerId?: number;
+  enabled?: boolean;
 }) {
   const { token } = useAuth();
 
-  const { data: player, status } = useQuery({
+  const {
+    data: player,
+    status,
+    isInitialLoading,
+  } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAM, slug, playerId],
     queryFn: () => {
       if (!playerId) {
@@ -71,9 +78,10 @@ export function usePlayer({
     },
     retry: false,
     staleTime: 30000,
+    enabled,
   });
 
-  return { player, status };
+  return { player, status, isInitialLoading };
 }
 
 export function useArchivedPlayers({

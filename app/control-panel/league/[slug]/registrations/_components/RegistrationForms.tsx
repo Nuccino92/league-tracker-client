@@ -19,7 +19,6 @@ export default function RegistrationForms({ slug }: Props) {
 
   const { data, status } = useRegistrationForms({
     slug,
-    includeOnly: ['page', 'search', 'season'],
   });
 
   const [showRegistrationFormModal, setShowRegistrationFormModal] =

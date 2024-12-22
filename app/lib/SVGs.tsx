@@ -844,3 +844,65 @@ export function IconLink45deg(
     </svg>
   );
 }
+export function IconCheckmarkCircleOutline(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      viewBox='0 0 512 512'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeMiterlimit={10}
+        strokeWidth={32}
+        d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z'
+      />
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth={32}
+        d='M352 176L217.6 336 160 272'
+      />
+    </svg>
+  );
+}
+
+export function IconEmailOutline(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6m-2 0l-8 5-8-5h16m0 12H4V8l8 5 8-5v10z' />
+    </svg>
+  );
+}
+
+export function IconPhoneOutline(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      baseProfile='tiny'
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      height='1em'
+      width='1em'
+      {...props}
+    >
+      <path d='M19.502 3.672l-1.795-1.793C17.141 1.312 16.387 1 15.586 1s-1.555.312-2.121.879l-1.586 1.586a3.002 3.002 0 000 4.242l1.379 1.379-4.172 4.172-1.379-1.379C7.141 11.312 6.387 11 5.586 11s-1.555.312-2.121.879l-1.586 1.586a3.002 3.002 0 000 4.242L3.673 19.5c.465.465 1.796 1.545 4.116 1.545 2.764 0 5.694-1.529 8.711-4.545 6.245-6.246 4.825-11.002 3.002-12.828zm-6.209 1.207l1.586-1.586a.997.997 0 011.414 0l1.083 1.082-3.001 3-1.082-1.082a.999.999 0 010-1.414zm-10 11.414a.999.999 0 010-1.414l1.586-1.586a.997.997 0 011.414 0l1.082 1.082-2.999 3-1.083-1.082zm11.793-1.207c-3.083 3.082-5.551 3.959-7.297 3.959-1.349 0-2.267-.523-2.702-.959-.004-.004 2.995-3.004 2.995-3.004l.297.297a.997.997 0 001.414 0l5.586-5.586a.999.999 0 000-1.414l-.297-.297 3.001-3c1.003 1.004 2.467 4.539-2.997 10.004z' />
+    </svg>
+  );
+}

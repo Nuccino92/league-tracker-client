@@ -11,6 +11,14 @@ type Props = {
   restoreSeason: (seasonID: number) => void;
 };
 
+/**
+ *
+ * @param param0
+ * @returns
+ *
+ * Season can only be deleted if no registrations, or games have been played
+ */
+
 export default function ArchivedSeasonsModal({
   isOpen,
   close,

@@ -13,6 +13,7 @@ import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueCon
 import {
   EditIcon,
   IconEllipsisVertical,
+  IconEye,
   IconPersonCircle,
   IconTeamLine,
   IconUserDelete,
@@ -26,6 +27,7 @@ import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 import PlayerForm from '@/app/control-panel/league/[slug]/players/_components/PlayerForm';
 import RemoveFromRosterModal from '@/app/control-panel/league/[slug]/players/_components/RemoveFromRosterModal';
+import PlayerSummary from '@/app/control-panel/league/[slug]/players/_components/PlayerSummary';
 
 type Props = {
   caresForTeamInsideParam?: boolean;
@@ -106,11 +108,18 @@ export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
 }
 
 function Player({ player }: { player: BasePlayer }) {
+  const [showPlayerSummaryModal, setShowPlayerSummaryModal] = useState(false);
   const [showPlayerEditModal, setShowPlayerEditModal] = useState(false);
   const [showRemoveFromRosterModal, setShowRemoveFromRosterModal] =
     useState(false);
 
   const dropdownOption = [
+    {
+      label: 'View',
+      action: () => setShowPlayerSummaryModal(true),
+      icon: <IconEye width={20} height={20} />,
+    },
+
     {
       label: 'Edit',
       action: () => setShowPlayerEditModal(true),
@@ -163,6 +172,14 @@ function Player({ player }: { player: BasePlayer }) {
           itemClasses={`${MENU_ITEM_CLASSES}`}
         />
       </div>
+
+      {showPlayerSummaryModal ? (
+        <PlayerSummary
+          isOpen={showPlayerSummaryModal}
+          close={() => setShowPlayerSummaryModal(false)}
+          playerId={player.id}
+        />
+      ) : null}
 
       {showPlayerEditModal ? (
         <PlayerForm

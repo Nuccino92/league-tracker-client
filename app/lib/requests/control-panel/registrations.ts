@@ -10,12 +10,10 @@ import {
 export async function fetchRegistrationForms({
   token,
   slug,
-  params,
   paginate = true,
 }: {
   token: string;
   slug: string;
-  params: string;
   paginate: boolean;
 }) {
   return new Promise<RegistrationItem[]>((resolve) => {
@@ -146,6 +144,7 @@ const mockRegistrantsList = [
       'https://as1.ftcdn.net/v2/jpg/02/99/04/20/1000_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg',
     emergencyContactName: 'Jane Smith',
     emergencyContactPhone: '9876543210',
+    playerId: 1,
     payment: {
       amount: 9999, // $99.99
       tax: 800, // $8.00
@@ -156,6 +155,10 @@ const mockRegistrantsList = [
       receipt_url: 'https://checkout.stripe.com/c/pay/cs_test_123456789',
     },
     created_at: '2024-03-09 04:15:13',
+    season: {
+      id: 1,
+      name: 'Spring 2024',
+    },
   },
   {
     id: 2,
@@ -166,7 +169,12 @@ const mockRegistrantsList = [
     photo: '',
     emergencyContactName: '',
     emergencyContactPhone: null,
+    playerId: 2,
     created_at: '2024-03-10 15:30:22',
+    season: {
+      id: 1,
+      name: 'Spring 2024',
+    },
   },
   {
     id: 3,
@@ -178,6 +186,7 @@ const mockRegistrantsList = [
       'https://as1.ftcdn.net/v2/jpg/03/02/88/46/1000_F_302884605_actpipOdPOQHDTnFtp4zg4RtlWzhOASp.jpg',
     emergencyContactName: 'Lisa Williams',
     emergencyContactPhone: '1112223333',
+    playerId: null,
     payment: {
       amount: 4999,
       tax: 400,
@@ -188,5 +197,27 @@ const mockRegistrantsList = [
       receipt_url: 'https://checkout.stripe.com/c/pay/cs_test_987654321',
     },
     created_at: '2024-03-11 09:45:17',
+    season: {
+      id: 1,
+      name: 'Spring 2024',
+    },
   },
 ];
+
+export async function linkRegistrationToPlayer({
+  id,
+  slug,
+  token,
+}: {
+  id: number | null;
+  slug: string;
+  token: string;
+}) {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(() => {
+      console.log('player id', id);
+      const result = true; //TODO: Figure out what to return
+      resolve(result);
+    }, 700);
+  });
+}

@@ -5,6 +5,7 @@ import {
   createRegistrationForm,
   fetchRegistrantsList,
   fetchRegistrationForms,
+  linkRegistrationToPlayer,
 } from '@/app/lib/requests/control-panel/registrations';
 import { SearchParamScope } from '@/app/lib/types/filters.types';
 import { useAuth } from '@/app/GlobalContext';
@@ -14,20 +15,16 @@ import { CreateRegistrationFormValues } from '@/app/lib/types/Responses/control-
 export function useRegistrationForms({
   slug,
   paginate = true,
-  includeOnly = [],
 }: {
   slug: string;
   paginate?: boolean;
-  includeOnly?: SearchParamScope;
 }) {
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
-  const params = scopeQueryParams(includeOnly);
-
   const { data, status } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRATIONS, slug, params, paginate],
-    queryFn: () => fetchRegistrationForms({ token, slug, params, paginate }),
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRATIONS, slug, paginate],
+    queryFn: () => fetchRegistrationForms({ token, slug, paginate }),
     retry: false,
     staleTime: 180000,
   });
@@ -86,6 +83,25 @@ export function useUpdateRegistrationForm({ slug }: { slug: string }) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRANTS],
+      });
+    },
+  });
+}
+
+export function useLinkRegistrantToPlayer({ slug }: { slug: string }) {
+  const { token } = useAuth();
+
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id }: { id: number | null }) =>
+      linkRegistrationToPlayer({ slug, token, id }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRANTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CONTROL_PANEL.PLAYERS],
       });
     },
   });
