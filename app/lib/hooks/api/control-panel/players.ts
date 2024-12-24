@@ -60,7 +60,7 @@ export function usePlayer({
     status,
     isInitialLoading,
   } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAM, slug, playerId],
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.PLAYER, slug, playerId],
     queryFn: () => {
       if (!playerId) {
         return {

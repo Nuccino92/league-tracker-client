@@ -3,12 +3,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/app/GlobalContext';
 import {
   fetchControlPanelArchivedSeasons,
+  fetchDetailsSeasons,
   generateGameSchedule,
+  getSeasonSettings,
   leagueControlPanelInformationRequest,
+  updateSeasonSettingsRequest,
 } from '@/app/lib/requests/control-panel';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
-import { useEffect, useState } from 'react';
-import { IS_CONTROL_PANEL_SIDEBAR_OPEN } from '@/app/lib/globals/localStorage';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
+import { SeasonSettings } from '@/app/lib/types/Responses/control-panel.types';
 
 export function useLeague(slug: string) {
   const { token } = useAuth();
@@ -49,6 +52,58 @@ export function useGenerateGameSchedule(slug: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.EVENTS.LEAGUE_EVENTS],
+      });
+    },
+  });
+}
+
+export function useDetailedSeasons() {
+  const { token } = useAuth();
+  const { slug } = useLeagueControlPanel();
+
+  const { data: seasons, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.ARCHIVED_SEASONS, slug],
+    queryFn: () => fetchDetailsSeasons({ token, slug }),
+    retry: false,
+    staleTime: 30000,
+  });
+
+  return { seasons, status };
+}
+
+export function useSeasonSettings(seasonId: number) {
+  const { token } = useAuth();
+  const { slug } = useLeagueControlPanel();
+
+  const { data: settings, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.SEASON_SETTINGS, slug, seasonId],
+    queryFn: () => getSeasonSettings({ token, slug, seasonId }),
+    retry: false,
+    staleTime: 30000,
+  });
+
+  return { settings, status };
+}
+
+export function useUpdateSeasonSettings() {
+  const { token } = useAuth();
+  const { slug } = useLeagueControlPanel();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      seasonId,
+      formValues,
+    }: {
+      seasonId: number;
+      formValues: SeasonSettings;
+    }) => updateSeasonSettingsRequest({ token, slug, seasonId, formValues }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CONTROL_PANEL.LEAGUE],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CONTROL_PANEL.SEASON_SETTINGS],
       });
     },
   });

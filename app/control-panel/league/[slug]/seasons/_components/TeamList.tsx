@@ -75,19 +75,19 @@ function TeamCard({
 
   const dropdownOption = [
     {
-      label: 'View Roster',
+      label: 'Roster',
       action: () => {
         router.push(pathname + '?' + `season=${seasonParam}&team=${team.id}`);
         if (teamParam === team.id.toString()) {
           onLinkClick();
         }
       },
-      icon: <IconTeamLine width={20} height={20} />,
+      icon: <IconTeamLine width={16} height={16} />,
     },
     {
       label: 'Edit',
       action: () => setShowTeamEditModal(true),
-      icon: <EditIcon width={20} height={20} />,
+      icon: <EditIcon width={16} height={16} />,
     },
   ];
 

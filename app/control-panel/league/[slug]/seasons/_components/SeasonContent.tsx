@@ -15,6 +15,7 @@ import useDebounce from '@/app/lib/hooks/useDebounce';
 import AddTeamToSeasonModal from '@/app/control-panel/league/[slug]/teams/_components/AddTeamToSeasonModal';
 import SeasonsList from '@/app/control-panel/league/[slug]/seasons/_components/SeasonsList';
 import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
+import { useDetailedSeasons } from '@/app/lib/hooks/api/control-panel';
 
 type Props = {
   slug: string;
@@ -27,14 +28,12 @@ export default function SeasonContent({ slug }: Props) {
 function Content({ slug }: Props) {
   const searchParams = useSearchParams();
 
-  const {
-    leagueData: { seasons },
-  } = useLeagueControlPanel();
+  const { seasons, status } = useDetailedSeasons();
 
   const seasonParam = searchParams.get('season') as string;
   const focusedTeamParam = searchParams.get('team');
 
-  const focusedSeason = seasons.all_seasons.find(
+  const focusedSeason = seasons?.find(
     (season) => season.id === parseInt(seasonParam)
   );
 
@@ -43,7 +42,7 @@ function Content({ slug }: Props) {
   >('seasons');
 
   const selectedSeason = searchParams.get('season')
-    ? seasons.all_seasons.find(
+    ? seasons?.find(
         (season) => season.id === parseInt(searchParams.get('season') as string)
       )?.id
     : null;
@@ -159,7 +158,7 @@ function Content({ slug }: Props) {
             )}
           </div>
 
-          {seasons.all_seasons.length > 0 && (
+          {seasons && seasons.length > 0 && (
             <div className='flex items-center space-x-4'>
               {selectedSection === 'teams' && (
                 <Button
@@ -181,7 +180,11 @@ function Content({ slug }: Props) {
 
         {/* Lists */}
         {selectedSection === 'seasons' && (
-          <SeasonsList onLinkClick={() => setSelectedSection('teams')} />
+          <SeasonsList
+            isLoading={status === 'loading' ? true : false}
+            seasons={seasons}
+            onLinkClick={() => setSelectedSection('teams')}
+          />
         )}
         {selectedSection === 'teams' && (
           <TeamList

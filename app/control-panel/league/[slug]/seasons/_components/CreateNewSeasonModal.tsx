@@ -45,6 +45,9 @@ export default function CreateNewSeasonModal({
 
   const handleCreateSeason = () => {
     try {
+      /**
+       * @todo must add season_settings entry as well in BE controller
+       */
       newSeasonNameSchema.parse(newSeasonName);
       setNameError(null);
 

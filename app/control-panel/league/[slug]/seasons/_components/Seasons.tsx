@@ -12,7 +12,7 @@ import {
   IconPlus,
 } from '@/app/lib/SVGs';
 import CreateNewSeasonModal from './CreateNewSeasonModal';
-import ConcludeSeasonModal from './ConcludeSeasonModal';
+import ConcludeSeasonModal from '@/app/control-panel/league/[slug]/seasons/_components/ConcludeSeasonModal';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import PageHeader from '@/app/control-panel/_components/PageHeader';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
@@ -42,18 +42,6 @@ export default function Seasons({ slug }: { slug: string }) {
           },
         ]
       : []),
-    {
-      label: activeSeason ? 'Conclude Season' : 'Create Season',
-      action: () =>
-        activeSeason
-          ? setShowConcludeSeasonModal(true)
-          : setCreateNewSeasonModal(true),
-      icon: activeSeason ? (
-        <IconBxCalendarMinus height={20} width={20} />
-      ) : (
-        <IconBxCalendarPlus height={20} width={20} />
-      ),
-    },
     ...(hasSeasons
       ? [
           {

@@ -15,6 +15,7 @@
  * app\lib\components\_scheduler\EventFormModal.tsx
  * app\control-panel\league\[slug]\schedule\_components\ScheduleGenerationForm.tsx
  * app\lib\components\RegistrationForm.tsx
+ * app\control-panel\league\[slug]\seasons\_components\SeasonSettingsModal.tsx
  */
 
 export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
@@ -36,6 +37,7 @@ export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
  * app\lib\components\_scheduler\EventFormModal.tsx
  * app\control-panel\league\[slug]\registrations\_components\CreateRegistrationFormModal.tsx
  * app\lib\components\RegistrationForm.tsx
+ * app\control-panel\league\[slug]\seasons\_components\SeasonSettingsModal.tsx
  */
 
 export const INPUT_CLASSES =

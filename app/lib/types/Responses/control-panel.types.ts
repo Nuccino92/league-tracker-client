@@ -23,6 +23,29 @@ export type Seasons = {
 
 // ---- region - seasons
 export type ControlPanelArchivedSeasonsList = z.infer<typeof seasonSchema>;
+
+export const controlPanelDetailedSeasonsListItemSchema = seasonSchema.merge(
+  z.object({
+    registrants: z.number(),
+    teams: z.number(),
+    players: z.number(),
+    created_at: z.string(),
+  })
+);
+
+export type ControlPanelDetailedSeasonsListItem = z.infer<
+  typeof controlPanelDetailedSeasonsListItemSchema
+>;
+
+export const seasonSettingsSchema = z.object({
+  registration_enabled: z.boolean(),
+  registration_capacity: z.number(),
+  max_players_per_team: z.number(),
+  max_total_teams: z.number(),
+  season: seasonSchema,
+});
+export type SeasonSettings = z.infer<typeof seasonSettingsSchema>;
+
 // ---- end region
 
 // TODO: possibly add can_remove property

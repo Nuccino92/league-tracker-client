@@ -117,18 +117,18 @@ function Player({ player }: { player: BasePlayer }) {
     {
       label: 'View',
       action: () => setShowPlayerSummaryModal(true),
-      icon: <IconEye width={20} height={20} />,
+      icon: <IconEye width={16} height={16} />,
     },
 
     {
       label: 'Edit',
       action: () => setShowPlayerEditModal(true),
-      icon: <EditIcon width={20} height={20} />,
+      icon: <EditIcon width={16} height={16} />,
     },
     {
       label: 'Remove from team',
       action: () => setShowRemoveFromRosterModal(true),
-      icon: <IconUserDelete width={20} height={20} />,
+      icon: <IconUserDelete width={16} height={16} />,
     },
   ];
 
