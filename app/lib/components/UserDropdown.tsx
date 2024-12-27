@@ -3,12 +3,13 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import classNames from 'classnames';
 
-import { useAuth, useCreateLeague } from '@/app/GlobalContext';
+import { useAuth } from '@/app/GlobalContext';
 import { DownChevronIcon } from '@/app/lib/SVGs';
-import ROUTES from '../globals/routes';
-import logOut from '../utils/logOut';
+import ROUTES from '@/app/lib/globals/routes';
+import logOut from '@/app/lib/utils/logOut';
 
 type Props = {
   buttonClasses?: string;
@@ -19,9 +20,9 @@ export default function UserDropdown({
   buttonClasses,
   containerClasses,
 }: Props) {
+  const router = useRouter();
+
   const { user } = useAuth();
-  const { showCreateLeaugueModal, setShowCreateLeagueModal } =
-    useCreateLeague();
 
   if (!user) return <div className='hidden' />;
 
@@ -54,7 +55,7 @@ export default function UserDropdown({
           )}
         >
           <Menu.Item
-            onClick={() => setShowCreateLeagueModal(true)}
+            onClick={() => router.push(ROUTES.CREATE)}
             as={'button'}
             type='button'
             className={classNames(

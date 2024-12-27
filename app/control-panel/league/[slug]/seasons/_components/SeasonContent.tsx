@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import classNames from 'classnames';
 
 import TeamList from '@/app/control-panel/league/[slug]/seasons/_components/TeamList';
-import { useSearchParams } from 'next/navigation';
-import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
-import classNames from 'classnames';
 import { IconAppstoreAdd } from '@/app/lib/SVGs';
 import TeamRoster from '@/app/control-panel/league/[slug]/teams/[id]/_components/TeamRoster';
 import { Button } from '@/app/lib/components/Button';
@@ -14,8 +13,11 @@ import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
 import AddTeamToSeasonModal from '@/app/control-panel/league/[slug]/teams/_components/AddTeamToSeasonModal';
 import SeasonsList from '@/app/control-panel/league/[slug]/seasons/_components/SeasonsList';
-import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
-import { useDetailedSeasons } from '@/app/lib/hooks/api/control-panel';
+import {
+  useDetailedSeasons,
+  useDetailedTeams,
+} from '@/app/lib/hooks/api/control-panel';
+import useQueryString from '@/app/lib/hooks/useQueryString';
 
 type Props = {
   slug: string;
@@ -26,7 +28,9 @@ export default function SeasonContent({ slug }: Props) {
 }
 
 function Content({ slug }: Props) {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const { seasons, status } = useDetailedSeasons();
 
@@ -47,11 +51,8 @@ function Content({ slug }: Props) {
       )?.id
     : null;
 
-  const { data: teams, status: teamStatus } = useTeams({
-    slug,
-    paginate: false,
-    enabled: selectedSeason ? true : false,
-    includeOnly: ['season'],
+  const { teams, status: teamStatus } = useDetailedTeams({
+    seasonId: selectedSeason,
   });
 
   const focusedTeam =
@@ -66,9 +67,11 @@ function Content({ slug }: Props) {
 
   const debouncedSearch = useDebounce(searchInputValue, 750);
 
-  // useEffect(() => {
-  //   router.push(pathname + '?' + createQueryString('search', debouncedSearch));
-  // }, [debouncedSearch, pathname, router]);
+  const { createQueryString } = useQueryString();
+
+  useEffect(() => {
+    router.push(pathname + '?' + createQueryString('search', debouncedSearch));
+  }, [createQueryString, debouncedSearch, pathname, router]);
 
   useEffect(() => {
     if (focusedTeamParam) {

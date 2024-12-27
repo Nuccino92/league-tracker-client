@@ -5,6 +5,8 @@ import {
   ControlPanelArchivedSeasonsList,
   ControlPanelDetailedSeasonsListItem,
   controlPanelDetailedSeasonsListItemSchema,
+  ControlPanelDetailedSeasonTeams,
+  controlPanelDetailedSeasonTeamsSchema,
   ControlPanelInformation,
   ErrorType,
   SeasonSettings,
@@ -319,3 +321,82 @@ export async function updateSeasonSettingsRequest({
 
   return data;
 }
+
+export async function fetchDetailedSeasonTeams({
+  token,
+  slug,
+}: {
+  token: string;
+  slug: string;
+}) {
+  return new Promise<ControlPanelDetailedSeasonTeams[]>((resolve) => {
+    setTimeout(() => {
+      const result = z
+        .array(controlPanelDetailedSeasonTeamsSchema)
+        .parse(mockDetailedTeams);
+      resolve(result);
+    }, 630);
+  });
+
+  // TOOD: possibly return the archived season in the all_seasons array w/ flag
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_KEEPR_API_URL}${ROUTES.CONTROL_PANEL}${ROUTES.LEAGUE}/${slug}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  //TODO: parse the data
+
+  if (!response.ok)
+    throw {
+      message: data.error as ErrorType,
+      statusCode: response.status,
+      owner_id: data.owner_id,
+    } as NotOk & { owner_id: string | undefined };
+
+  //return z.array(controlPanelDetailedSeasonTeamsSchema).parse(data.data)
+}
+
+const mockDetailedTeams = [
+  {
+    id: 1,
+    name: 'Thunder Dragons',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+    players: 12,
+    created_at: '2024-03-09 04:15:13',
+  },
+  {
+    id: 2,
+    name: 'Phoenix Flyers',
+    logo: null,
+    players: 8,
+    created_at: '2024-03-10 15:30:22',
+  },
+  {
+    id: 3,
+    name: 'Lightning Lions',
+    logo: null,
+    players: 15,
+    created_at: '2024-03-11 09:45:17',
+  },
+  {
+    id: 4,
+    name: 'Crimson Crushers',
+    logo: null,
+    players: 10,
+    created_at: '2024-03-12 14:20:45',
+  },
+  {
+    id: 5,
+    name: 'Shadow Strikers',
+    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+    players: 13,
+    created_at: '2024-03-13 11:05:30',
+  },
+] as ControlPanelDetailedSeasonTeams[];

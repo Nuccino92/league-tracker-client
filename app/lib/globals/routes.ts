@@ -10,6 +10,7 @@ const ROUTES = {
   LEAGUE: '/league',
   ABOUT: '/about',
   PROFILE: '/profile',
+  CREATE: '/create',
   PROFILE_SUBROUTES: {
     LEAGUES_ORGS: '/league-and-organizations',
   },

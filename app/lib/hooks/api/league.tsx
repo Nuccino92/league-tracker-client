@@ -41,8 +41,7 @@ export function useCreateLeague() {
     }) => createLeagueRequest({ token, formData, subscription }),
     onSuccess: (data) => {
       setShowCreateLeagueModal(false);
-      window.location.href =
-        ROUTES.CONTROL_PANEL + ROUTES.LEAGUE + '/' + data.slug;
+      //TODO: direct them to the control panel
     },
   });
 }

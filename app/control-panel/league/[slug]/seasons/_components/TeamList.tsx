@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import classNames from 'classnames';
 
 import { BaseTeam } from '@/app/lib/types/Models/Team';
 import useQueryString from '@/app/lib/hooks/useQueryString';
@@ -17,11 +18,12 @@ import getInitials from '@/app/lib/utils/getInitials';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 import TeamForm from '@/app/control-panel/league/[slug]/teams/_components/TeamForm';
-import classNames from 'classnames';
+import { ControlPanelDetailedSeasonTeams } from '@/app/lib/types/Responses/control-panel.types';
+import { format } from 'date-fns';
 
 type Props = {
   slug: string;
-  teams: BaseTeam[] | undefined;
+  teams: ControlPanelDetailedSeasonTeams[] | undefined;
   status: 'loading' | 'error' | 'success';
   onLinkClick: () => void;
 };
@@ -29,8 +31,11 @@ type Props = {
 export default function TeamList({ slug, teams, status, onLinkClick }: Props) {
   return (
     <div className='flex h-max w-full flex-col'>
-      <div className='w-full border-b py-4 pl-20 font-medium'>
-        Team Name players created at
+      <div className='grid w-full grid-cols-4 gap-4 border-b p-4 text-sm font-medium '>
+        <div className='pl-12'>Team Name</div>
+        <div>Players</div>
+        <div>Date Created</div>
+        <div></div>
       </div>
       {teams &&
         status === 'success' &&
@@ -47,6 +52,14 @@ export default function TeamList({ slug, teams, status, onLinkClick }: Props) {
             teams to this season
           </div>
         ))}
+
+      {teams && teams.length === 0 && status === 'success' && (
+        <div className='flex h-[300px] items-center justify-center'>
+          Click the &quot;Manage Teams&quot; button to add your teams to this
+          season
+        </div>
+      )}
+
       {status === 'loading' && (
         <div className='flex items-center justify-center p-8 py-[300px]'>
           <Spinner height={30} width={30} />
@@ -60,7 +73,7 @@ function TeamCard({
   team,
   onLinkClick,
 }: {
-  team: BaseTeam;
+  team: ControlPanelDetailedSeasonTeams;
   onLinkClick: () => void;
 }) {
   const searchParams = useSearchParams();
@@ -93,7 +106,7 @@ function TeamCard({
 
   return (
     <>
-      <div className='flex items-center justify-between px-8 py-4'>
+      <div className='grid grid-cols-4 items-center gap-4 p-4 text-sm'>
         <div className='flex items-center gap-2'>
           {team.logo ? (
             <Image
@@ -128,14 +141,20 @@ function TeamCard({
             {team.name}
           </Link>
         </div>
-        <DropdownMenu
-          items={dropdownOption}
-          buttonIcon={(open) => (
-            <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
-          )}
-          itemContainerClasses='!left-[-11rem]'
-          itemClasses={`${MENU_ITEM_CLASSES}`}
-        />
+
+        <div>{team.players}</div>
+        <div>{format(team.created_at, 'PPP')}</div>
+
+        <div className='flex justify-end gap-2'>
+          <DropdownMenu
+            items={dropdownOption}
+            buttonIcon={(open) => (
+              <IconEllipsisVertical color={open ? 'white' : 'currentColor'} />
+            )}
+            itemContainerClasses='!left-[-11rem]'
+            itemClasses={`${MENU_ITEM_CLASSES}`}
+          />
+        </div>
       </div>
 
       {showTeamEditModal ? (

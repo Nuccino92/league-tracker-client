@@ -28,6 +28,7 @@ export default function RegistrationForms({ slug }: Props) {
   return (
     <div className='space-y-6'>
       <StyledBox classes='flex items-center justify-end p-4'>
+        {/* TODO: disable if the season isn't on a paid subscription */}
         <Button
           className='flex !h-10 items-center gap-2'
           disabled={leagueData.seasons.all_seasons.length === 0 || !data}
@@ -47,6 +48,7 @@ export default function RegistrationForms({ slug }: Props) {
         </StyledBox>
       )}
 
+      {/* TODO: disable if the season isn't on a paid subscription */}
       {showRegistrationFormModal && (
         <CreateRegistrationFormModal
           isOpen={showRegistrationFormModal}

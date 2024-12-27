@@ -46,6 +46,16 @@ export const seasonSettingsSchema = z.object({
 });
 export type SeasonSettings = z.infer<typeof seasonSettingsSchema>;
 
+export const controlPanelDetailedSeasonTeamsSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  logo: z.string().nullable(),
+  players: z.number(),
+  created_at: z.string(),
+});
+export type ControlPanelDetailedSeasonTeams = z.infer<
+  typeof controlPanelDetailedSeasonTeamsSchema
+>;
 // ---- end region
 
 // TODO: possibly add can_remove property

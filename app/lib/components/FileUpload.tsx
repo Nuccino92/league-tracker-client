@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames';
 import { ChangeEvent, useRef, useState } from 'react';
 
 /**
@@ -12,6 +13,7 @@ type Props = {
   maxFileSize?: number;
   changeEvent: (value: string) => void;
   errorEvent?: (message: string) => void;
+  classnames?: string;
 };
 
 export default function FileUpload({
@@ -20,6 +22,7 @@ export default function FileUpload({
   maxFileSize = 1024 * 1024,
   changeEvent,
   errorEvent,
+  classnames,
 }: Props) {
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -76,7 +79,10 @@ export default function FileUpload({
         <label
           tabIndex={1}
           htmlFor={name}
-          className='relative h-[200px] w-full cursor-pointer rounded-md border border-dashed border-slate-200 bg-white focus:outline-secondary'
+          className={classNames(
+            classnames,
+            'relative h-[200px] w-full cursor-pointer rounded-md border border-dashed border-slate-200 bg-white focus:outline-secondary'
+          )}
           draggable={true}
           onKeyDown={(e) => {
             if (isUploading) return;

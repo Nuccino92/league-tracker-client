@@ -133,7 +133,10 @@ function TeamCard({ team }: { team: ControlPanelManageTeam }) {
 
       <Checkbox
         isChecked={team.is_in_active_season}
-        onClick={() => console.log(team)}
+        onClick={
+          () => console.log(team)
+          //create mutation for this, invalidate DETAILED_SEASON_TEAMS, DETAILED_SEASONS
+        }
         disabled={team.can_remove ? false : true}
       />
     </div>

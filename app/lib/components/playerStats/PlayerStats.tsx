@@ -26,6 +26,7 @@ export default function PlayerStats({ name, type }: Props) {
     getInitialFilter(type)
   ); //TODO: change into a filter saved in state
 
+  //todo: This will be dynamic, need to get from backend
   const playerStatLabels = getPlayerStatLabels(type, selectedTab);
 
   return (

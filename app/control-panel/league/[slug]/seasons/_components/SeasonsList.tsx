@@ -70,7 +70,7 @@ export default function SeasonsList({
 
       {seasons && seasons.length === 0 && !isLoading && (
         <div className='flex h-[300px] items-center justify-center'>
-          There are no created seasons
+          Click the &quot;Create a new Season&quot; button to create a season
         </div>
       )}
 

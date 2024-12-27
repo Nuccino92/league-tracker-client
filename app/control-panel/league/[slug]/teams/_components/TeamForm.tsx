@@ -50,6 +50,7 @@ export default function TeamForm({
     const valuesToSave = {} as TeamInformationResource;
 
     // return valuesToSave
+    //invalidate  DETAILED_SEASON_TEAMS & TEAMS & TEAM
 
     console.log('attempting to submit:', values);
   }

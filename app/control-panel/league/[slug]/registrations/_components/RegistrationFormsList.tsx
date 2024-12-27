@@ -59,6 +59,7 @@ function Form({ form, slug }: { form: RegistrationItem; slug: string }) {
           {formatDate(form.closeDate)}
         </div>
         <div className='flex justify-end gap-2'>
+          {/* TODO: disable if the season isn't on a paid subscription */}
           <button
             className='flex h-8 w-8 items-center justify-center rounded border shadow hover:opacity-75'
             onClick={() => setShowPreviewModal(true)}
@@ -82,6 +83,7 @@ function Form({ form, slug }: { form: RegistrationItem; slug: string }) {
         />
       )}
 
+      {/* TODO: disable if the season isn't on a paid subscription */}
       {showEditModal && (
         <CreateRegistrationFormModal
           isOpen={showEditModal}

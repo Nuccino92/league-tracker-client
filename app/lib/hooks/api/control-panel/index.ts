@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/app/GlobalContext';
 import {
   fetchControlPanelArchivedSeasons,
+  fetchDetailedSeasonTeams,
   fetchDetailsSeasons,
   generateGameSchedule,
   getSeasonSettings,
@@ -62,7 +63,7 @@ export function useDetailedSeasons() {
   const { slug } = useLeagueControlPanel();
 
   const { data: seasons, status } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.ARCHIVED_SEASONS, slug],
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.DETAILED_SEASONS, slug],
     queryFn: () => fetchDetailsSeasons({ token, slug }),
     retry: false,
     staleTime: 30000,
@@ -107,4 +108,23 @@ export function useUpdateSeasonSettings() {
       });
     },
   });
+}
+
+export function useDetailedTeams({
+  seasonId,
+}: {
+  seasonId: number | null | undefined;
+}) {
+  const { token } = useAuth();
+  const { slug } = useLeagueControlPanel();
+
+  const { data: teams, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.DETAILED_SEASON_TEAMS, slug, seasonId],
+    queryFn: () => fetchDetailedSeasonTeams({ token, slug }),
+    retry: false,
+    staleTime: 30000,
+    enabled: seasonId ? true : false,
+  });
+
+  return { teams, status };
 }
