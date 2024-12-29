@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { sportSchema } from '@/app/lib/types/sport.types';
 
 export const leagueInformationSchema = z.object({
   name: z
@@ -43,6 +44,11 @@ export const leagueInformationSchema = z.object({
     .string()
     .min(7, { message: 'Must be a hex color code' })
     .max(7, { message: 'Must be a hex color code' }),
+
+  sport: sportSchema,
+  selected_stats: z.array(z.number()),
+
+  //todo add stats, sport
 });
 
 export type LeagueInformationResource = z.infer<typeof leagueInformationSchema>;

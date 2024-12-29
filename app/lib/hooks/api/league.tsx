@@ -11,20 +11,10 @@ import { LeagueInformationResource } from '@/app/lib/types/Resources/CreateLeagu
 import { SubscriptionInformationSchema } from '@/app/lib/types/Resources/SubscriptionResource';
 import {
   createLeagueRequest,
-  findLeagueRequest,
+  getCreateLeagueSports,
   updateLeagueInformation,
 } from '@/app/lib/requests/league';
-
-export function useFindLeague(slug: string) {
-  const { token } = useAuth();
-
-  const { data, status } = useQuery({
-    queryKey: ['league', slug],
-    queryFn: () => findLeagueRequest({ token, slug }),
-  });
-
-  return { data, status };
-}
+import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 
 export function useCreateLeague() {
   const { token } = useAuth();
@@ -68,4 +58,15 @@ export function useUpdateLeague() {
     },
     onError: () => {},
   });
+}
+
+export function useCreateLeagueSports() {
+  const { token } = useAuth();
+
+  const { data: sports, status } = useQuery({
+    queryKey: [QUERY_KEYS.CREATE_LEAGUE_SPORTS],
+    queryFn: () => getCreateLeagueSports({ token }),
+  });
+
+  return { sports, status };
 }

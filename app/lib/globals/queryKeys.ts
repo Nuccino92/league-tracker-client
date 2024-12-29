@@ -33,6 +33,9 @@ const QUERY_KEYS = {
   REGISTRATION: {
     FIND: 'registration',
   },
+
+  CREATE_LEAGUE_SPORTS: 'create-league-sports',
+  SUBSCRIPTION_PLANS: 'subscription-plans',
 };
 
 export default QUERY_KEYS;

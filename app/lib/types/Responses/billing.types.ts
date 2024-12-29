@@ -1,4 +1,6 @@
-import WithMessage from './WithMessage.types';
+import { z } from 'zod';
+
+import WithMessage from '@/app/lib/types/Responses/WithMessage.types';
 
 export type SetupIntentResponse = {
   data: {
@@ -34,3 +36,36 @@ export type Product = {
   default_price: string;
   prices: Price[];
 };
+
+const subscriptionPriceSchema = z.object({
+  monthly: z.number(),
+  yearly: z.number(),
+});
+
+const messageLimitSchema = z.object({
+  email: z.number(),
+  sms: z.number(),
+});
+
+const featureSchema = z.object({
+  description: z.string(),
+  included: z.boolean(),
+});
+
+const subscriptionPlanSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  pricing: subscriptionPriceSchema,
+  messageLimit: messageLimitSchema,
+  features: z.array(featureSchema),
+});
+
+export type SubscriptionPlan = z.infer<typeof subscriptionPlanSchema>;
+
+export const subscriptionPlansResponseSchema = z.object({
+  plans: z.array(subscriptionPlanSchema),
+});
+
+export type SubscriptionPlansResponse = z.infer<
+  typeof subscriptionPlansResponseSchema
+>;

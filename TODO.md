@@ -9,6 +9,7 @@ Registration should auto create a player. Also if don't want to auto create but 
 -Create a page on the site where users can search for their league to view their league web page with all their stats etc
 
 -replace home with dashboard
+-have website visits, amount of texts/emails you've received. registration anayltics. current season standings etc.
 
 Key Features:
 Calendar/Reminder System
