@@ -24,6 +24,10 @@ const QUERY_KEYS = {
     REGISTRATION: 'registration-control-pane',
     REGISTRATIONS: 'registrations-control-panel',
     REGISTRANTS: 'registrants-control-panel',
+
+    NOTICES_STATISTICS: 'notices-statistics-control-panel',
+    NOTICES_LIST: 'notices-list-control-panel',
+    NOTICES_DETAILS: 'notices-details-control-panel',
   },
 
   EVENTS: {

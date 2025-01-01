@@ -19,7 +19,7 @@ export enum RolePermissions {
 
   MANAGE_PLAYERS = 'manage_players', //manage players
   MANAGE_REGISTRATIONS = 'manage_registrations',
-  MANAGE_NEWS = 'manage_news',
+  MANAGE_NOTICES = 'manage_notices',
   MANAGE_SCHEDULE = 'manage_schedule',
   MANAGE_SEASONS = 'manage_seasons', //(add season, delete season, set active season, add/remove teams from season)
 
@@ -29,14 +29,15 @@ export enum RolePermissions {
 
 export enum ControlPanelLeaguePages {
   INDEX = 'index',
-  HOME = 'home',
+  DASHBOARD = 'dashboard',
   MEMBERS = 'members',
   SEASONS = 'seasons',
   TEAMS = 'teams',
   PLAYERS = 'players',
   SCHEDULE = 'schedule',
   REGISTRATIONS = 'registrations',
-  NEWS = 'news',
+  NOTICES = 'notices',
+  SETTINGS = 'settings',
 }
 
 export enum EventRecurrenceEnum {

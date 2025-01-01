@@ -26,8 +26,10 @@ export default function UserDropdown({
 
   if (!user) return <div className='hidden' />;
 
+  //TODO: change name to avatar or placeholder. If part of a league add dropdown item to view league
+
   return (
-    <Menu as={'div'} className={'relative'}>
+    <Menu as={'div'} className={'relative z-40'}>
       <Menu.Button
         id='user-menu-button'
         type='button'

@@ -5,6 +5,7 @@ type Props = {
   isChecked: boolean;
   onClick: () => void;
   disabled?: boolean;
+  name?: string;
 };
 
 export default function Checkbox({
@@ -12,9 +13,11 @@ export default function Checkbox({
   isChecked = false,
   onClick,
   disabled,
+  name = 'checkbox',
 }: Props) {
   return (
     <button
+      name={name}
       disabled={disabled}
       onClick={onClick}
       type='button'

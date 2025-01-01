@@ -16,14 +16,15 @@ const ROUTES = {
   },
   CONTROL_PANEL: '/control-panel',
   CONTROL_PANEL_SUBROUTES: {
-    HOME: '/home',
+    DASHBOARD: '/dashboard',
     MEMBERS: '/members',
     SEASONS: '/seasons',
     SCHEDULE: '/schedule',
     REGISTRATIONS: '/registrations',
     PLAYERS: '/players',
     TEAMS: '/teams',
-    NEWS: '/news',
+    NOTICES: '/notices',
+    SETTINGS: '/settings',
   },
 };
 

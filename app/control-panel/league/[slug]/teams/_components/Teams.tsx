@@ -43,11 +43,10 @@ const TeamForm = dynamic(
 //import EditTeamForm from './_components/EditTeamForm';
 
 //TODO: check if no active season and provide disclaimer telling user that they can only assign a team to an active season
-export default function Teams({ slug }: { slug: string }) {
+export default function Teams() {
   const params = useParams();
 
   const { data: teams, status } = useTeams({
-    slug,
     includeOnly: ['search', 'page'],
   });
 

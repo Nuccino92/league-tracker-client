@@ -7,6 +7,8 @@ import { Season, seasonSchema } from '../Models/Season';
 import { memberSchema } from '../Models/Member';
 import { Role } from '../Models/Role';
 import { registrationSchema } from '@/app/lib/types/Responses/registration';
+import { title } from 'process';
+import { create } from 'domain';
 
 // TODO: possibly seperate each region into its own file, follow the requests/control-panel folder structure
 
@@ -237,4 +239,91 @@ export const createRegistrationFormSchema = z
 export type CreateRegistrationFormValues = z.infer<
   typeof createRegistrationFormSchema
 >;
+// ---- endregion
+
+// ---- region - notices
+
+export const noticeStatisticsSchema = z.object({
+  messages_sent: z.object({
+    total: z.number(),
+    breakdown: z.object({
+      email: z.number(),
+      sms: z.number(),
+    }),
+  }),
+  credits_remaining: z.object({
+    email: z.object({
+      used: z.number(),
+      total: z.number(),
+      remaining: z.number(),
+    }),
+    sms: z.object({
+      used: z.number(),
+      total: z.number(),
+      remaining: z.number(),
+    }),
+  }),
+  active_announcements: z.object({
+    total: z.number(),
+    breakdown: z.object({
+      league: z.number(),
+      team: z.number(),
+    }),
+  }),
+});
+export type NoticeStatistics = z.infer<typeof noticeStatisticsSchema>;
+
+export const noticeItemSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  message: z.string(),
+  delivery_type: z.array(z.enum(['email', 'sms', 'website'])),
+  recipient_type: z
+    .enum(['team', 'player', 'registrant', 'members'])
+    .nullable(),
+  recipient_scope: z
+    .enum(['all', 'specific', 'roles', 'global_all'])
+    .nullable(),
+  start_date: z.string().nullable(),
+  end_date: z.string().nullable(),
+
+  delivery_stats: z
+    .object({
+      recipients: z.number(),
+      delivered: z.number(),
+    })
+    .nullable(),
+
+  season: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .nullable(),
+
+  created_at: z.string(),
+});
+export type NoticeItem = z.infer<typeof noticeItemSchema>;
+
+const deliveryDetailSchema = z.object({
+  recipient_id: z.number(),
+  name: z.string(),
+  email: z.string().nullable(),
+  phone: z.string().nullable(),
+  email_status: z.enum(['delivered', 'failed']).nullable(),
+  email_delivered_at: z.string().nullable(),
+  sms_status: z.enum(['delivered', 'failed']).nullable(),
+  sms_delivered_at: z.string().nullable(),
+});
+
+// Schema for the response
+export const deliveryDetailsResponseSchema = z.object({
+  announcement_id: z.number(),
+  delivery_details: z.array(deliveryDetailSchema),
+});
+
+export type DeliveryDetailsResponse = z.infer<
+  typeof deliveryDetailsResponseSchema
+>;
+
 // ---- endregion

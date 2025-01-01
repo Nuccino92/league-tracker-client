@@ -587,9 +587,7 @@ function FormSectionBelowType({
   props: FormikProps<EventForm>;
   formType: EventFormTypes;
 }) {
-  const params = useParams();
-
-  const { data, status } = useTeams({ slug: params.id as string });
+  const { data, status } = useTeams({});
 
   return (
     <div className='bottom-section space-y-4'>

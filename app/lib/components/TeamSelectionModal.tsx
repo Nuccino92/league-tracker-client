@@ -34,10 +34,7 @@ export default function TeamSelectionModal({
   panelClasses,
   onTeamSelection,
 }: Props & ModalType) {
-  const { slug } = useLeagueControlPanel();
-
   const { data: teams, status } = useTeams({
-    slug,
     paginate: false,
     includeOnly: ['season'],
   });

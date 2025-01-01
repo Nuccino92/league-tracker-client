@@ -68,7 +68,11 @@ export default function SeasonSettingsModal({
   }
 
   return (
-    <Modal panelClasses='sm:w-[450px] w-full' isOpen={isOpen} close={close}>
+    <Modal
+      panelClasses='sm:w-[450px] w-full rounded-xl'
+      isOpen={isOpen}
+      close={close}
+    >
       <div className='mb-6 text-lg font-medium'>Season Settings</div>
       {settings && status === 'success' && (
         <Formik initialValues={settings} onSubmit={handleUpdate}>
@@ -165,9 +169,12 @@ export default function SeasonSettingsModal({
                     onChange={(checked) =>
                       setFieldValue('registration_enabled', checked)
                     }
-                    className={`${
-                      values.registration_enabled ? 'bg-primary' : 'bg-gray-200'
-                    } relative inline-flex h-6 w-11 items-center rounded-full`}
+                    className={classNames(
+                      values.registration_enabled
+                        ? 'bg-primary'
+                        : 'bg-gray-200',
+                      'relative inline-flex h-6 w-11 items-center rounded-full'
+                    )}
                   >
                     <span className='sr-only'>Enable Registration</span>
                     <span

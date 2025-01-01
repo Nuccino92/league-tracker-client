@@ -15,6 +15,7 @@ import { DefaultColors } from '@/app/lib/enums';
 import { Team } from '@/app/lib/types/Models/Team';
 import { Filter, SearchParamScope } from '@/app/lib/types/filters.types';
 import { createQueryString } from '@/app/lib/utils/createQueryString';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 /**
  * @description returns a list of teams with ability to filter using url params.
@@ -26,21 +27,22 @@ import { createQueryString } from '@/app/lib/utils/createQueryString';
  * without params redirects back via router.back()
  */
 export function useTeams({
-  slug,
   paginate = true,
   enabled = true,
   includeOnly = [],
+  givenParams,
 }: {
-  slug: string;
   paginate?: boolean;
   enabled?: boolean;
   includeOnly?: SearchParamScope;
+  givenParams?: string;
 }) {
+  const { slug } = useLeagueControlPanel();
+
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
-  // TODO: possibly move this outside and pass in the params to the hook
-  const params = scopeQueryParams(includeOnly);
+  const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
 
   const { data, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params, paginate],
