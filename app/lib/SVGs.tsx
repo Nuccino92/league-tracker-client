@@ -988,3 +988,65 @@ export function IconCheckmarkSharp(
     </svg>
   );
 }
+
+export function IconReturnDownBackSharp(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 512 512'
+      {...props}
+    >
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='square'
+        strokeMiterlimit={10}
+        strokeWidth={32}
+        d='m112 352-64-64 64-64'
+      />
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='square'
+        strokeMiterlimit={10}
+        strokeWidth={32}
+        d='M64 288h400V160'
+      />
+    </svg>
+  );
+}
+
+export function IconReturnDownForwardSharp(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 512 512'
+      {...props}
+    >
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='square'
+        strokeMiterlimit={10}
+        strokeWidth={32}
+        d='m400 352 64-64-64-64'
+      />
+      <path
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='square'
+        strokeMiterlimit={10}
+        strokeWidth={32}
+        d='M448 288H48V160'
+      />
+    </svg>
+  );
+}

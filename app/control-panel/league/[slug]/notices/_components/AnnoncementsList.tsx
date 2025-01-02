@@ -22,13 +22,14 @@ import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
 import { ModalType } from '@/app/types';
 import Modal from '@/app/lib/components/Modal';
+import Pagination from '@/app/lib/components/Pagination';
 
 export default function AnnouncementsList() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { data, status } = useNoticeList({});
+  const { response, status } = useNoticeList({});
 
   const { leagueData } = useLeagueControlPanel();
   const { seasons } = leagueData;
@@ -49,56 +50,81 @@ export default function AnnouncementsList() {
 
   return (
     <StyledBox>
-      {status === 'success' && data && (
-        <div className='space-y-2 p-4'>
-          <div className='flex items-center justify-between gap-4 p-2'>
-            <div className='text-lg font-bold'>Your Notices</div>
-            <div className='flex items-center gap-4'>
-              <SearchBar
-                inputValue={query}
-                setInputValue={setQuery}
-                placeholder='Search for a notice...'
-              />
+      {' '}
+      <div className='flex items-center justify-between gap-4 p-6 pb-2'>
+        <div className='text-lg font-bold'>Your Notices</div>
+        <div className='flex items-center gap-4'>
+          <SearchBar
+            inputValue={query}
+            setInputValue={setQuery}
+            placeholder='Search for a notice...'
+          />
 
-              <ListBox
-                buttonClasses='border'
-                rootClasses='w-max !text-xs'
-                value={selectedSeason ? selectedSeason.toString() : null}
-                onChange={(value) =>
+          <ListBox
+            buttonClasses='border'
+            rootClasses='w-max !text-xs'
+            value={selectedSeason ? selectedSeason.toString() : null}
+            onChange={(value) =>
+              router.push(
+                pathname + '?' + createQueryString('season', value?.toString())
+              )
+            }
+            buttonText={
+              seasons.all_seasons.find((season) => season.id === selectedSeason)
+                ?.name ?? 'All Seasons'
+            }
+            options={[
+              { label: 'All Seasons', value: null },
+              ...transformIntoOptions(seasons.all_seasons, {
+                labelKey: 'name',
+                valueKey: 'id',
+              }),
+            ]}
+          />
+        </div>
+      </div>
+      {status === 'success' && response && (
+        <div className='space-y-2 p-4'>
+          {response.data.length > 0 &&
+            response.data.map((notice) => (
+              <AnnouncementsListItem notice={notice} key={notice.id} />
+            ))}
+
+          {response.data.length === 0 && (
+            <div className='py-12 text-center italic text-gray-500'>
+              No notices found
+            </div>
+          )}
+
+          <div className='!mt-4'>
+            <Pagination
+              currentPage={response.meta.current_page}
+              totalPages={response.meta.total}
+              onPageChange={(type, page) => {
+                if (type === 'next') {
                   router.push(
                     pathname +
                       '?' +
-                      createQueryString('season', value?.toString())
-                  )
+                      createQueryString('page', (page + 1).toString())
+                  );
+                } else if (type === 'prev') {
+                  router.push(
+                    pathname +
+                      '?' +
+                      createQueryString('page', (page - 1).toString())
+                  );
+                } else if (page) {
+                  router.push(
+                    pathname + '?' + createQueryString('page', page.toString())
+                  );
                 }
-                buttonText={
-                  seasons.all_seasons.find(
-                    (season) => season.id === selectedSeason
-                  )?.name ?? 'Select a Season'
-                }
-                options={[
-                  { label: 'All seasons', value: null },
-                  ...transformIntoOptions(seasons.all_seasons, {
-                    labelKey: 'name',
-                    valueKey: 'id',
-                  }),
-                ]}
-              />
-            </div>
-
-            {/* Season dropdown */}
+              }}
+            />
           </div>
-
-          {data.map((notice) => (
-            <AnnouncementsListItem notice={notice} key={notice.id} />
-          ))}
-
-          <div>paginate</div>
         </div>
       )}
-
       {status === 'loading' && (
-        <div className='flex items-center justify-center py-10'>
+        <div className='flex items-center justify-center py-[150px]'>
           <Spinner height={22} width={22} />
         </div>
       )}
@@ -219,7 +245,7 @@ function AnnouncementsListItem({ notice }: { notice: NoticeItem }) {
           close={() => {
             setShowDeliveryDetails(false);
           }}
-          panelClasses='max-w-[1200px] whitespace-nowrap  swatches-picker'
+          panelClasses='max-w-[1200px] whitespace-nowrap swatches-picker'
           notice={notice}
         />
       )}
@@ -242,6 +268,9 @@ function DeliveryDetailsModal({
   panelClasses,
   notice,
 }: ModalType & { notice: NoticeItem }) {
+  const { leagueData } = useLeagueControlPanel();
+  const { seasons } = leagueData;
+
   const [sortField, setSortField] = useState<SortableField | undefined>();
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(1);
@@ -249,16 +278,21 @@ function DeliveryDetailsModal({
 
   const debouncedQuery = useDebounce(query, 300);
 
-  const { data, status } = useNoticeDetails({
+  const { response, status } = useNoticeDetails({
     noticeId: notice.id,
     page,
     query: debouncedQuery,
   });
 
-  const sortedData = useMemo(() => {
-    if (!data?.delivery_details || !sortField) return data?.delivery_details;
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedQuery]);
 
-    return [...data.delivery_details].sort((a, b) => {
+  const sortedData = useMemo(() => {
+    if (!response?.data.delivery_details || !sortField)
+      return response?.data.delivery_details;
+
+    return [...response?.data.delivery_details].sort((a, b) => {
       // Handle date fields
       if (sortField.endsWith('_delivered_at')) {
         const aDate = a[sortField]
@@ -277,7 +311,7 @@ function DeliveryDetailsModal({
       const comparison = aValue.localeCompare(bValue);
       return sortDirection === 'asc' ? comparison : -comparison;
     });
-  }, [data?.delivery_details, sortField, sortDirection]);
+  }, [response?.data.delivery_details, sortField, sortDirection]);
 
   const showEmailColumn = notice.delivery_type.includes('email');
   const showSMSColumn = notice.delivery_type.includes('sms');
@@ -301,14 +335,14 @@ function DeliveryDetailsModal({
     <Modal panelClasses={panelClasses} isOpen={isOpen} close={close}>
       <h2 className='text-lg font-medium'>Delivery Details</h2>
 
-      <div>
+      <div className='mb-2 mt-4 flex items-center justify-start gap-4 border-b pb-4'>
         <SearchBar
           inputValue={query}
           setInputValue={setQuery}
           placeholder='Search for recipient'
         />
       </div>
-      {status === 'success' && data && (
+      {status === 'success' && response && (
         <div className='space-y-4'>
           <div className='max-h-96 overflow-y-auto'>
             <table className='w-full'>
@@ -442,6 +476,21 @@ function DeliveryDetailsModal({
                 ))}
               </tbody>
             </table>
+            <div className='mt-6 flex w-full items-center justify-end'>
+              <Pagination
+                currentPage={page}
+                totalPages={response.meta.total}
+                onPageChange={(type, page) => {
+                  if (type === 'next') {
+                    setPage((prev) => prev + 1);
+                  } else if (type === 'prev') {
+                    setPage((prev) => prev - 1);
+                  } else if (page) {
+                    setPage(page);
+                  }
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

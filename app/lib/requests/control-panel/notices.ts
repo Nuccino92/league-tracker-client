@@ -6,7 +6,10 @@ import {
   noticeItemSchema,
   NoticeStatistics,
   noticeStatisticsSchema,
+  SelectionScopeTotalCounts,
+  selectionScopeTotalCountsSchema,
 } from '@/app/lib/types/Responses/control-panel.types';
+import { PaginationMetaSchema } from '@/app/lib/types/pagination.types';
 
 export async function fetchNoticeStatistics({
   token,
@@ -82,66 +85,88 @@ const mockStatistics = {
 export async function fetchNoticeList({
   token,
   slug,
+  params,
 }: {
   token: string;
   slug: string;
+  params?: string;
 }) {
-  return new Promise<NoticeItem[]>((resolve) => {
+  const noticeListResponseSchema = z.object({
+    data: z.array(noticeItemSchema),
+    meta: PaginationMetaSchema,
+  });
+
+  type NoticeListResponse = z.infer<typeof noticeListResponseSchema>;
+
+  return new Promise<NoticeListResponse>((resolve) => {
     setTimeout(() => {
-      const result = z.array(noticeItemSchema).parse(mockList);
+      const result = noticeListResponseSchema.parse(mockListResponse);
       resolve(result);
     }, 400);
   });
 }
 
-const mockList: NoticeItem[] = [
-  {
-    id: 1,
-    title: 'Game Cancellation Notice',
-    message: 'The game has been cancelled',
-    delivery_type: ['email', 'sms'],
-    recipient_type: 'player',
-    recipient_scope: 'all',
-    start_date: null,
-    end_date: null,
-    delivery_stats: {
-      recipients: 150,
-      delivered: 150,
-    },
-    season: { id: 1, name: '2021' },
-    created_at: '2021-09-01T00:00:00.000Z',
-  },
-  {
-    id: 2,
-    title: 'A new announcement',
-    message: 'This is a new announcement',
-    recipient_type: 'team',
-    recipient_scope: 'specific',
-    delivery_type: ['email'],
-    start_date: null,
-    end_date: null,
-    delivery_stats: {
-      recipients: 67,
-      delivered: 63,
-    },
-    season: null,
-    created_at: '2022-07-21T00:00:00.000Z',
+const mockListResponse = {
+  meta: {
+    current_page: 1,
+    last_page: 4,
+    to: 0,
+    from: 0,
+    path: '',
+    per_page: 0,
+    total: 11,
+    links: [],
   },
 
-  {
-    id: 3,
-    title: 'Registrations are open',
-    message: 'Registrations are open for the new season',
-    delivery_type: ['website'],
-    recipient_type: null,
-    recipient_scope: null,
-    start_date: '2024-11-01T00:00:00.000Z',
-    end_date: '2024-11-15T00:00:00.000Z',
-    delivery_stats: null,
-    season: { id: 441, name: '2023 basketblla szn' },
-    created_at: '2024-11-15T00:00:00.000Z',
-  },
-];
+  data: [
+    {
+      id: 1,
+      title: 'Game Cancellation Notice',
+      message: 'The game has been cancelled',
+      delivery_type: ['email', 'sms'],
+      recipient_type: 'player',
+      recipient_scope: 'all',
+      start_date: null,
+      end_date: null,
+      delivery_stats: {
+        recipients: 150,
+        delivered: 150,
+      },
+      season: { id: 1, name: '2021' },
+      created_at: '2021-09-01T00:00:00.000Z',
+    },
+    {
+      id: 2,
+      title: 'A new announcement',
+      message: 'This is a new announcement',
+      recipient_type: 'team',
+      recipient_scope: 'specific',
+      delivery_type: ['email'],
+      start_date: null,
+      end_date: null,
+      delivery_stats: {
+        recipients: 67,
+        delivered: 63,
+      },
+      season: null,
+      created_at: '2022-07-21T00:00:00.000Z',
+    },
+
+    {
+      id: 3,
+      title: 'Registrations are open',
+      message: 'Registrations are open for the new season',
+      delivery_type: ['website'],
+      recipient_type: null,
+      recipient_scope: null,
+      start_date: '2024-11-01T00:00:00.000Z',
+      end_date: '2024-11-15T00:00:00.000Z',
+      delivery_stats: null,
+      season: { id: 441, name: '2023 basketblla szn' },
+      created_at: '2024-11-15T00:00:00.000Z',
+    },
+  ],
+};
 
 export async function fetchNoticeDetails({
   token,
@@ -154,48 +179,67 @@ export async function fetchNoticeDetails({
   noticeId: number;
   params: string;
 }) {
-  return new Promise<DeliveryDetailsResponse>((resolve) => {
+  const noticeDetailsResponseSchema = z.object({
+    data: deliveryDetailsResponseSchema,
+    meta: PaginationMetaSchema,
+  });
+
+  type NoticeDetailsResponse = z.infer<typeof noticeDetailsResponseSchema>;
+
+  return new Promise<NoticeDetailsResponse>((resolve) => {
     setTimeout(() => {
-      const result = deliveryDetailsResponseSchema.parse(mockDeliveryDetails);
+      const result = noticeDetailsResponseSchema.parse(mockDeliveryDetails);
       resolve(result);
     }, 700);
   });
 }
 
-const mockDeliveryDetails: DeliveryDetailsResponse = {
-  announcement_id: 1,
-  delivery_details: [
-    {
-      recipient_id: 1,
-      name: 'John Smith',
-      email: 'john@example.com',
-      phone: '1234567890',
-      email_status: 'delivered',
-      email_delivered_at: '2024-12-31T16:30:00Z',
-      sms_status: 'delivered',
-      sms_delivered_at: '2024-12-31T16:30:01Z',
-    },
-    {
-      recipient_id: 2,
-      name: 'Jane Doe',
-      email: 'jane@example.com',
-      phone: null,
-      email_status: 'failed',
-      email_delivered_at: null,
-      sms_status: null,
-      sms_delivered_at: null,
-    },
-    {
-      recipient_id: 3,
-      name: 'Bob Wilson',
-      email: null,
-      phone: '9876543210',
-      email_status: null,
-      email_delivered_at: null,
-      sms_status: 'failed',
-      sms_delivered_at: null,
-    },
-  ],
+const mockDeliveryDetails = {
+  meta: {
+    current_page: 1,
+    last_page: 4,
+    to: 0,
+    from: 0,
+    path: '',
+    per_page: 0,
+    total: 1,
+    links: [],
+  },
+  data: {
+    announcement_id: 1,
+    delivery_details: [
+      {
+        recipient_id: 1,
+        name: 'John Smith',
+        email: 'john@example.com',
+        phone: '1234567890',
+        email_status: 'delivered',
+        email_delivered_at: '2024-12-31T16:30:00Z',
+        sms_status: 'delivered',
+        sms_delivered_at: '2024-12-31T16:30:01Z',
+      },
+      {
+        recipient_id: 2,
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        phone: null,
+        email_status: 'failed',
+        email_delivered_at: null,
+        sms_status: null,
+        sms_delivered_at: null,
+      },
+      {
+        recipient_id: 3,
+        name: 'Bob Wilson',
+        email: null,
+        phone: '9876543210',
+        email_status: null,
+        email_delivered_at: null,
+        sms_status: 'failed',
+        sms_delivered_at: null,
+      },
+    ],
+  },
 };
 
 export async function createNotice({
@@ -231,3 +275,34 @@ export async function retryNotice({
     }, 400);
   });
 }
+
+export async function fetchNoticeSelectionScopeTotals({
+  token,
+  slug,
+}: {
+  token: string;
+  slug: string;
+}) {
+  return new Promise<SelectionScopeTotalCounts>((resolve) => {
+    setTimeout(() => {
+      const result = selectionScopeTotalCountsSchema.parse(mockTotalCounts);
+      resolve(result);
+    }, 700);
+  });
+}
+
+const mockTotalCounts: SelectionScopeTotalCounts = {
+  player: {
+    season: 4150,
+    league: 8250,
+  },
+  team: {
+    season: 1412,
+  },
+  registrant: {
+    season: 3445,
+  },
+  member: {
+    league: 415,
+  },
+};

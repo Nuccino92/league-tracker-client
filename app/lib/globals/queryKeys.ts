@@ -28,6 +28,8 @@ const QUERY_KEYS = {
     NOTICES_STATISTICS: 'notices-statistics-control-panel',
     NOTICES_LIST: 'notices-list-control-panel',
     NOTICES_DETAILS: 'notices-details-control-panel',
+    NOTICE_SELECTION_SCOPE_TOTALS:
+      'notice-selection-scope-totals-control-panel',
   },
 
   EVENTS: {

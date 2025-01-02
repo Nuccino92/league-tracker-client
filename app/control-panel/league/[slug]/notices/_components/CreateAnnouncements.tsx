@@ -19,7 +19,10 @@ import { ModalType } from '@/app/types';
 import { BaseTeam } from '@/app/lib/types/Models/Team';
 import { format } from 'date-fns';
 import { Calendar } from '@/app/lib/components/Calendar';
-import { useNoticeStatistics } from '@/app/lib/hooks/api/control-panel/notices';
+import {
+  useNoticeSelectionScopeTotals,
+  useNoticeStatistics,
+} from '@/app/lib/hooks/api/control-panel/notices';
 import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
 import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
@@ -57,25 +60,8 @@ const announcementFormValueSchema = z.object({
     .min(1)
     .max(750),
   delivery_types: z.array(z.enum(['email', 'sms', 'website'])).min(1),
-  recipient_type: z
-    .enum(['teams', 'players', 'registrants', 'members'])
-    .nullable(),
-  scope: z
-    .enum([
-      // Player scopes
-      'allPlayers',
-      'allTeams',
-      'selectedPlayers',
-      'selectedTeams',
-      'league',
-      // Registrant scopes
-      'allRegistrants',
-      // Member scopes
-      'allMembers',
-      'selectedRoles',
-      'specificMembers',
-    ])
-    .nullable(),
+  recipient_type: z.enum(['team', 'player', 'registrant', 'member']).nullable(),
+  scope: z.enum(['all', 'specific', 'roles', 'global_all']).nullable(),
   teams: z.array(z.number()),
   start_date: z.date().nullable(),
   end_date: z.date().nullable(),
@@ -85,6 +71,11 @@ type AnnouncementFormValues = z.infer<typeof announcementFormValueSchema>;
 
 function CreateAnnouncementModal({ isOpen, close }: ModalType) {
   const { data, status } = useNoticeStatistics();
+
+  const { totals, status: totalsStatus } = useNoticeSelectionScopeTotals();
+
+  console.log('totes', totals);
+
   const { credits_remaining } = data || {};
 
   const [step, setStep] = useState(1);
@@ -93,8 +84,8 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
     title: '',
     content: '',
     delivery_types: [],
-    recipient_type: null, // 'players' or 'registrants' or 'members'
-    scope: null, // 'all', 'season', or 'teams'
+    recipient_type: null, // 'players' or 'registrants' or 'members' or 'teams'
+    scope: null, // 'all', 'specific', 'roles', 'global_all'
     teams: [],
     start_date: null,
     end_date: null,
@@ -146,60 +137,41 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
 
   const receipients = [
     {
-      value: 'players',
+      value: 'player',
       label: 'Players',
     },
-    { value: 'registrants', label: 'Registrants' },
-    { value: 'members', label: 'Members' },
+    { value: 'team', label: 'Teams' },
+    { value: 'registrant', label: 'Registrants' },
+    { value: 'member', label: 'Members' },
   ];
 
-  const teamScopeOptions = {
-    currentSeason: {
-      header: 'Current Season',
-      options: [
-        { value: 'allTeams', label: 'All Teams' },
-        { value: 'selectedTeams', label: 'Select Teams' },
-      ],
-    },
-    global: null,
+  type ScopeOptionType = {
+    team: Array<{ value: string; label: string }>;
+    player: Array<{ value: string; label: string }>;
+    registrant: Array<{ value: string; label: string }>;
+    member: Array<{ value: string; label: string }>;
   };
 
-  const playersScopeOptions = {
-    currentSeason: {
-      header: 'Current Season',
-      options: [
-        { value: 'allPlayes', label: 'All Players' },
-        { value: 'selectedPlayers', label: 'Select Players' },
-      ],
-    },
-    global: {
-      header: 'Global',
-      options: [{ value: 'league', label: 'All in League' }],
-    },
+  const scopeOptions: ScopeOptionType = {
+    team: [
+      { value: 'all', label: 'All Teams in Season' },
+      { value: 'specific', label: 'Select Teams' },
+    ],
+    player: [
+      { value: 'all', label: 'All Players in Season' },
+      { value: 'specific', label: 'Select Players' },
+      { value: 'global_all', label: 'All Players in League' },
+    ],
+    registrant: [
+      { value: 'all', label: 'All Registrants in Season' },
+      { value: 'specific', label: 'Select Registrants' },
+    ],
+    member: [
+      { value: 'global_all', label: 'All members in league' },
+      { value: 'specific', label: 'Select Members' },
+      { value: 'roles', label: 'Select Roles' },
+    ],
   };
-
-  const registrantsScopeOptions = {
-    currentSeason: {
-      header: 'Current Season',
-      options: [{ value: 'allRegistrants', label: 'All Registrants' }],
-    },
-  };
-  const membersScopeOptions = {
-    allMembers: {
-      header: 'All Members',
-      options: [{ value: 'allMembers', label: 'All Members' }],
-    },
-    selectedRoles: {
-      header: 'Selected Roles',
-      options: [{ value: 'selectedRoles', label: 'Select Roles' }],
-    },
-    specificMembers: {
-      header: 'Specific Members',
-      options: [{ value: 'specificMembers', label: 'Select Members' }],
-    },
-  };
-
-  const teams: BaseTeam[] = [];
 
   //todo: count the total emails/sms to be used with this notice
   //todo: allow user to save for later or save + send
@@ -214,6 +186,9 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
    * 3. members
    * - all members, selected roles, specific members
    */
+
+  const [totalEmailsToBeSent, setTotalEmailsToBeSent] = useState(0);
+  const [totalSMSToBeSent, setTotalSMSToBeSent] = useState(0);
 
   return (
     <Modal
@@ -268,519 +243,547 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
             }
 
             if (step === 3) {
+              console.log('validating step 3');
+              //todo: validate totalEmailsToBeSent && totalSMSToBeSent
             }
 
             return errors;
           }}
         >
-          {({ values, setFieldValue, errors, setErrors }) => (
-            <Form className='space-y-6'>
-              <div className='mb-6 pr-7 text-lg font-bold'>
-                {step === 1 ? 'Create Notice' : values.title}
-              </div>
-              <div className=''>
-                {step === 1 && (
-                  <div className='space-y-6'>
-                    {/* Title */}
-                    <div className={INPUT_CONTAINER_CLASSES}>
-                      <FormLabel htmlFor='title' required label='Title' />
-                      <Field
-                        className={classNames('text-sm', INPUT_CLASSES)}
-                        name='title'
-                        placeholder='Enter your title here'
-                      />
-
-                      <ErrorMessage
-                        name='title'
-                        className='text-sm text-red-500'
-                        component={'div'}
-                      />
-                    </div>
-
-                    {/* todo: convert to WYSIWYG  */}
-                    {/* Content */}
-                    <div className={INPUT_CONTAINER_CLASSES}>
-                      <FormLabel htmlFor='content' required label='Notice' />
-                      <Field
-                        className={classNames(
-                          'h-[150px] resize-none py-2 text-sm',
-                          INPUT_CLASSES
-                        )}
-                        name='content'
-                        as='textarea'
-                        placeholder='Enter your notice here'
-                      />
-
-                      <ErrorMessage
-                        name='content'
-                        className='text-sm text-red-500'
-                        component={'div'}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {step === 2 && (
-                  <div className='space-y-10'>
-                    <div className=''>
-                      {/* Delivery Types */}
+          {({ values, setFieldValue, errors, setErrors }) => {
+            return (
+              <Form className='space-y-5'>
+                <div className=' text-lg font-bold'>
+                  {step === 1 ? 'Create Notice' : values.title}
+                </div>
+                <div>
+                  {step === 1 && (
+                    <div className='space-y-6'>
+                      {/* Title */}
                       <div className={INPUT_CONTAINER_CLASSES}>
-                        <div className='space-y-4'>
-                          {deliveryTypes.map((type) => {
-                            const checked = values.delivery_types.includes(
-                              type.value as 'email' | 'sms' | 'website'
-                            );
-                            return (
-                              <div
-                                key={type.value}
-                                className='flex items-center justify-between space-x-2 text-sm'
-                              >
-                                <label
-                                  className='select-none font-medium'
-                                  htmlFor={type.value}
+                        <FormLabel htmlFor='title' required label='Title' />
+                        <Field
+                          className={classNames('text-sm', INPUT_CLASSES)}
+                          name='title'
+                          placeholder='Enter your title here'
+                        />
+
+                        <ErrorMessage
+                          name='title'
+                          className='text-sm text-red-500'
+                          component={'div'}
+                        />
+                      </div>
+
+                      {/* todo: convert to WYSIWYG  */}
+                      {/* Content */}
+                      <div className={INPUT_CONTAINER_CLASSES}>
+                        <FormLabel htmlFor='content' required label='Notice' />
+                        <Field
+                          className={classNames(
+                            'h-[150px] resize-none py-2 text-sm',
+                            INPUT_CLASSES
+                          )}
+                          name='content'
+                          as='textarea'
+                          placeholder='Enter your notice here'
+                        />
+
+                        <ErrorMessage
+                          name='content'
+                          className='text-sm text-red-500'
+                          component={'div'}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {step === 2 && (
+                    <div className='space-y-10'>
+                      <div className=''>
+                        {/* Delivery Types */}
+                        <div className={INPUT_CONTAINER_CLASSES}>
+                          <div className='space-y-4'>
+                            {deliveryTypes.map((type) => {
+                              const checked = values.delivery_types.includes(
+                                type.value as 'email' | 'sms' | 'website'
+                              );
+                              return (
+                                <div
+                                  key={type.value}
+                                  className='flex items-center justify-between space-x-2 text-sm'
                                 >
-                                  {type.label}
-                                </label>
+                                  <label
+                                    className='select-none font-medium'
+                                    htmlFor={type.value}
+                                  >
+                                    {type.label}
+                                  </label>
 
-                                <Switch
-                                  checked={checked}
-                                  onChange={() => {
-                                    setErrors({});
-                                    if (checked) {
-                                      const removedType =
-                                        values.delivery_types.filter(
-                                          (dt) => dt !== type.value
-                                        );
+                                  <Switch
+                                    checked={checked}
+                                    onChange={() => {
+                                      setErrors({});
+                                      if (checked) {
+                                        const removedType =
+                                          values.delivery_types.filter(
+                                            (dt) => dt !== type.value
+                                          );
 
-                                      setFieldValue(
-                                        'delivery_types',
-                                        removedType
-                                      );
-
-                                      if (
-                                        !removedType.includes('email') &&
-                                        !removedType.includes('sms')
-                                      ) {
-                                        setFieldValue('recipient_type', null);
-                                        setFieldValue('scope', null);
-                                        setFieldValue('teams', []);
-                                      }
-                                    } else {
-                                      if (type.value === 'website') {
-                                        setFieldValue('delivery_types', [
-                                          'website',
-                                        ]);
-                                        setFieldValue('recipient_type', null);
-                                        setFieldValue('scope', null);
-                                        setFieldValue('teams', []);
-                                      } else {
-                                        const newTypes = [
-                                          ...values.delivery_types.filter(
-                                            (dt) => dt !== 'website'
-                                          ),
-                                          type.value as
-                                            | 'email'
-                                            | 'sms'
-                                            | 'website',
-                                        ];
                                         setFieldValue(
                                           'delivery_types',
-                                          newTypes
+                                          removedType
                                         );
+
+                                        if (
+                                          !removedType.includes('email') &&
+                                          !removedType.includes('sms')
+                                        ) {
+                                          setFieldValue('recipient_type', null);
+                                          setFieldValue('scope', null);
+                                          setFieldValue('teams', []);
+                                        }
+                                      } else {
+                                        if (type.value === 'website') {
+                                          setFieldValue('delivery_types', [
+                                            'website',
+                                          ]);
+                                          setFieldValue('recipient_type', null);
+                                          setFieldValue('scope', null);
+                                          setFieldValue('teams', []);
+                                        } else {
+                                          const newTypes = [
+                                            ...values.delivery_types.filter(
+                                              (dt) => dt !== 'website'
+                                            ),
+                                            type.value as
+                                              | 'email'
+                                              | 'sms'
+                                              | 'website',
+                                          ];
+                                          setFieldValue(
+                                            'delivery_types',
+                                            newTypes
+                                          );
+                                        }
                                       }
-                                    }
-                                  }}
-                                  className={classNames(
-                                    checked ? 'bg-primary' : 'bg-gray-200',
-                                    'relative inline-flex h-6 w-11 items-center rounded-full'
-                                  )}
-                                >
-                                  <span
+                                    }}
                                     className={classNames(
-                                      checked
-                                        ? 'translate-x-6'
-                                        : 'translate-x-1',
-                                      'inline-block h-4 w-4 transform rounded-full bg-white transition'
+                                      checked ? 'bg-primary' : 'bg-gray-200',
+                                      'relative inline-flex h-6 w-11 items-center rounded-full'
                                     )}
-                                  />
-                                </Switch>
-                              </div>
-                            );
-                          })}{' '}
-                        </div>
-                      </div>
-                      {values.delivery_types.includes('website') && (
-                        <div>
-                          <p className='my-4 rounded-md bg-secondary/10 p-3 text-xs text-gray-500'>
-                            This message will be placed at the top of the
-                            website
-                          </p>
-
-                          <div className='flex items-center space-x-4'>
-                            <span className='text-sm'>From</span>
-                            <Popover
-                              as='div'
-                              className='relative flex h-full w-max items-center justify-center rounded-lg'
-                            >
-                              <Popover.Button
-                                type='button'
-                                className='rounded-md bg-primary p-2 text-sm text-white shadow hover:bg-primary/90'
-                              >
-                                {values.start_date ? (
-                                  format(values.start_date, 'PPP')
-                                ) : (
-                                  <span>Start date</span>
-                                )}
-                              </Popover.Button>
-
-                              <Popover.Panel aria-label='Open Date'>
-                                {({ close }) => (
-                                  <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
-                                    <Calendar
-                                      showOutsideDays={false}
-                                      disabled={{
-                                        before: new Date(),
-                                      }}
-                                      mode='single'
-                                      selected={
-                                        values.start_date
-                                          ? new Date(values.start_date)
-                                          : undefined
-                                      }
-                                      onSelect={(date) => {
-                                        if (!date) return;
-
-                                        setFieldValue('start_date', date);
-                                        setFieldValue('end_date', null);
-
-                                        close();
-                                      }}
+                                  >
+                                    <span
+                                      className={classNames(
+                                        checked
+                                          ? 'translate-x-6'
+                                          : 'translate-x-1',
+                                        'inline-block h-4 w-4 transform rounded-full bg-white transition'
+                                      )}
                                     />
-                                  </div>
-                                )}
-                              </Popover.Panel>
-                            </Popover>
-                            <span className='text-sm'>to</span>
-                            <Popover
-                              as='div'
-                              className='relative flex h-full w-max items-center justify-center rounded-lg'
-                            >
-                              <Popover.Button
-                                type='button'
-                                className='rounded-md bg-primary p-2 text-sm text-white shadow hover:bg-primary/90'
-                              >
-                                {values.end_date ? (
-                                  format(values.end_date, 'PPP')
-                                ) : (
-                                  <span>End date</span>
-                                )}
-                              </Popover.Button>
-
-                              <Popover.Panel aria-label='Open Date'>
-                                {({ close }) => (
-                                  <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
-                                    <Calendar
-                                      showOutsideDays={false}
-                                      disabled={{
-                                        before: values.start_date
-                                          ? values.start_date
-                                          : new Date(),
-                                      }}
-                                      mode='single'
-                                      selected={
-                                        values.end_date
-                                          ? new Date(values.end_date)
-                                          : undefined
-                                      }
-                                      onSelect={(date) => {
-                                        if (!date) return;
-
-                                        setFieldValue('end_date', date);
-
-                                        close();
-                                      }}
-                                    />
-                                  </div>
-                                )}
-                              </Popover.Panel>
-                            </Popover>
-                          </div>
-                        </div>
-                      )}
-
-                      {errors.start_date || errors.end_date ? (
-                        <div className='mt-4 text-sm text-red-500'>
-                          Please fill out the dates
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                )}
-
-                {/* Email/SMS recipients */}
-                {step === 3 && (
-                  <div>
-                    {values.delivery_types.includes('email') ||
-                    values.delivery_types.includes('sms') ? (
-                      <div>
-                        <div className='mb-4 flex items-center justify-start gap-2 font-bold text-gray-500'>
-                          {values.delivery_types.includes('email') && (
-                            <span>Email</span>
-                          )}
-
-                          {values.delivery_types.includes('sms') && (
-                            <span> Text Message </span>
-                          )}
-                        </div>
-                        {/* Receipient */}
-                        <div>
-                          <div className='font-medium'>Select the group:</div>
-
-                          {/* First Level */}
-                          <div className='mt-4 space-x-4 text-sm'>
-                            {receipients.map((type) => {
-                              return (
-                                <button
-                                  key={type.value}
-                                  disabled={
-                                    !values.delivery_types.includes('email') &&
-                                    !values.delivery_types.includes('sms')
-                                  }
-                                  className={classNames(
-                                    values.recipient_type === type.value
-                                      ? 'border-secondary bg-secondary'
-                                      : '',
-                                    'rounded border border-primary bg-primary p-2 font-medium text-white disabled:opacity-40'
-                                  )}
-                                  role='radio'
-                                  aria-checked={
-                                    values.recipient_type === type.value
-                                  }
-                                  type='button'
-                                  onClick={() => {
-                                    if (values.recipient_type === type.value) {
-                                      setFieldValue('recipient_type', null);
-                                    } else {
-                                      setFieldValue(
-                                        'recipient_type',
-                                        type.value
-                                      );
-                                    }
-
-                                    setFieldValue('scope', '');
-                                    setFieldValue('teams', []);
-                                  }}
-                                >
-                                  {type.label}
-                                </button>
+                                  </Switch>
+                                </div>
                               );
-                            })}
+                            })}{' '}
                           </div>
+                        </div>
+                        {values.delivery_types.includes('website') && (
+                          <div>
+                            <p className='my-4 rounded-md bg-secondary/10 p-3 text-xs text-gray-500'>
+                              This message will be placed at the top of the
+                              website
+                            </p>
 
-                          {/* Second Level: Scope Selection */}
-                          {values.recipient_type &&
-                            values.recipient_type === 'players' && (
-                              <div className='mb-4 space-y-2'>
-                                <div className='space-y-1 text-sm'>
-                                  <div>Current Season</div>
+                            <div className='flex items-center space-x-4'>
+                              <span className='text-sm'>From</span>
+                              <Popover
+                                as='div'
+                                className='relative flex h-full w-max items-center justify-center rounded-lg'
+                              >
+                                <Popover.Button
+                                  type='button'
+                                  className='rounded-md bg-primary p-2 text-sm text-white shadow hover:bg-primary/90'
+                                >
+                                  {values.start_date ? (
+                                    format(values.start_date, 'PPP')
+                                  ) : (
+                                    <span>Start date</span>
+                                  )}
+                                </Popover.Button>
 
-                                  <div>
-                                    <button
-                                      className={classNames(
-                                        values.scope === 'season'
-                                          ? 'border-secondary bg-secondary/10 text-secondary'
-                                          : 'border-slate-300 bg-slate-50',
-                                        'rounded border px-2 py-1 font-medium disabled:opacity-40'
-                                      )}
-                                      role='radio'
-                                      aria-checked={values.scope === 'season'}
-                                      type='button'
-                                      onClick={() => {
-                                        setFieldValue('scope', 'season');
-                                        setFieldValue('teams', []);
-                                      }}
-                                    >
-                                      All Players
-                                    </button>
+                                <Popover.Panel aria-label='Open Date'>
+                                  {({ close }) => (
+                                    <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
+                                      <Calendar
+                                        showOutsideDays={false}
+                                        disabled={{
+                                          before: new Date(),
+                                        }}
+                                        mode='single'
+                                        selected={
+                                          values.start_date
+                                            ? new Date(values.start_date)
+                                            : undefined
+                                        }
+                                        onSelect={(date) => {
+                                          if (!date) return;
 
-                                    <button
-                                      className={classNames(
-                                        values.scope === 'teams'
-                                          ? 'border-secondary bg-secondary/10 text-secondary'
-                                          : 'border-slate-300 bg-slate-50',
-                                        'rounded border px-2 py-1 font-medium disabled:opacity-40'
-                                      )}
-                                      role='radio'
-                                      aria-checked={values.scope === 'teams'}
-                                      type='button'
-                                      onClick={() => {
-                                        setFieldValue('scope', 'teams');
-                                        setFieldValue('teams', []);
-                                      }}
-                                    >
-                                      All Teams
-                                    </button>
+                                          setFieldValue('start_date', date);
+                                          setFieldValue('end_date', null);
 
-                                    <button
-                                      className={classNames(
-                                        values.scope === 'teams'
-                                          ? 'border-secondary bg-secondary/10 text-secondary'
-                                          : 'border-slate-300 bg-slate-50',
-                                        'rounded border px-2 py-1 font-medium disabled:opacity-40'
-                                      )}
-                                      role='radio'
-                                      aria-checked={values.scope === 'teams'}
-                                      type='button'
-                                      onClick={() => {
-                                        setFieldValue('scope', 'teams');
-                                        setFieldValue('teams', []);
-                                      }}
-                                    >
-                                      Select Teams
-                                    </button>
-                                    <button
-                                      className={classNames(
-                                        values.scope === 'players'
-                                          ? 'border-secondary bg-secondary/10 text-secondary'
-                                          : 'border-slate-300 bg-slate-50',
-                                        'rounded border px-2 py-1 font-medium disabled:opacity-40'
-                                      )}
-                                      role='radio'
-                                      aria-checked={values.scope === 'players'}
-                                      type='button'
-                                      onClick={() => {
-                                        setFieldValue('scope', 'players');
-                                        setFieldValue('teams', []);
-                                      }}
-                                    >
-                                      Select Players
-                                    </button>
-                                  </div>
-                                </div>
-
-                                <div className='space-y-1 text-sm'>
-                                  <div>Global</div>
-
-                                  <div>
-                                    <button
-                                      className={classNames(
-                                        values.scope === 'league'
-                                          ? 'border-secondary bg-secondary/10 text-secondary'
-                                          : 'border-slate-300 bg-slate-50',
-                                        'rounded border px-2 py-1 font-medium disabled:opacity-40'
-                                      )}
-                                      role='radio'
-                                      aria-checked={values.scope === 'league'}
-                                      type='button'
-                                      onClick={() => {
-                                        setFieldValue('scope', 'league');
-                                        setFieldValue('teams', []);
-                                      }}
-                                    >
-                                      All in League
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                          {/* Third Level: Team Selection (if applicable) */}
-                          {values.recipient_type === 'players' &&
-                            values.scope === 'teams' && (
-                              <div className='mb-4'>
-                                <FormLabel
-                                  htmlFor='teams'
-                                  required
-                                  label='Select Teams'
-                                />
-                                <div className='max-h-40 space-y-2 overflow-y-auto rounded border p-2'>
-                                  {teams.map((team) => (
-                                    <label
-                                      key={team.id}
-                                      className='flex items-center gap-2'
-                                    >
-                                      <input
-                                        type='checkbox'
-                                        checked={values.teams.includes(team.id)}
-                                        onChange={(e) => {
-                                          const newTeams = e.target.checked
-                                            ? [...values.teams, team.id]
-                                            : values.teams.filter(
-                                                (id) => id !== team.id
-                                              );
-                                          setFieldValue('teams', newTeams);
+                                          close();
                                         }}
                                       />
-                                      <span>{team.name}</span>
-                                    </label>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                        </div>
+                                    </div>
+                                  )}
+                                </Popover.Panel>
+                              </Popover>
+                              <span className='text-sm'>to</span>
+                              <Popover
+                                as='div'
+                                className='relative flex h-full w-max items-center justify-center rounded-lg'
+                              >
+                                <Popover.Button
+                                  type='button'
+                                  className='rounded-md bg-primary p-2 text-sm text-white shadow hover:bg-primary/90'
+                                >
+                                  {values.end_date ? (
+                                    format(values.end_date, 'PPP')
+                                  ) : (
+                                    <span>End date</span>
+                                  )}
+                                </Popover.Button>
+
+                                <Popover.Panel aria-label='Open Date'>
+                                  {({ close }) => (
+                                    <div className='absolute left-0 top-[3.2rem] z-10 mt-1 w-max rounded-lg border bg-white shadow'>
+                                      <Calendar
+                                        showOutsideDays={false}
+                                        disabled={{
+                                          before: values.start_date
+                                            ? values.start_date
+                                            : new Date(),
+                                        }}
+                                        mode='single'
+                                        selected={
+                                          values.end_date
+                                            ? new Date(values.end_date)
+                                            : undefined
+                                        }
+                                        onSelect={(date) => {
+                                          if (!date) return;
+
+                                          setFieldValue('end_date', date);
+
+                                          close();
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+                                </Popover.Panel>
+                              </Popover>
+                            </div>
+                          </div>
+                        )}
+
+                        {errors.start_date || errors.end_date ? (
+                          <div className='mt-4 text-sm text-red-500'>
+                            Please fill out the dates
+                          </div>
+                        ) : null}
                       </div>
-                    ) : null}
-
-                    {/* TODO: need to display indicator if exceeding remaining with group selection */}
-                    <div className='mt-6 space-y-2 rounded-lg bg-slate-50 p-4 text-sm'>
-                      {values.delivery_types.includes('email') && (
-                        <div className='flex items-center justify-between'>
-                          <span>Emails to be sent</span>{' '}
-                          {credits_remaining && (
-                            <span>{`${0} / ${credits_remaining.email.remaining}`}</span>
-                          )}
-                        </div>
-                      )}
-
-                      {values.delivery_types.includes('sms') && (
-                        <div className='flex items-center justify-between'>
-                          <span>Text messages to be sent</span>{' '}
-                          {credits_remaining && (
-                            <span>{`${0} / ${credits_remaining.sms.remaining}`}</span>
-                          )}
-                        </div>
-                      )}
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className='flex items-center justify-between'>
-                {step !== 1 ? (
-                  <Button
-                    type='button'
-                    onClick={() => {
-                      if (step === 1) return;
-                      setStep((prev) => prev - 1);
-                    }}
-                    className='border-0 bg-slate-50 !text-black hover:bg-slate-100 disabled:opacity-40'
-                  >
-                    Previous
-                  </Button>
-                ) : (
-                  <span />
-                )}
+                  )}
 
-                {/* Possibly add preview */}
-                <Button
-                  type='submit'
-                  disabled={step === 2 && values.delivery_types.length === 0}
-                >
-                  {' '}
-                  {step === 1 && 'Next'}{' '}
-                  {step === 2 &&
-                    values.delivery_types.includes('website') &&
-                    'Post'}
-                  {step === 2 &&
-                    values.delivery_types.length === 0 &&
-                    'Select Option'}
-                  {(step === 2 && values.delivery_types.includes('email')) ||
-                  values.delivery_types.includes('sms')
-                    ? 'Select Group'
-                    : ''}
-                </Button>
-              </div>
-            </Form>
-          )}
+                  {/* Email/SMS recipients */}
+                  {step === 3 && (
+                    <div>
+                      {values.delivery_types.includes('email') ||
+                      values.delivery_types.includes('sms') ? (
+                        <div>
+                          <div className='mb-4 flex items-center justify-start gap-2 font-bold text-gray-500'>
+                            {values.delivery_types.includes('email') && (
+                              <span className='rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700'>
+                                Email
+                              </span>
+                            )}
+
+                            {values.delivery_types.includes('sms') && (
+                              <span className='rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700'>
+                                {' '}
+                                SMS{' '}
+                              </span>
+                            )}
+                          </div>
+                          {/* Receipient */}
+                          <div>
+                            <div className='mb-2 text-sm font-medium text-gray-500'>
+                              Select a group:
+                            </div>
+
+                            {/* First Level */}
+                            <div className='mb-6 space-x-4 text-sm'>
+                              {receipients.map((type, index) => {
+                                return (
+                                  <button
+                                    key={type.value ?? +index}
+                                    disabled={
+                                      !values.delivery_types.includes(
+                                        'email'
+                                      ) &&
+                                      !values.delivery_types.includes('sms')
+                                    }
+                                    className={classNames(
+                                      values.recipient_type === type.value
+                                        ? 'border-primary bg-primary text-white'
+                                        : 'border-slate-50 bg-slate-50 text-gray-700',
+                                      'rounded border p-2 font-medium  hover:opacity-80 disabled:opacity-40'
+                                    )}
+                                    role='radio'
+                                    aria-checked={
+                                      values.recipient_type === type.value
+                                    }
+                                    type='button'
+                                    onClick={() => {
+                                      console.log('clicked', type.value);
+                                      if (
+                                        values.recipient_type === type.value
+                                      ) {
+                                        setFieldValue('recipient_type', null);
+                                      } else {
+                                        setFieldValue(
+                                          'recipient_type',
+                                          type.value
+                                        );
+                                      }
+
+                                      setFieldValue('scope', '');
+                                      setFieldValue('teams', []);
+                                      setTotalEmailsToBeSent(0);
+                                      setTotalSMSToBeSent(0);
+                                    }}
+                                  >
+                                    {type.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            {/* Second Level: Scope Selection */}
+                            <div>
+                              {values.recipient_type &&
+                                scopeOptions[values.recipient_type] && (
+                                  <div>
+                                    <div className='mb-2 mt-4 text-sm font-medium text-gray-500'>
+                                      Who would you like to send this to?
+                                    </div>
+
+                                    <div className='mb-6 space-x-4 text-sm'>
+                                      {scopeOptions[values.recipient_type].map(
+                                        (option, index) => {
+                                          return (
+                                            <button
+                                              key={option.value ?? +index}
+                                              disabled={
+                                                (!values.delivery_types.includes(
+                                                  'email'
+                                                ) &&
+                                                  !values.delivery_types.includes(
+                                                    'sms'
+                                                  )) ||
+                                                !totals
+                                              }
+                                              className={classNames(
+                                                values.scope === option.value
+                                                  ? 'border-primary bg-primary text-white'
+                                                  : 'border-slate-50 bg-slate-50 text-gray-700',
+                                                'rounded border p-2 font-medium  hover:opacity-80 disabled:opacity-40'
+                                              )}
+                                              role='radio'
+                                              aria-checked={
+                                                values.scope === option.value
+                                              }
+                                              type='button'
+                                              onClick={() => {
+                                                if (!totals) return;
+
+                                                const checked =
+                                                  values.scope === option.value;
+
+                                                if (checked) {
+                                                  setFieldValue('scope', '');
+                                                } else {
+                                                  setFieldValue(
+                                                    'scope',
+                                                    option.value
+                                                  );
+                                                }
+
+                                                console.log(
+                                                  'option.value',
+                                                  option.value
+                                                );
+
+                                                if (
+                                                  checked ||
+                                                  option.value === 'specific' ||
+                                                  option.value === 'roles'
+                                                ) {
+                                                  setTotalEmailsToBeSent(0);
+                                                  setTotalSMSToBeSent(0);
+                                                } else {
+                                                  const recipientType =
+                                                    values.recipient_type as keyof typeof totals;
+
+                                                  const counts = totals[
+                                                    recipientType
+                                                  ] as any;
+
+                                                  const total =
+                                                    counts?.[
+                                                      option.value ===
+                                                      'global_all'
+                                                        ? 'league'
+                                                        : 'season'
+                                                    ] || 0;
+
+                                                  if (
+                                                    values.delivery_types.includes(
+                                                      'email'
+                                                    )
+                                                  ) {
+                                                    setTotalEmailsToBeSent(
+                                                      total
+                                                    );
+                                                  }
+
+                                                  if (
+                                                    values.delivery_types.includes(
+                                                      'sms'
+                                                    )
+                                                  ) {
+                                                    setTotalSMSToBeSent(total);
+                                                  }
+                                                }
+                                              }}
+                                            >
+                                              {option.label}
+                                            </button>
+                                          );
+                                        }
+                                      )}{' '}
+                                    </div>
+                                  </div>
+                                )}
+
+                              {/* When hand picking recipients */}
+
+                              <div>
+                                {values.recipient_type === 'player' &&
+                                  values.scope === 'specific' && (
+                                    <div>show player selection dropdown</div>
+                                  )}
+
+                                {values.recipient_type === 'team' &&
+                                  values.scope === 'specific' && (
+                                    <div>show team selection dropdown</div>
+                                  )}
+
+                                {values.recipient_type === 'registrant' &&
+                                  values.scope === 'specific' && (
+                                    <div>
+                                      show registrants selection dropdown
+                                    </div>
+                                  )}
+
+                                {values.recipient_type === 'member' &&
+                                  values.scope === 'specific' && (
+                                    <div>show members selection dropdown</div>
+                                  )}
+
+                                {values.recipient_type === 'member' &&
+                                  values.scope === 'roles' && (
+                                    <div>show roles selection dropdown</div>
+                                  )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {/* TODO: need to display indicator if exceeding remaining with group selection */}
+                      <div className='mt-6 space-y-2 rounded-lg bg-slate-50 p-4 text-sm'>
+                        {values.delivery_types.includes('email') && (
+                          <div className='flex items-center justify-between'>
+                            <span>Emails to be sent</span>{' '}
+                            {credits_remaining && (
+                              <span
+                                className={classNames(
+                                  totalEmailsToBeSent >
+                                    credits_remaining.email.remaining &&
+                                    'text-red-500'
+                                )}
+                              >{`${totalEmailsToBeSent} / ${credits_remaining.email.remaining}`}</span>
+                            )}
+                          </div>
+                        )}
+
+                        {values.delivery_types.includes('sms') && (
+                          <div className='flex items-center justify-between'>
+                            <span>Text messages to be sent</span>{' '}
+                            {credits_remaining && (
+                              <span
+                                className={classNames(
+                                  totalSMSToBeSent >
+                                    credits_remaining.sms.remaining &&
+                                    'text-red-500'
+                                )}
+                              >{`${totalSMSToBeSent} / ${credits_remaining.sms.remaining}`}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className='flex items-center justify-between'>
+                  {step !== 1 ? (
+                    <Button
+                      type='button'
+                      onClick={() => {
+                        if (step === 1) return;
+                        setStep((prev) => prev - 1);
+                      }}
+                      className='border-0 bg-slate-50 !text-black hover:bg-slate-100 disabled:opacity-40'
+                    >
+                      Previous
+                    </Button>
+                  ) : (
+                    <span />
+                  )}
+
+                  {/* Possibly add preview */}
+                  <Button
+                    type='submit'
+                    disabled={step === 2 && values.delivery_types.length === 0}
+                  >
+                    {' '}
+                    {step === 1 && 'Next'}{' '}
+                    {step === 2 &&
+                      values.delivery_types.includes('website') &&
+                      'Post'}
+                    {step === 2 &&
+                      values.delivery_types.length === 0 &&
+                      'Select Option'}
+                    {(step === 2 && values.delivery_types.includes('email')) ||
+                    values.delivery_types.includes('sms')
+                      ? 'Select Group'
+                      : ''}
+                  </Button>
+                </div>
+              </Form>
+            );
+          }}
         </Formik>
       </div>
     </Modal>

@@ -278,9 +278,7 @@ export const noticeItemSchema = z.object({
   title: z.string(),
   message: z.string(),
   delivery_type: z.array(z.enum(['email', 'sms', 'website'])),
-  recipient_type: z
-    .enum(['team', 'player', 'registrant', 'members'])
-    .nullable(),
+  recipient_type: z.enum(['team', 'player', 'registrant', 'member']).nullable(),
   recipient_scope: z
     .enum(['all', 'specific', 'roles', 'global_all'])
     .nullable(),
@@ -316,7 +314,6 @@ const deliveryDetailSchema = z.object({
   sms_delivered_at: z.string().nullable(),
 });
 
-// Schema for the response
 export const deliveryDetailsResponseSchema = z.object({
   announcement_id: z.number(),
   delivery_details: z.array(deliveryDetailSchema),
@@ -326,4 +323,23 @@ export type DeliveryDetailsResponse = z.infer<
   typeof deliveryDetailsResponseSchema
 >;
 
+export const selectionScopeTotalCountsSchema = z.object({
+  player: z.object({
+    season: z.number(),
+    league: z.number(),
+  }),
+  team: z.object({
+    season: z.number(),
+  }),
+  registrant: z.object({
+    season: z.number(),
+  }),
+  member: z.object({
+    league: z.number(),
+  }),
+});
+
+export type SelectionScopeTotalCounts = z.infer<
+  typeof selectionScopeTotalCountsSchema
+>;
 // ---- endregion

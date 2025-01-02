@@ -1,127 +1,113 @@
-import * as React from 'react';
-// import { ButtonProps, buttonVariants } from '@/components/ui/button';
 import classNames from 'classnames';
 
-interface ButtonProps {
-  size: 'icon' | 'default';
-  variant: 'primary' | 'secondary';
-  disabled: boolean;
-  // other properties...
+import { Button } from '@/app/lib/components/Button';
+import {
+  IconReturnDownBackSharp,
+  IconReturnDownForwardSharp,
+} from '@/app/lib/SVGs';
+
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (type: 'next' | 'prev' | 'number', page: number) => void;
 }
 
-const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
-  <nav
-    role='navigation'
-    aria-label='pagination'
-    className={classNames('mx-auto flex w-full justify-center', className)}
-    {...props}
-  />
-);
-Pagination.displayName = 'Pagination';
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
+  const getPaginationRange = (currentPage: number, totalPages: number) => {
+    const delta = 2;
+    const range = [];
 
-const PaginationContent = React.forwardRef<
-  HTMLUListElement,
-  React.ComponentProps<'ul'>
->(({ className, ...props }, ref) => (
-  <ul
-    ref={ref}
-    className={classNames('flex flex-row items-center gap-1', className)}
-    {...props}
-  />
-));
-PaginationContent.displayName = 'PaginationContent';
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
+      range.push(i);
+    }
 
-const PaginationItem = React.forwardRef<
-  HTMLLIElement,
-  React.ComponentProps<'li'>
->(({ className, ...props }, ref) => (
-  <li ref={ref} className={classNames('', className)} {...props} />
-));
-PaginationItem.displayName = 'PaginationItem';
+    if (currentPage - delta > 2) {
+      range.unshift('...');
+    }
+    if (currentPage + delta < totalPages - 1) {
+      range.push('...');
+    }
 
-type PaginationLinkProps = {
-  isActive?: boolean;
-} & Pick<ButtonProps, 'size'> &
-  React.ComponentProps<'a'>;
+    range.unshift(1);
+    if (totalPages > 1) {
+      range.push(totalPages);
+    }
 
-const PaginationLink = ({
-  className,
-  isActive,
-  size = 'icon',
-  ...props
-}: PaginationLinkProps) => (
-  <a
-    aria-current={isActive ? 'page' : undefined}
-    className={classNames(
-      //   buttonVariants({
-      //     variant: isActive ? "outline" : "ghost",
-      //     size,
-      //   }),
-      className
-    )}
-    {...props}
-  />
-);
-PaginationLink.displayName = 'PaginationLink';
+    return range;
+  };
 
-const PaginationPrevious = ({
-  className,
-  size = 'default',
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label='Go to previous page'
-    size={size}
-    className={classNames('gap-1 pl-2.5', className)}
-    {...props}
-  >
-    {/* <ChevronLeftIcon className="h-4 w-4" /> */}
-    <span>Previous</span>
-  </PaginationLink>
-);
-PaginationPrevious.displayName = 'PaginationPrevious';
+  return (
+    <nav className='flex items-center justify-center gap-3'>
+      {/* Previous */}
+      <Button
+        variant={'outline'}
+        onClick={() => onPageChange('prev', currentPage)}
+        disabled={currentPage === 1}
+        className={classNames(
+          'flex items-center justify-center gap-2 rounded-md transition-colors',
+          currentPage === 1
+            ? 'cursor-not-allowed text-gray-300'
+            : 'text-gray-600 hover:bg-gray-100'
+        )}
+      >
+        <IconReturnDownBackSharp /> <span>Previous</span>
+      </Button>
 
-const PaginationNext = ({
-  className,
-  size = 'default',
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label='Go to next page'
-    size={size}
-    className={classNames('gap-1 pr-2.5', className)}
-    {...props}
-  >
-    <span>Next</span>
-    {/* <ChevronRightIcon className="h-4 w-4" /> */}
-  </PaginationLink>
-);
-PaginationNext.displayName = 'PaginationNext';
+      {/* Pages */}
+      <div className='flex items-center gap-1'>
+        {getPaginationRange(currentPage, totalPages).map((page, idx) => {
+          if (page === '...') {
+            return (
+              <span
+                key={`${page}-${idx}`}
+                className='flex h-8 w-8 items-center justify-center text-sm text-gray-400'
+              >
+                ⋯
+              </span>
+            );
+          }
 
-const PaginationEllipsis = ({
-  className,
-  ...props
-}: React.ComponentProps<'span'>) => (
-  <span
-    aria-hidden
-    className={classNames(
-      'flex h-9 w-9 items-center justify-center',
-      className
-    )}
-    {...props}
-  >
-    {/* <DotsHorizontalIcon className="h-4 w-4" /> */}
-    <span className='sr-only'>More pages</span>
-  </span>
-);
-PaginationEllipsis.displayName = 'PaginationEllipsis';
+          const isCurrentPage = currentPage === page;
 
-export {
-  Pagination,
-  PaginationContent,
-  PaginationLink,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
-};
+          return (
+            <button
+              key={page}
+              onClick={() => onPageChange('number', page as number)}
+              className={classNames(
+                'flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors',
+                isCurrentPage
+                  ? 'bg-primary font-medium text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              )}
+            >
+              {page}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Next */}
+      <Button
+        variant={'outline'}
+        onClick={() => onPageChange('next', currentPage)}
+        disabled={currentPage === totalPages}
+        className={classNames(
+          'flex items-center justify-center gap-2 rounded-md transition-colors',
+          currentPage === totalPages
+            ? 'cursor-not-allowed text-gray-300'
+            : 'text-gray-600 hover:bg-gray-100'
+        )}
+      >
+        <span>Next</span> <IconReturnDownForwardSharp />
+      </Button>
+    </nav>
+  );
+}

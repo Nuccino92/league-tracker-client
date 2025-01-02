@@ -6,6 +6,7 @@ import {
   createNotice,
   fetchNoticeDetails,
   fetchNoticeList,
+  fetchNoticeSelectionScopeTotals,
   fetchNoticeStatistics,
   retryNotice,
 } from '@/app/lib/requests/control-panel/notices';
@@ -14,12 +15,10 @@ import { SearchParamScope } from '@/app/lib/types/filters.types';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 
 export function useNoticeList({
-  paginate = false,
   enabled = true,
   includeOnly = [],
   givenParams,
 }: {
-  paginate?: boolean;
   enabled?: boolean;
   includeOnly?: SearchParamScope;
   givenParams?: string;
@@ -30,13 +29,13 @@ export function useNoticeList({
   const { scopeQueryParams } = useQueryString();
   const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
 
-  const { data, status } = useQuery({
+  const { data: response, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.NOTICES_LIST, slug, params],
-    queryFn: () => fetchNoticeList({ token, slug }),
+    queryFn: () => fetchNoticeList({ token, slug, params }),
     staleTime: 30000,
   });
 
-  return { data, status };
+  return { response, status };
 }
 
 export function useNoticeDetails({
@@ -53,7 +52,7 @@ export function useNoticeDetails({
 
   const params = `page=${page || 1}&query=${query || ''}`;
 
-  const { data, status } = useQuery({
+  const { data: response, status } = useQuery({
     queryKey: [
       QUERY_KEYS.CONTROL_PANEL.NOTICES_DETAILS,
       slug,
@@ -64,7 +63,7 @@ export function useNoticeDetails({
     staleTime: 30000,
   });
 
-  return { data, status };
+  return { response, status };
 }
 
 export function useNoticeStatistics() {
@@ -116,4 +115,16 @@ export function useRetryNotices() {
       });
     },
   });
+}
+
+export function useNoticeSelectionScopeTotals() {
+  const { token } = useAuth();
+  const { slug } = useLeagueControlPanel();
+
+  const { data: totals, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.NOTICE_SELECTION_SCOPE_TOTALS, slug],
+    queryFn: () => fetchNoticeSelectionScopeTotals({ token, slug }),
+  });
+
+  return { totals, status };
 }

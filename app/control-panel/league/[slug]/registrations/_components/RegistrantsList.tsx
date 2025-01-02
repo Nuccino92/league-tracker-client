@@ -82,7 +82,7 @@ export default function RegistrantsList({ slug }: Props) {
             }
             buttonText={
               seasons.all_seasons.find((season) => season.id === selectedSeason)
-                ?.name ?? 'Select a Season'
+                ?.name ?? 'All seasons'
             }
             options={[
               { label: 'All seasons', value: null },
