@@ -36,17 +36,19 @@ type Props = {
  */
 
 export default function MembersList({ slug }: Props) {
-  const { data, status } = useMembers({
+  const { response, status } = useMembers({
     slug,
     includeOnly: ['search', 'role'],
   });
 
   return (
     <div className='h-full'>
-      {data && status === 'success' ? (
+      {response && status === 'success' ? (
         <div className='h-full space-y-2'>
-          {data.length > 0 ? (
-            data.map((member) => <MemberCard key={member.id} member={member} />)
+          {response.data.length > 0 ? (
+            response.data.map((member) => (
+              <MemberCard key={member.id} member={member} />
+            ))
           ) : (
             <MissingList
               text='No League Members'

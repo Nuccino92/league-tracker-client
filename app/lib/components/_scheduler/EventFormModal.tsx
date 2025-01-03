@@ -587,7 +587,7 @@ function FormSectionBelowType({
   props: FormikProps<EventForm>;
   formType: EventFormTypes;
 }) {
-  const { data, status } = useTeams({});
+  const { response, status } = useTeams({});
 
   return (
     <div className='bottom-section space-y-4'>
@@ -633,9 +633,9 @@ function FormSectionBelowType({
                       <>
                         <ListBox
                           options={
-                            data
+                            response
                               ? [
-                                  ...transformIntoOptions(data, {
+                                  ...transformIntoOptions(response.data, {
                                     labelKey: 'name',
                                     valueKey: 'id',
                                   }),
@@ -649,8 +649,8 @@ function FormSectionBelowType({
                           key={team.id + index}
                           value={team.id}
                           onChange={(value) => {
-                            if (!data) return;
-                            const newTeam = data.find(
+                            if (!response) return;
+                            const newTeam = response.data.find(
                               (team) => team.id === Number(value)
                             );
 
@@ -700,9 +700,9 @@ function FormSectionBelowType({
               <>
                 <ListBox
                   options={
-                    data
+                    response
                       ? [
-                          ...transformIntoOptions(data, {
+                          ...transformIntoOptions(response.data, {
                             labelKey: 'name',
                             valueKey: 'id',
                           }),
@@ -737,9 +737,9 @@ function FormSectionBelowType({
                   <>
                     <ListBox
                       options={
-                        data
+                        response
                           ? [
-                              ...transformIntoOptions(data, {
+                              ...transformIntoOptions(response.data, {
                                 labelKey: 'name',
                                 valueKey: 'id',
                               }),

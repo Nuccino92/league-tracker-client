@@ -44,7 +44,7 @@ export function useTeams({
 
   const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
 
-  const { data, status } = useQuery({
+  const { data: response, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params, paginate],
     queryFn: () => controlPanelTeamsRequest({ token, slug, params, paginate }),
     enabled,
@@ -52,7 +52,7 @@ export function useTeams({
     staleTime: 180000,
   });
 
-  return { data, status };
+  return { response, status };
 }
 
 export function useTeam({ slug, teamId }: { slug: string; teamId?: number }) {
@@ -128,14 +128,14 @@ export function useArchivedTeams({
 
   const params = createQueryString({ page: page?.toString(), query });
 
-  const { data, status } = useQuery({
+  const { data: response, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.ARCHIVED_TEAMS, slug, params],
     queryFn: () => controlPanelArchivedTeamsRequest({ token, slug, params }),
     retry: false,
     staleTime: 30000,
   });
 
-  return { data, status };
+  return { response, status };
 }
 
 export function useRestoreArchivedTeam() {

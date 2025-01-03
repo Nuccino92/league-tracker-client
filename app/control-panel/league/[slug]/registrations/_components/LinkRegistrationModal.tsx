@@ -52,7 +52,7 @@ export default function LinkRegistrationModal({
   const debouncedSearch = useDebounce(playerSearchInput, 750);
 
   const {
-    data: players,
+    response,
     status: searchPlayersStatus,
     isInitialLoading,
   } = usePlayers({
@@ -218,9 +218,9 @@ export default function LinkRegistrationModal({
 
         {/* Player List */}
         <div className='swatches-picker h-[330px] space-y-2 overflow-y-auto rounded-lg border bg-gray-50 p-4'>
-          {players &&
+          {response &&
             searchPlayersStatus === 'success' &&
-            players.map((searchPlayer) => (
+            response.data.map((searchPlayer) => (
               <div
                 key={searchPlayer.id}
                 className='flex items-center justify-between rounded border bg-white p-3'

@@ -22,14 +22,14 @@ export function useRegistrationForms({
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
-  const { data, status } = useQuery({
+  const { data: response, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRATIONS, slug, paginate],
     queryFn: () => fetchRegistrationForms({ token, slug, paginate }),
     retry: false,
     staleTime: 180000,
   });
 
-  return { data, status };
+  return { response, status };
 }
 
 export function useRegistrantsList({
@@ -46,14 +46,14 @@ export function useRegistrantsList({
 
   const params = scopeQueryParams(includeOnly);
 
-  const { data, status } = useQuery({
+  const { data: response, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRANTS, slug, params, paginate],
     queryFn: () => fetchRegistrantsList({ token, slug, params, paginate }),
     retry: false,
     staleTime: 180000,
   });
 
-  return { data, status };
+  return { response, status };
 }
 
 export function useCreateRegistrationForm({ slug }: { slug: string }) {

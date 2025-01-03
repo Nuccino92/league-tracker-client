@@ -17,7 +17,7 @@ type Props = {
 export default function RegistrationForms({ slug }: Props) {
   const { leagueData } = useLeagueControlPanel();
 
-  const { data, status } = useRegistrationForms({
+  const { response, status } = useRegistrationForms({
     slug,
   });
 
@@ -31,15 +31,15 @@ export default function RegistrationForms({ slug }: Props) {
         {/* TODO: disable if the season isn't on a paid subscription */}
         <Button
           className='flex !h-10 items-center gap-2'
-          disabled={leagueData.seasons.all_seasons.length === 0 || !data}
+          disabled={leagueData.seasons.all_seasons.length === 0 || !response}
           onClick={() => setShowRegistrationFormModal(true)}
         >
           <IconPlus /> Create Registration Form
         </Button>
       </StyledBox>
 
-      {data && status === 'success' && (
-        <RegistrationFormsList slug={slug} forms={data} />
+      {response && status === 'success' && (
+        <RegistrationFormsList slug={slug} forms={response.data} />
       )}
 
       {status === 'loading' && (

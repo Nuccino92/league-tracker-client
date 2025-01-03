@@ -26,7 +26,7 @@ export default function RegistrantsList({ slug }: Props) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { data, status } = useRegistrantsList({
+  const { response, status } = useRegistrantsList({
     slug,
     includeOnly: ['page', 'search', 'season'],
   });
@@ -94,7 +94,7 @@ export default function RegistrantsList({ slug }: Props) {
           />
         </div>
       </div>
-      {data && status === 'success' && (
+      {response && status === 'success' && (
         <div>
           <div className='grid grid-cols-5 gap-4 border-b p-4 text-sm font-medium'>
             <div>Name</div>
@@ -104,7 +104,7 @@ export default function RegistrantsList({ slug }: Props) {
             <div></div>
           </div>
           <div className='divide-y'>
-            {data.map((registrant) => (
+            {response.data.map((registrant) => (
               <Registrant
                 key={registrant.id}
                 registrant={registrant}

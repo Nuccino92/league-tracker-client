@@ -16,6 +16,7 @@ import {
   ControlPanelCheckIfTeamIsInSeason,
 } from '@/app/lib/types/Responses/control-panel.types';
 import { Team, teamSchema } from '@/app/lib/types/Models/Team';
+import { PaginationMetaSchema } from '../../types/pagination.types';
 
 export async function controlPanelTeamsRequest({
   token,
@@ -32,9 +33,16 @@ export async function controlPanelTeamsRequest({
 
   //TODO: on backend, if there is no season and paginate is false, reject the request... possibly
 
-  return new Promise<ControlPanelListTeam[]>((resolve) => {
+  const teamsListResponseSchema = z.object({
+    data: z.array(controlPanelListTeamSchema),
+    meta: PaginationMetaSchema.nullable(),
+  });
+
+  type TeamListRepsonse = z.infer<typeof teamsListResponseSchema>;
+
+  return new Promise<TeamListRepsonse>((resolve) => {
     setTimeout(() => {
-      const result = z.array(controlPanelListTeamSchema).parse(mockTeamList);
+      const result = teamsListResponseSchema.parse(mockTeamList);
       resolve(result);
     }, 400);
   });
@@ -147,11 +155,16 @@ export async function controlPanelArchivedTeamsRequest({
   slug: string;
   params: string;
 }) {
-  return new Promise<ControlPanelArchivedTeam[]>((resolve) => {
+  const achivedTeamsResponseSchema = z.object({
+    data: z.array(controlPanelArchivedTeamSchema),
+    meta: PaginationMetaSchema.nullable(),
+  });
+
+  type AchivedTeamsResponse = z.infer<typeof achivedTeamsResponseSchema>;
+
+  return new Promise<AchivedTeamsResponse>((resolve) => {
     setTimeout(() => {
-      const result = z
-        .array(controlPanelArchivedTeamSchema)
-        .parse(mockTeamList);
+      const result = achivedTeamsResponseSchema.parse(mockTeamList);
       resolve(result);
     }, 630);
   });
@@ -261,56 +274,59 @@ export async function checkIfTeamIsInSeasonRequest({
   return controlPanelCheckIfTeamIsInSeasonSchema.parse(data);
 }
 
-const mockTeamList = [
-  {
-    id: 1,
-    name: 'Toronto Raptors',
-    logo: null,
-    league_id: 20,
-  },
-  {
-    id: 2,
-    name: 'Rip City',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    league_id: 20,
-  },
-  {
-    id: 3,
-    name: 'Los Angeles Lakers',
-    logo: null,
-    league_id: 20,
-  },
-  {
-    id: 4,
-    name: 'Chicago Bulls Baybee',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    league_id: 20,
-  },
-  {
-    id: 5,
-    name: 'Milwaukee Bucks',
-    logo: null,
-    league_id: 20,
-  },
-  {
-    id: 6,
-    name: 'Long Dong Tigers',
-    logo: null,
-    league_id: 20,
-  },
-  {
-    id: 7,
-    name: 'Miami Heat',
-    logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
-    league_id: 20,
-  },
-  {
-    id: 8,
-    name: 'Houston Rockets',
-    logo: null,
-    league_id: 20,
-  },
-];
+const mockTeamList = {
+  meta: null,
+  data: [
+    {
+      id: 1,
+      name: 'Toronto Raptors',
+      logo: null,
+      league_id: 20,
+    },
+    {
+      id: 2,
+      name: 'Rip City',
+      logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+      league_id: 20,
+    },
+    {
+      id: 3,
+      name: 'Los Angeles Lakers',
+      logo: null,
+      league_id: 20,
+    },
+    {
+      id: 4,
+      name: 'Chicago Bulls Baybee',
+      logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+      league_id: 20,
+    },
+    {
+      id: 5,
+      name: 'Milwaukee Bucks',
+      logo: null,
+      league_id: 20,
+    },
+    {
+      id: 6,
+      name: 'Long Dong Tigers',
+      logo: null,
+      league_id: 20,
+    },
+    {
+      id: 7,
+      name: 'Miami Heat',
+      logo: 'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+      league_id: 20,
+    },
+    {
+      id: 8,
+      name: 'Houston Rockets',
+      logo: null,
+      league_id: 20,
+    },
+  ],
+};
 
 const mockTeamForManagementList = [
   {

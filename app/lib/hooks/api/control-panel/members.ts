@@ -24,13 +24,13 @@ export function useMembers({
   // TODO: possibly move this outside and pass in the params to the hook
   const params = scopeQueryParams(includeOnly);
 
-  const { data, status } = useQuery({
+  const { data: response, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.MEMBERS, slug, params, paginate],
     queryFn: () => fetchControlPanelMembers({ token, slug, params, paginate }),
     staleTime: 30000,
   });
 
-  return { data, status };
+  return { response, status };
 }
 
 export function useMember({

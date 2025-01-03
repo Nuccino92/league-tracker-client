@@ -46,7 +46,7 @@ export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
       ? false
       : true;
 
-  const { data, status } = usePlayers({
+  const { response, status } = usePlayers({
     slug: params.slug as string,
     includeOnly: ['season', 'team', 'search'],
     enabled: doesURLContainCorrectTeamSearchParam || !caresForTeamInsideParam,
@@ -77,14 +77,14 @@ export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
     <div>
       {hasSeasons ? (
         <div>
-          {status === 'success' && data && (
+          {status === 'success' && response && (
             <div className='divide-y'>
               <div className='w-full py-4 pl-20 font-medium'>Player Name</div>
-              {data.length > 0 &&
-                data.map((player) => (
+              {response.data.length > 0 &&
+                response.data.map((player) => (
                   <Player key={player.id} player={player} />
                 ))}
-              {data.length === 0 && <div>empty</div>}
+              {response.data.length === 0 && <div>empty</div>}
             </div>
           )}
           {status === 'loading' ? (

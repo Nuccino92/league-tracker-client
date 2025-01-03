@@ -7,7 +7,8 @@ import {
   ControlPanelMembersList,
   ErrorType,
 } from '../../types/Responses/control-panel.types';
-import { memberSchema } from '../../types/Models/Member';
+import { memberSchema } from '@/app/lib/types/Models/Member';
+import { PaginationMetaSchema } from '@/app/lib/types/pagination.types';
 
 export async function fetchControlPanelMembers({
   token,
@@ -24,9 +25,16 @@ export async function fetchControlPanelMembers({
 
   //TODO: on backend, if there is no season and paginate is false, reject the request... possibly
 
-  return new Promise<ControlPanelMembersList[]>((resolve) => {
+  const memberListResponseSchema = z.object({
+    data: z.array(memberSchema),
+    meta: PaginationMetaSchema.nullable(),
+  });
+
+  type MemberListResponse = z.infer<typeof memberListResponseSchema>;
+
+  return new Promise<MemberListResponse>((resolve) => {
     setTimeout(() => {
-      const result = z.array(memberSchema).parse(mockMembersList);
+      const result = memberListResponseSchema.parse(mockMembersList);
       resolve(result);
     }, 400);
   });
@@ -53,14 +61,17 @@ export async function fetchControlPanelMembers({
 }
 
 // TODO: possibly sort by role, super admin -> admin -> member
-const mockMembersList = [
-  { id: 1234, name: 'Johnny Bravoso', role: 'member' },
-  { id: 1237, name: 'Carl Weathers', role: 'member' },
-  { id: 1334, name: 'Victor Jones', role: 'member' },
-  { id: 1884, name: 'Larry Terry', role: 'admin' },
-  { id: 6066, name: 'Antonio Barbosa', role: 'super-admin' },
-  { id: 1, name: 'Anthony Nucci', role: 'owner' },
-];
+const mockMembersList = {
+  meta: null,
+  data: [
+    { id: 1234, name: 'Johnny Bravoso', role: 'member' },
+    { id: 1237, name: 'Carl Weathers', role: 'member' },
+    { id: 1334, name: 'Victor Jones', role: 'member' },
+    { id: 1884, name: 'Larry Terry', role: 'admin' },
+    { id: 6066, name: 'Antonio Barbosa', role: 'super-admin' },
+    { id: 1, name: 'Anthony Nucci', role: 'owner' },
+  ],
+};
 
 export async function fetchControlPanelMember({
   token,

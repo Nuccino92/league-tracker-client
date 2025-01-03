@@ -16,16 +16,16 @@ import {
 } from '@/app/lib/globals/styles';
 import { IconPlus, Spinner } from '@/app/lib/SVGs';
 import { ModalType } from '@/app/types';
-import { BaseTeam } from '@/app/lib/types/Models/Team';
 import { format } from 'date-fns';
 import { Calendar } from '@/app/lib/components/Calendar';
 import {
   useNoticeSelectionScopeTotals,
   useNoticeStatistics,
 } from '@/app/lib/hooks/api/control-panel/notices';
-import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
 import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
+import { usePlayers } from '@/app/lib/hooks/api/control-panel/players';
 
 export default function CreateAnnouncement() {
   const [showCreateAnnouncementModal, setShowCreateAnnouncementModal] =
@@ -681,7 +681,14 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                               <div>
                                 {values.recipient_type === 'player' &&
                                   values.scope === 'specific' && (
-                                    <div>show player selection dropdown</div>
+                                    <div>
+                                      <SearchableList
+                                        title='Select players from dropdown'
+                                        scope='global'
+                                        useQueryHook={usePlayers}
+                                        searchPlaceholder='Search for players'
+                                      />
+                                    </div>
                                   )}
 
                                 {values.recipient_type === 'team' &&
@@ -793,9 +800,9 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
 interface SearchableListProps {
   title: string;
   scope: 'currentSeason' | 'global';
-  useQuery: (params: { givenParams: string }) => {
-    data: any[];
-    status: string;
+  useQueryHook: (params: { givenParams: string }) => {
+    data: Array<{ id: number; name: string }>;
+    status: 'loading' | 'error' | 'success';
   };
   searchPlaceholder: string;
 }
@@ -804,38 +811,46 @@ interface SearchableListProps {
 function SearchableList({
   title,
   scope,
-  useQuery,
+  useQueryHook,
   searchPlaceholder,
 }: SearchableListProps) {
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 750); //todo: remove this debounce if we are not paginating
 
+  const { activeSeason } = useLeagueControlPanel();
+
   //todo: remove this debounce if we are not paginating
-  const params = `search=${debouncedSearch}${scope === 'currentSeason' ? '&season=12' : ''}`;
-  const { data, status } = useQuery({ givenParams: params });
+  const params = `search=${debouncedSearch}${scope === 'currentSeason' && activeSeason ? `&season=${activeSeason.id}` : ''}`;
+
+  const { data, status } = useQueryHook({ givenParams: params });
+
+  console.log('inside', data, status);
 
   return (
     <Popover as='div' className='relative'>
       <Popover.Button>{title}</Popover.Button>
 
       <Popover.Panel as='div' className='relative'>
-        <SearchBar
-          inputValue={query}
-          setInputValue={setQuery}
-          placeholder={searchPlaceholder}
-          searchIconSize={22}
-          closeIconSize={20}
-        />
+        <div className='absolute left-0 top-0 z-10 h-full w-full border-4 bg-black bg-opacity-50'>
+          <SearchBar
+            inputValue={query}
+            setInputValue={setQuery}
+            placeholder={searchPlaceholder}
+            searchIconSize={22}
+            closeIconSize={20}
+            containerClasses='!w-full'
+          />
 
-        <div className='bg-white shadow'>
-          {status === 'success' &&
-            data?.map((item) => <div key={item.id}>{item.name}</div>)}
+          <div className='bg-white shadow'>
+            {status === 'success' &&
+              data?.map((item) => <div key={item.id}>{item.name}</div>)}
 
-          {status === 'loading' && (
-            <div className='flex items-center justify-center'>
-              <Spinner height={19} width={19} />
-            </div>
-          )}
+            {status === 'loading' && (
+              <div className='flex items-center justify-center'>
+                <Spinner height={19} width={19} />
+              </div>
+            )}
+          </div>
         </div>
       </Popover.Panel>
     </Popover>

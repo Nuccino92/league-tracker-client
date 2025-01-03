@@ -46,7 +46,7 @@ const TeamForm = dynamic(
 export default function Teams() {
   const params = useParams();
 
-  const { data: teams, status } = useTeams({
+  const { response, status } = useTeams({
     includeOnly: ['search', 'page'],
   });
 
@@ -64,12 +64,14 @@ export default function Teams() {
         setShowArchivedTeamsModal={setShowArchivedTeamsModal}
       />
 
-      {status === 'success' && teams ? (
+      {status === 'success' && response ? (
         <>
           <div className='h-full max-h-full'>
             <div className='swatches-picker h-[95%] max-h-[95%] space-y-4 overflow-y-auto'>
-              {teams.length > 0 ? (
-                teams.map((team) => <TeamCard team={team} key={team.id} />)
+              {response.data.length > 0 ? (
+                response.data.map((team) => (
+                  <TeamCard team={team} key={team.id} />
+                ))
               ) : (
                 <MissingList
                   text='There are no Teams'

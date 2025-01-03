@@ -45,7 +45,7 @@ const PlayerForm = dynamic(
 
 export default function Players({ slug }: { slug: string }) {
   const params = useParams();
-  const { data, status, isLoading } = usePlayers({
+  const { response, status, isLoading } = usePlayers({
     slug,
     includeOnly: ['page', 'search'],
   });
@@ -54,7 +54,7 @@ export default function Players({ slug }: { slug: string }) {
   const [showArchivedPlayersModal, setShowArchivedPlayersModal] =
     useState(false);
 
-  const shouldDisplayContent = status === 'success' && data;
+  const shouldDisplayContent = status === 'success' && response;
 
   return (
     <main className='h-full space-y-4'>
@@ -68,8 +68,8 @@ export default function Players({ slug }: { slug: string }) {
         <>
           <div className='h-full max-h-full'>
             <div className='swatches-picker h-[95%] max-h-[95%] space-y-3 overflow-y-auto'>
-              {data.length > 0 ? (
-                data.map((player) => (
+              {response.data.length > 0 ? (
+                response.data.map((player) => (
                   <PlayerCard player={player} key={player.id} />
                 ))
               ) : (

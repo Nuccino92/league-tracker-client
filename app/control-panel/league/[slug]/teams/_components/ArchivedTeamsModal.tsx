@@ -20,7 +20,7 @@ export default function AchivedTeamsModal({ isOpen, close }: ModalType) {
   const debouncedSearch = useDebounce(searchInputValue, 750);
   const [page, setPage] = useState(1);
 
-  const { data, status } = useArchivedTeams({
+  const { response, status } = useArchivedTeams({
     slug: slug,
     page,
     query: debouncedSearch,
@@ -45,10 +45,10 @@ export default function AchivedTeamsModal({ isOpen, close }: ModalType) {
         </div>
 
         <main className='swatches-picker max-h-[500px] space-y-2 overflow-y-auto rounded border bg-slate-100 p-2 sm:h-[500px] sm:min-h-[500px]'>
-          {data && status === 'success' ? (
+          {response && status === 'success' ? (
             <>
-              {data.length > 0 ? (
-                data.map((team, index) => (
+              {response.data.length > 0 ? (
+                response.data.map((team, index) => (
                   <div key={team.id + index}>
                     <TeamCard team={team} />
                   </div>

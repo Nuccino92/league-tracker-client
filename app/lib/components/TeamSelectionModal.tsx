@@ -34,7 +34,7 @@ export default function TeamSelectionModal({
   panelClasses,
   onTeamSelection,
 }: Props & ModalType) {
-  const { data: teams, status } = useTeams({
+  const { response, status } = useTeams({
     paginate: false,
     includeOnly: ['season'],
   });
@@ -46,7 +46,7 @@ export default function TeamSelectionModal({
       setSelectedTeams((prev: number[]) => {
         return prev.includes(teamId)
           ? prev.filter((id) => id !== teamId)
-          : selectedTeams.length + 1 === teams?.length
+          : selectedTeams.length + 1 === response?.data.length
             ? []
             : [...prev, teamId];
       });
@@ -65,11 +65,11 @@ export default function TeamSelectionModal({
         Choose the teams
       </Dialog.Title>
 
-      {teams && status === 'success' ? (
+      {response && status === 'success' ? (
         <div className='flex w-full flex-col gap-y-6'>
           <div className='swatches-picker flex max-h-[400px] w-full flex-col gap-2 overflow-y-auto rounded-md bg-slate-100 p-2'>
-            {teams.length > 0 ? (
-              teams.map((team) => {
+            {response.data.length > 0 ? (
+              response.data.map((team) => {
                 const isSelected = selectedTeams.includes(team.id);
                 return (
                   <button
@@ -110,7 +110,7 @@ export default function TeamSelectionModal({
               </div>
             )}
           </div>
-          {teams.length > 0 ? (
+          {response.data.length > 0 ? (
             <Button
               variant={'secondary'}
               disabled={selectedTeams.length === 0}

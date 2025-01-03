@@ -32,7 +32,12 @@ export function usePlayers({
 
   const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
 
-  const { data, status, isLoading, isInitialLoading } = useQuery({
+  const {
+    data: response,
+    status,
+    isLoading,
+    isInitialLoading,
+  } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.PLAYERS, slug, params, paginate],
     queryFn: () => fetchControlPanelPlayers({ token, slug, params, paginate }),
     retry: 1,
@@ -41,7 +46,7 @@ export function usePlayers({
     cacheTime: enabled ? 5 * 60 * 1000 : 0,
   });
 
-  return { data, status, isLoading, isInitialLoading };
+  return { response, status, isLoading, isInitialLoading };
 }
 
 export function usePlayer({
