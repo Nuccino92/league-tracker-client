@@ -31,6 +31,7 @@ export async function fetchControlPanelPlayers({
   type ControlPanelPlayers = z.infer<typeof controlPanelPlayersSchema>;
 
   return new Promise<ControlPanelPlayers>((resolve) => {
+    console.log('api hit');
     setTimeout(() => {
       const result = controlPanelPlayersSchema.parse(mockPlayerList);
       resolve(result);

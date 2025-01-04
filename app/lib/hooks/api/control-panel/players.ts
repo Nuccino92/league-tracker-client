@@ -12,16 +12,15 @@ import {
 import { Filter, SearchParamScope } from '@/app/lib/types/filters.types';
 import { createQueryString } from '@/app/lib/utils/createQueryString';
 import { Player } from '@/app/lib/types/Models/Player';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 // TODO: ascertain how to know when to use pagination vs. getting complete list
 export function usePlayers({
-  slug,
   paginate = true,
   enabled = true,
   includeOnly = [],
   givenParams,
 }: {
-  slug: string;
   paginate?: boolean;
   enabled?: boolean;
   includeOnly?: SearchParamScope;
@@ -29,6 +28,8 @@ export function usePlayers({
 }) {
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
+
+  const { slug } = useLeagueControlPanel();
 
   const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
 
@@ -41,8 +42,8 @@ export function usePlayers({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.PLAYERS, slug, params, paginate],
     queryFn: () => fetchControlPanelPlayers({ token, slug, params, paginate }),
     retry: 1,
-    staleTime: 30000,
     enabled,
+    staleTime: enabled ? 180000 : 0,
     cacheTime: enabled ? 5 * 60 * 1000 : 0,
   });
 
@@ -50,15 +51,15 @@ export function usePlayers({
 }
 
 export function usePlayer({
-  slug,
   playerId,
   enabled = true,
 }: {
-  slug: string;
   playerId?: number;
   enabled?: boolean;
 }) {
   const { token } = useAuth();
+
+  const { slug } = useLeagueControlPanel();
 
   const {
     data: player,

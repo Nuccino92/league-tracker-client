@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import { useAuth } from '@/app/GlobalContext';
 import {
@@ -6,31 +7,40 @@ import {
   fetchControlPanelMembers,
 } from '@/app/lib/requests/control-panel/members';
 import { SearchParamScope } from '@/app/lib/types/filters.types';
-import useQueryString from '../../useQueryString';
+import useQueryString from '@/app/lib/hooks/useQueryString';
 import { ControlPanelMemberForEdit } from '@/app/lib/types/Responses/control-panel.types';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 export function useMembers({
-  slug,
+  enabled = true,
   includeOnly = [],
   paginate = true,
+  givenParams,
 }: {
-  slug: string;
+  enabled?: boolean;
   paginate?: boolean;
   includeOnly?: SearchParamScope;
+  givenParams?: string;
 }) {
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
-  // TODO: possibly move this outside and pass in the params to the hook
-  const params = scopeQueryParams(includeOnly);
+  const { slug } = useLeagueControlPanel();
 
-  const { data: response, status } = useQuery({
+  const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
+
+  const {
+    data: response,
+    status,
+    isInitialLoading,
+  } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.MEMBERS, slug, params, paginate],
     queryFn: () => fetchControlPanelMembers({ token, slug, params, paginate }),
-    staleTime: 30000,
+    staleTime: enabled ? 180000 : 0,
+    cacheTime: enabled ? 5 * 60 * 1000 : 0,
   });
 
-  return { response, status };
+  return { response, status, isInitialLoading };
 }
 
 export function useMember({

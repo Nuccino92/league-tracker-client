@@ -11,6 +11,7 @@ import { SearchParamScope } from '@/app/lib/types/filters.types';
 import { useAuth } from '@/app/GlobalContext';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import { CreateRegistrationFormValues } from '@/app/lib/types/Responses/control-panel.types';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 export function useRegistrationForms({
   slug,
@@ -33,27 +34,37 @@ export function useRegistrationForms({
 }
 
 export function useRegistrantsList({
-  slug,
   paginate = true,
+  enabled = true,
   includeOnly = [],
+  givenParams,
 }: {
-  slug: string;
   paginate?: boolean;
+  enabled?: boolean;
   includeOnly?: SearchParamScope;
+  givenParams?: string;
 }) {
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
-  const params = scopeQueryParams(includeOnly);
+  const { slug } = useLeagueControlPanel();
 
-  const { data: response, status } = useQuery({
+  const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
+
+  const {
+    data: response,
+    status,
+    isInitialLoading,
+  } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRANTS, slug, params, paginate],
     queryFn: () => fetchRegistrantsList({ token, slug, params, paginate }),
+    enabled,
     retry: false,
-    staleTime: 180000,
+    staleTime: enabled ? 180000 : 0,
+    cacheTime: enabled ? 5 * 60 * 1000 : 0,
   });
 
-  return { response, status };
+  return { response, status, isInitialLoading };
 }
 
 export function useCreateRegistrationForm({ slug }: { slug: string }) {

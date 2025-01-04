@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import classNames from 'classnames';
 import { z } from 'zod';
-import { Switch, Popover } from '@headlessui/react';
+import { Switch, Popover, Combobox } from '@headlessui/react';
 
 import FormLabel from '@/app/control-panel/_components/FormLabel';
 import { Button } from '@/app/lib/components/Button';
@@ -14,7 +14,13 @@ import {
   INPUT_CLASSES,
   INPUT_CONTAINER_CLASSES,
 } from '@/app/lib/globals/styles';
-import { IconPlus, Spinner } from '@/app/lib/SVGs';
+import {
+  DownChevronIcon,
+  IconCheckmarkSharp,
+  IconClose,
+  IconPlus,
+  Spinner,
+} from '@/app/lib/SVGs';
 import { ModalType } from '@/app/types';
 import { format } from 'date-fns';
 import { Calendar } from '@/app/lib/components/Calendar';
@@ -22,10 +28,13 @@ import {
   useNoticeSelectionScopeTotals,
   useNoticeStatistics,
 } from '@/app/lib/hooks/api/control-panel/notices';
-import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { usePlayers } from '@/app/lib/hooks/api/control-panel/players';
+import { PaginationMeta } from '@/app/lib/types/pagination.types';
+import { useTeams } from '@/app/lib/hooks/api/control-panel/teams';
+import { useRegistrantsList } from '@/app/lib/hooks/api/control-panel/registrations';
+import { useMembers } from '@/app/lib/hooks/api/control-panel/members';
 
 export default function CreateAnnouncement() {
   const [showCreateAnnouncementModal, setShowCreateAnnouncementModal] =
@@ -61,8 +70,8 @@ const announcementFormValueSchema = z.object({
     .max(750),
   delivery_types: z.array(z.enum(['email', 'sms', 'website'])).min(1),
   recipient_type: z.enum(['team', 'player', 'registrant', 'member']).nullable(),
+  recipient_ids: z.array(z.number()),
   scope: z.enum(['all', 'specific', 'roles', 'global_all']).nullable(),
-  teams: z.array(z.number()),
   start_date: z.date().nullable(),
   end_date: z.date().nullable(),
 });
@@ -74,8 +83,6 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
 
   const { totals, status: totalsStatus } = useNoticeSelectionScopeTotals();
 
-  console.log('totes', totals);
-
   const { credits_remaining } = data || {};
 
   const [step, setStep] = useState(1);
@@ -85,8 +92,8 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
     content: '',
     delivery_types: [],
     recipient_type: null, // 'players' or 'registrants' or 'members' or 'teams'
+    recipient_ids: [],
     scope: null, // 'all', 'specific', 'roles', 'global_all'
-    teams: [],
     start_date: null,
     end_date: null,
   };
@@ -114,19 +121,6 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
 
   /**
    * todo: implement preview feature
-   */
-
-  // need delivery_types ['email', 'sms', 'website']
-  // if website then need start_date and end_date, is_pinned, display_location ['league_website', 'team_page']
-  // need to be able to select, team vs player vs registrant. Also, specific teams, players, registrants
-
-  /**
-   *
-   * todo: show texts being sent, emails being sent (totals)
-   *
-   * add another receipient type, members
-   *
-   * should split up form into steps, members can be selected by role or specific members
    */
 
   const deliveryTypes = [
@@ -173,19 +167,7 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
     ],
   };
 
-  //todo: count the total emails/sms to be used with this notice
   //todo: allow user to save for later or save + send
-
-  /**
-   * if receipient_type
-   * 1. players
-   * - current season: all players, all players in selected teams, specific players
-   * - global: all players in league
-   * 2. registrants
-   * - current season: all registrants
-   * 3. members
-   * - all members, selected roles, specific members
-   */
 
   const [totalEmailsToBeSent, setTotalEmailsToBeSent] = useState(0);
   const [totalSMSToBeSent, setTotalSMSToBeSent] = useState(0);
@@ -341,7 +323,6 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                                         ) {
                                           setFieldValue('recipient_type', null);
                                           setFieldValue('scope', null);
-                                          setFieldValue('teams', []);
                                         }
                                       } else {
                                         if (type.value === 'website') {
@@ -350,7 +331,6 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                                           ]);
                                           setFieldValue('recipient_type', null);
                                           setFieldValue('scope', null);
-                                          setFieldValue('teams', []);
                                         } else {
                                           const newTypes = [
                                             ...values.delivery_types.filter(
@@ -545,7 +525,6 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                                     }
                                     type='button'
                                     onClick={() => {
-                                      console.log('clicked', type.value);
                                       if (
                                         values.recipient_type === type.value
                                       ) {
@@ -557,8 +536,8 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                                         );
                                       }
 
-                                      setFieldValue('scope', '');
-                                      setFieldValue('teams', []);
+                                      setFieldValue('recipient_ids', []);
+                                      setFieldValue('scope', null);
                                       setTotalEmailsToBeSent(0);
                                       setTotalSMSToBeSent(0);
                                     }}
@@ -578,7 +557,7 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                                       Who would you like to send this to?
                                     </div>
 
-                                    <div className='mb-6 space-x-4 text-sm'>
+                                    <div className='mb-4 space-x-4 text-sm'>
                                       {scopeOptions[values.recipient_type].map(
                                         (option, index) => {
                                           return (
@@ -607,22 +586,22 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                                               onClick={() => {
                                                 if (!totals) return;
 
+                                                setFieldValue(
+                                                  'recipient_ids',
+                                                  []
+                                                );
+
                                                 const checked =
                                                   values.scope === option.value;
 
                                                 if (checked) {
-                                                  setFieldValue('scope', '');
+                                                  setFieldValue('scope', null);
                                                 } else {
                                                   setFieldValue(
                                                     'scope',
                                                     option.value
                                                   );
                                                 }
-
-                                                console.log(
-                                                  'option.value',
-                                                  option.value
-                                                );
 
                                                 if (
                                                   checked ||
@@ -683,34 +662,260 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                                   values.scope === 'specific' && (
                                     <div>
                                       <SearchableList
-                                        title='Select players from dropdown'
                                         scope='global'
-                                        useQueryHook={usePlayers}
+                                        useQueryHook={usePlayers as any}
                                         searchPlaceholder='Search for players'
+                                        handeSelect={(id) => {
+                                          setFieldValue('recipient_ids', [
+                                            ...values.recipient_ids,
+                                            id,
+                                          ]);
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                        }}
+                                        handleRemove={(idToRemove) => {
+                                          setFieldValue(
+                                            'recipient_ids',
+                                            values.recipient_ids.filter(
+                                              (id) => id !== idToRemove
+                                            )
+                                          );
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                        }}
                                       />
                                     </div>
                                   )}
 
                                 {values.recipient_type === 'team' &&
                                   values.scope === 'specific' && (
-                                    <div>show team selection dropdown</div>
+                                    <div>
+                                      <SearchableList
+                                        scope='global'
+                                        useQueryHook={useTeams as any}
+                                        searchPlaceholder='Search for teams'
+                                        handeSelect={(id) => {
+                                          setFieldValue('recipient_ids', [
+                                            ...values.recipient_ids,
+                                            id,
+                                          ]);
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                        }}
+                                        handleRemove={(idToRemove) => {
+                                          setFieldValue(
+                                            'recipient_ids',
+                                            values.recipient_ids.filter(
+                                              (id) => id !== idToRemove
+                                            )
+                                          );
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                        }}
+                                      />
+                                    </div>
                                   )}
 
                                 {values.recipient_type === 'registrant' &&
                                   values.scope === 'specific' && (
                                     <div>
-                                      show registrants selection dropdown
+                                      <SearchableList
+                                        scope='currentSeason'
+                                        useQueryHook={useRegistrantsList as any}
+                                        searchPlaceholder='Search for registrants'
+                                        handeSelect={(id) => {
+                                          setFieldValue('recipient_ids', [
+                                            ...values.recipient_ids,
+                                            id,
+                                          ]);
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                        }}
+                                        handleRemove={(idToRemove) => {
+                                          setFieldValue(
+                                            'recipient_ids',
+                                            values.recipient_ids.filter(
+                                              (id) => id !== idToRemove
+                                            )
+                                          );
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                        }}
+                                      />
                                     </div>
                                   )}
 
                                 {values.recipient_type === 'member' &&
                                   values.scope === 'specific' && (
-                                    <div>show members selection dropdown</div>
+                                    <div>
+                                      <SearchableList
+                                        scope='global'
+                                        useQueryHook={useMembers as any}
+                                        searchPlaceholder='Search for members'
+                                        handeSelect={(id) => {
+                                          setFieldValue('recipient_ids', [
+                                            ...values.recipient_ids,
+                                            id,
+                                          ]);
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev + 1
+                                            );
+                                          }
+                                        }}
+                                        handleRemove={(idToRemove) => {
+                                          setFieldValue(
+                                            'recipient_ids',
+                                            values.recipient_ids.filter(
+                                              (id) => id !== idToRemove
+                                            )
+                                          );
+
+                                          if (
+                                            values.delivery_types.includes(
+                                              'email'
+                                            )
+                                          ) {
+                                            setTotalEmailsToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                          if (
+                                            values.delivery_types.includes(
+                                              'sms'
+                                            )
+                                          ) {
+                                            setTotalSMSToBeSent(
+                                              (prev) => prev - 1
+                                            );
+                                          }
+                                        }}
+                                      />
+                                    </div>
                                   )}
 
                                 {values.recipient_type === 'member' &&
                                   values.scope === 'roles' && (
-                                    <div>show roles selection dropdown</div>
+                                    <div>
+                                      come back to this once the members page is
+                                      fleshed out and roles are thought of.{' '}
+                                    </div>
                                   )}
                               </div>
                             </div>
@@ -718,7 +923,6 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                         </div>
                       ) : null}
 
-                      {/* TODO: need to display indicator if exceeding remaining with group selection */}
                       <div className='mt-6 space-y-2 rounded-lg bg-slate-50 p-4 text-sm'>
                         {values.delivery_types.includes('email') && (
                           <div className='flex items-center justify-between'>
@@ -760,6 +964,11 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                       onClick={() => {
                         if (step === 1) return;
                         setStep((prev) => prev - 1);
+                        setFieldValue('recipient_ids', []);
+                        setFieldValue('recipient_type', null);
+                        setFieldValue('scope', null);
+                        setTotalEmailsToBeSent(0);
+                        setTotalSMSToBeSent(0);
                       }}
                       className='border-0 bg-slate-50 !text-black hover:bg-slate-100 disabled:opacity-40'
                     >
@@ -769,10 +978,20 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                     <span />
                   )}
 
-                  {/* Possibly add preview */}
                   <Button
                     type='submit'
-                    disabled={step === 2 && values.delivery_types.length === 0}
+                    disabled={
+                      (step === 2 && values.delivery_types.length === 0) ||
+                      (step === 3 &&
+                        getIsDisabledStep3(
+                          values,
+                          {
+                            email: credits_remaining?.email.total ?? 0,
+                            sms: credits_remaining?.sms.total ?? 0,
+                          },
+                          totals
+                        ))
+                    }
                   >
                     {' '}
                     {step === 1 && 'Next'}{' '}
@@ -782,10 +1001,12 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
                     {step === 2 &&
                       values.delivery_types.length === 0 &&
                       'Select Option'}
-                    {(step === 2 && values.delivery_types.includes('email')) ||
-                    values.delivery_types.includes('sms')
+                    {step === 2 &&
+                    (values.delivery_types.includes('email') ||
+                      values.delivery_types.includes('sms'))
                       ? 'Select Group'
                       : ''}
+                    {step === 3 && 'Send Notice'}
                   </Button>
                 </div>
               </Form>
@@ -797,62 +1018,210 @@ function CreateAnnouncementModal({ isOpen, close }: ModalType) {
   );
 }
 
-interface SearchableListProps {
-  title: string;
-  scope: 'currentSeason' | 'global';
-  useQueryHook: (params: { givenParams: string }) => {
-    data: Array<{ id: number; name: string }>;
-    status: 'loading' | 'error' | 'success';
-  };
-  searchPlaceholder: string;
+interface Item {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
 }
 
-//Use for all the options
+interface SearchableListProps {
+  scope: string;
+  useQueryHook: (params: {
+    givenParams: string;
+    paginate?: boolean;
+    enabled?: boolean;
+  }) => {
+    response: {
+      data: Array<{
+        id: number;
+        name: string;
+        email: string;
+        role: string;
+      }> | null;
+      meta: PaginationMeta | null;
+    };
+    status: 'loading' | 'error' | 'success';
+    isInitialLoading: boolean;
+  };
+  searchPlaceholder: string;
+
+  handeSelect: (id: number) => void;
+  handleRemove: (id: number) => void;
+}
+
 function SearchableList({
-  title,
   scope,
   useQueryHook,
   searchPlaceholder,
+  handeSelect,
+  handleRemove,
 }: SearchableListProps) {
+  const [selected, setSelected] = useState<Item[]>([]);
   const [query, setQuery] = useState('');
-  const debouncedSearch = useDebounce(query, 750); //todo: remove this debounce if we are not paginating
+  const debouncedSearch = useDebounce(query, 750);
 
   const { activeSeason } = useLeagueControlPanel();
+  const params = `${debouncedSearch.length >= 3 ? `search=${debouncedSearch}` : ''}${
+    scope === 'currentSeason' && activeSeason
+      ? `${debouncedSearch.length >= 3 ? '&' : ''}season=${activeSeason.id}`
+      : ''
+  }`;
+  const hasSearchedForItem = query.length >= 3 && debouncedSearch.length >= 3;
 
-  //todo: remove this debounce if we are not paginating
-  const params = `search=${debouncedSearch}${scope === 'currentSeason' && activeSeason ? `&season=${activeSeason.id}` : ''}`;
+  const { response, status, isInitialLoading } = useQueryHook({
+    givenParams: params,
+    paginate: false,
+    enabled: hasSearchedForItem,
+  });
 
-  const { data, status } = useQueryHook({ givenParams: params });
+  const removeItem = (itemToRemove: Item) => {
+    setSelected(selected.filter((item) => item.id !== itemToRemove.id));
 
-  console.log('inside', data, status);
+    handleRemove(itemToRemove.id);
+  };
+
+  const handleSelect = (item: Item) => {
+    if (!selected.find((selectedItem) => selectedItem.id === item.id)) {
+      setSelected([...selected, item]);
+    }
+    setQuery('');
+
+    handeSelect(item.id);
+  };
 
   return (
-    <Popover as='div' className='relative'>
-      <Popover.Button>{title}</Popover.Button>
+    <div className='space-y-2'>
+      <Combobox value={null} onChange={handleSelect}>
+        <div className='relative'>
+          <div className='relative w-full'>
+            <Combobox.Button className='w-full'>
+              <Combobox.Input
+                className='w-full rounded-md border p-2 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-secondary'
+                displayValue={() => query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={searchPlaceholder}
+                autoFocus
+              />
+              <span className='absolute inset-y-0 right-0 flex items-center pr-2'>
+                <DownChevronIcon
+                  height={14}
+                  width={14}
+                  className='text-gray-400'
+                  aria-hidden='true'
+                />
+              </span>
+            </Combobox.Button>
+          </div>
 
-      <Popover.Panel as='div' className='relative'>
-        <div className='absolute left-0 top-0 z-10 h-full w-full border-4 bg-black bg-opacity-50'>
-          <SearchBar
-            inputValue={query}
-            setInputValue={setQuery}
-            placeholder={searchPlaceholder}
-            searchIconSize={22}
-            closeIconSize={20}
-            containerClasses='!w-full'
-          />
-
-          <div className='bg-white shadow'>
+          <Combobox.Options
+            className={classNames(
+              !hasSearchedForItem ? '!hidden' : '',
+              'swatches-picker absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
+            )}
+          >
             {status === 'success' &&
-              data?.map((item) => <div key={item.id}>{item.name}</div>)}
+              hasSearchedForItem &&
+              response.data?.length === 0 && (
+                <div className='relative px-4 py-2 text-sm text-gray-500'>
+                  Nothing found.
+                </div>
+              )}
 
-            {status === 'loading' && (
-              <div className='flex items-center justify-center'>
-                <Spinner height={19} width={19} />
+            {isInitialLoading && (
+              <div className='flex justify-center py-8'>
+                <Spinner height={24} width={24} />
               </div>
             )}
-          </div>
+
+            {status === 'success' &&
+              response.data?.map((item) => (
+                <Combobox.Option
+                  key={item.id}
+                  value={item}
+                  className={({ active }) =>
+                    classNames(
+                      'relative cursor-pointer select-none px-4 py-2',
+                      active ? 'bg-primary text-white' : 'text-gray-900'
+                    )
+                  }
+                >
+                  {({ active }) => (
+                    <div className='flex items-center justify-between'>
+                      <span className='block truncate'>
+                        {item.name ?? item.email}{' '}
+                        {item.role && (
+                          <span className='ml-3 text-xs'>({item.role})</span>
+                        )}
+                      </span>
+                      {selected.find(
+                        (selectedItem) => selectedItem.id === item.id
+                      ) && (
+                        <IconCheckmarkSharp
+                          className={active ? 'text-white' : 'text-secondary'}
+                          height={20}
+                          width={20}
+                        />
+                      )}
+                    </div>
+                  )}
+                </Combobox.Option>
+              ))}
+          </Combobox.Options>
         </div>
-      </Popover.Panel>
-    </Popover>
+      </Combobox>
+
+      {/* Selected items tags */}
+      {selected.length > 0 && (
+        <div className='flex flex-wrap gap-2'>
+          {selected.map((item) => (
+            <div
+              key={item.id}
+              className='flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-sm text-blue-700'
+            >
+              <span>{item.name ?? item.email}</span>
+              <button
+                onClick={() => removeItem(item)}
+                className='ml-1 rounded-full p-0.5 hover:bg-blue-200'
+              >
+                <IconClose />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
+}
+
+function getIsDisabledStep3(
+  values: AnnouncementFormValues,
+  credits: { email: number; sms: number },
+  totals: any
+) {
+  if (!values.recipient_type || !values.scope) return true;
+
+  if (values.scope === 'specific' && values.recipient_ids.length === 0)
+    return true;
+
+  // Get total recipients based on scope
+  const totalRecipients = // Need to incorporate member roles
+    values.scope === 'specific'
+      ? values.recipient_ids.length
+      : totals[values.recipient_type]?.[
+          values.scope === 'global_all' ? 'league' : 'season'
+        ] || 0;
+
+  // Check if exceeds email credits
+  if (
+    values.delivery_types.includes('email') &&
+    totalRecipients > credits.email
+  )
+    return true;
+
+  // Check if exceeds SMS credits
+  if (values.delivery_types.includes('sms') && totalRecipients > credits.sms)
+    return true;
+
+  return false;
 }

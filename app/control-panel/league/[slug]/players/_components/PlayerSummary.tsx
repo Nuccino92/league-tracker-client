@@ -1,6 +1,5 @@
 import Image from 'next/image';
 
-import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import Modal from '@/app/lib/components/Modal';
 import { usePlayer } from '@/app/lib/hooks/api/control-panel/players';
 import {
@@ -16,9 +15,7 @@ export default function PlayerSummary({
   close,
   playerId,
 }: ModalType & { playerId?: number }) {
-  const { leagueData, slug } = useLeagueControlPanel();
   const { player, status } = usePlayer({
-    slug: slug,
     playerId: playerId,
   });
 

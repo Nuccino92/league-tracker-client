@@ -40,7 +40,6 @@ export default function LinkRegistrationModal({
   const TOAST_DURATION = 2900;
 
   const { player, isInitialLoading: initialPlayerLoading } = usePlayer({
-    slug,
     enabled: registrant.playerId ? true : false,
     playerId: registrant.playerId ?? undefined,
   });
@@ -56,7 +55,6 @@ export default function LinkRegistrationModal({
     status: searchPlayersStatus,
     isInitialLoading,
   } = usePlayers({
-    slug,
     paginate: false,
     enabled: debouncedSearch !== '' ? true : false,
     givenParams:

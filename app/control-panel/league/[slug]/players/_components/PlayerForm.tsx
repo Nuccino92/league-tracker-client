@@ -1,12 +1,10 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-import { z } from 'zod';
 import { Form, Formik, FastField, ErrorMessage, FormikValues } from 'formik';
 import { toFormikValidate } from 'zod-formik-adapter';
 import classNames from 'classnames';
 
-import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { usePlayer } from '@/app/lib/hooks/api/control-panel/players';
 
 import { ModalType } from '@/app/types';
@@ -31,9 +29,7 @@ export default function PlayerForm({
   close,
   playerId,
 }: ModalType & { playerId?: number }) {
-  const { leagueData, slug } = useLeagueControlPanel();
   const { player, status } = usePlayer({
-    slug: slug,
     playerId: playerId,
   });
 

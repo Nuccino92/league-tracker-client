@@ -18,9 +18,7 @@ import getEnumKeyByEnumValue from '@/app/lib/utils/getEnumKeyByEnumValue';
 import { useState } from 'react';
 import MemberForm from './MemberForm';
 
-type Props = {
-  slug: string;
-};
+type Props = {};
 
 //MON TOOD: create a way to read the role/render things based off of role! (atm, members, teams, players, seasons)
 
@@ -35,9 +33,8 @@ type Props = {
  * - Add member modal
  */
 
-export default function MembersList({ slug }: Props) {
+export default function MembersList({}: Props) {
   const { response, status } = useMembers({
-    slug,
     includeOnly: ['search', 'role'],
   });
 

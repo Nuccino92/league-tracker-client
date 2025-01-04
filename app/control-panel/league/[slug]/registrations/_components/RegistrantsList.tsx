@@ -27,7 +27,6 @@ export default function RegistrantsList({ slug }: Props) {
   const searchParams = useSearchParams();
 
   const { response, status } = useRegistrantsList({
-    slug,
     includeOnly: ['page', 'search', 'season'],
   });
 

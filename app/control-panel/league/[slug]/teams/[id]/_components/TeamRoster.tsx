@@ -47,7 +47,6 @@ export default function TeamRoster({ caresForTeamInsideParam = false }: Props) {
       : true;
 
   const { response, status } = usePlayers({
-    slug: params.slug as string,
     includeOnly: ['season', 'team', 'search'],
     enabled: doesURLContainCorrectTeamSearchParam || !caresForTeamInsideParam,
   });

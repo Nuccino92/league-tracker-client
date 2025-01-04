@@ -44,9 +44,7 @@ const PlayerForm = dynamic(
 );
 
 export default function Players({ slug }: { slug: string }) {
-  const params = useParams();
   const { response, status, isLoading } = usePlayers({
-    slug,
     includeOnly: ['page', 'search'],
   });
 

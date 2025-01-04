@@ -37,22 +37,27 @@ export function useTeams({
   includeOnly?: SearchParamScope;
   givenParams?: string;
 }) {
-  const { slug } = useLeagueControlPanel();
-
   const { token } = useAuth();
   const { scopeQueryParams } = useQueryString();
 
+  const { slug } = useLeagueControlPanel();
+
   const params = givenParams ? givenParams : scopeQueryParams(includeOnly);
 
-  const { data: response, status } = useQuery({
+  const {
+    data: response,
+    status,
+    isInitialLoading,
+  } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.TEAMS, slug, params, paginate],
     queryFn: () => controlPanelTeamsRequest({ token, slug, params, paginate }),
     enabled,
     retry: false,
-    staleTime: 180000,
+    staleTime: enabled ? 180000 : 0,
+    cacheTime: enabled ? 5 * 60 * 1000 : 0,
   });
 
-  return { response, status };
+  return { response, status, isInitialLoading };
 }
 
 export function useTeam({ slug, teamId }: { slug: string; teamId?: number }) {
