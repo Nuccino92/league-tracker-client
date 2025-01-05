@@ -8,6 +8,8 @@ import {
   ControlPanelDetailedSeasonTeams,
   controlPanelDetailedSeasonTeamsSchema,
   ControlPanelInformation,
+  ControlPanelSportSettingsSchema,
+  controlPanelSportSettingsSchema,
   ErrorType,
   SeasonSettings,
   seasonSettingsSchema,
@@ -400,3 +402,148 @@ const mockDetailedTeams = [
     created_at: '2024-03-13 11:05:30',
   },
 ] as ControlPanelDetailedSeasonTeams[];
+
+export async function getSportSettingsRequest({
+  slug,
+  token,
+}: {
+  slug: string;
+  token: string;
+}) {
+  return new Promise<ControlPanelSportSettingsSchema>((resolve) => {
+    setTimeout(() => {
+      const result = controlPanelSportSettingsSchema.parse(
+        mockSportSettingsData
+      );
+      resolve(result);
+    }, 630);
+  });
+}
+
+const mockSportSettingsData: ControlPanelSportSettingsSchema = {
+  info: {
+    name: 'Hockey',
+    value: 'hockey',
+  },
+  selected_stat_ids: [39, 36, 35, 41],
+  stat_categories: ['skater', 'goalie'],
+  stat_options: [
+    // Skater Stats
+    {
+      id: 32,
+      name: 'Goals',
+      code: 'G',
+      sport_type: 'hockey',
+      is_locked: true,
+      description: 'Goals scored',
+      category: 'skater',
+    },
+    {
+      id: 33,
+      name: 'Assists',
+      code: 'A',
+      sport_type: 'hockey',
+      is_locked: true,
+      description: 'Assists',
+      category: 'skater',
+    },
+    {
+      id: 34,
+      name: 'Plus/Minus',
+      code: '+/-',
+      sport_type: 'hockey',
+      is_locked: false,
+      description: 'Plus/minus rating',
+      category: 'skater',
+    },
+    {
+      id: 35,
+      name: 'Penalty Minutes',
+      code: 'PIM',
+      sport_type: 'hockey',
+      is_locked: false,
+      description: 'Penalty minutes',
+      category: 'skater',
+    },
+    {
+      id: 36,
+      name: 'Shots on Goal',
+      code: 'SOG',
+      sport_type: 'hockey',
+      is_locked: false,
+      description: 'Shots on goal',
+      category: 'skater',
+    },
+    {
+      id: 37,
+      name: 'Hits',
+      code: 'HIT',
+      sport_type: 'hockey',
+      is_locked: false,
+      description: 'Number of hits',
+      category: 'skater',
+    },
+    {
+      id: 38,
+      name: 'Blocks',
+      code: 'BLK',
+      sport_type: 'hockey',
+      is_locked: false,
+      description: 'Shots blocked',
+      category: 'skater',
+    },
+    // Goalie Stats
+    {
+      id: 39,
+      name: 'Saves',
+      code: 'SV',
+      sport_type: 'hockey',
+      is_locked: true,
+      description: 'Number of saves',
+      category: 'goalie',
+    },
+    {
+      id: 40,
+      name: 'Goals Against',
+      code: 'GA',
+      sport_type: 'hockey',
+      is_locked: true,
+      description: 'Goals allowed',
+      category: 'goalie',
+    },
+    {
+      id: 41,
+      name: 'Shots Against',
+      code: 'SA',
+      sport_type: 'hockey',
+      is_locked: false,
+      description: 'Shots faced',
+      category: 'goalie',
+    },
+    {
+      id: 42,
+      name: 'Minutes Played',
+      code: 'MIN',
+      sport_type: 'hockey',
+      is_locked: false,
+      description: 'Minutes played',
+    },
+  ],
+};
+
+export async function updateLeagueSportSettings({
+  slug,
+  token,
+  selected_stat_ids,
+}: {
+  slug: string;
+  token: string;
+  selected_stat_ids: number[];
+}) {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(() => {
+      console.log('Updating stats');
+      resolve(true);
+    }, 630);
+  });
+}

@@ -64,6 +64,8 @@ export async function updateLeagueInformation({
   slug: string;
   leagueData: LeagueInformationResource;
 }) {
+  console.log('updated!!!');
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_KEEPR_API_URL}${ROUTES.LEAGUE}/${slug}`,
     {

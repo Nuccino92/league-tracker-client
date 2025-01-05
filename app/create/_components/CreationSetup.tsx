@@ -1132,7 +1132,7 @@ function Stat({
       onClick={onClick}
       className={classNames(
         stat.is_locked
-          ? 'border-gray-400 text-gray-600 hover:!border-gray-400'
+          ? 'border-gray-400 !bg-primary text-white hover:!border-gray-400'
           : 'border-black',
         selected ? 'bg-primary text-white' : 'bg-white text-black',
         'relative flex h-full w-full items-center justify-center rounded-md border border-black py-3 font-medium hover:border-secondary'
@@ -1153,7 +1153,9 @@ function Stat({
       {isHovered && (
         <span
           className={classNames(
-            selected ? 'bg-primary !text-white' : 'bg-slate-50 !text-black',
+            selected || stat.is_locked
+              ? 'bg-primary !text-white'
+              : 'bg-slate-50 !text-black',
             'absolute inset-0 z-10 flex items-center justify-center rounded-md text-xs'
           )}
         >

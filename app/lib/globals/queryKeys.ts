@@ -3,6 +3,7 @@ const QUERY_KEYS = {
     LEAGUE: 'league-control-panel',
     ARCHIVED_SEASONS: 'archived-seasons-control-panel',
     SEASON_SETTINGS: 'season-settings-control-panel',
+    SPORT_SETTINGS: 'sport-settings',
     DETAILED_SEASONS: 'detailed-seasons',
     DETAILED_SEASON_TEAMS: 'detailed-season-teams',
 

@@ -14,7 +14,7 @@ import { toFormikValidate } from 'zod-formik-adapter';
 
 import FileUpload from '@/app/lib/components/FileUpload';
 import ColorPicker from '@/app/lib/components/ColorPicker';
-import { DeleteIcon } from '@/app/lib/SVGs';
+import { DeleteIcon, Spinner } from '@/app/lib/SVGs';
 import {
   INPUT_CLASSES,
   INPUT_CONTAINER_CLASSES,
@@ -29,7 +29,7 @@ import { DefaultColors } from '@/app/lib/enums';
 import FormLabel from '@/app/control-panel/_components/FormLabel';
 import ControlPanelTooltip from '@/app/control-panel/_components/ControlPanelTooltip';
 
-export default function HomePageForms() {
+export default function LeagueInformation() {
   const { leagueData, slug } = useLeagueControlPanel();
   const updateLeagueMutation = useUpdateLeague();
 
@@ -59,7 +59,7 @@ export default function HomePageForms() {
   return (
     <div className='h-full'>
       {leagueData ? (
-        <main className='flex justify-center space-x-6'>
+        <main className='flex space-x-6'>
           <Formik
             validateOnChange={false}
             validateOnBlur={false}
@@ -72,7 +72,7 @@ export default function HomePageForms() {
             validate={toFormikValidate(leagueInformationSchema)}
           >
             {(props) => (
-              <Form className='flex w-full flex-col rounded-xl border border-violet-100 bg-white md:w-[900px]'>
+              <Form className='flex w-full min-w-[600px] max-w-[700px] flex-col rounded-xl border border-violet-100 bg-white [@media(min-width:1600px)]:w-[700px]'>
                 <div className='border-b p-8 text-2xl font-bold'>
                   League Information
                 </div>
@@ -313,21 +313,31 @@ export default function HomePageForms() {
                       />
                     </div>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      if (!props.dirty) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }
-                    }}
-                    className={classNames(
-                      props.dirty ? 'bg-secondary' : 'bg-gray-300',
-                      'rounded border border-violet-100  p-3 font-medium text-white transition-colors duration-100'
-                    )}
-                    type='submit'
-                  >
-                    Save Changes
-                  </button>
+
+                  <div className='flex justify-end'>
+                    <button
+                      disabled={!props.dirty || updateLeagueMutation.isLoading}
+                      onClick={(e) => {
+                        if (!props.dirty) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }
+                      }}
+                      className={classNames(
+                        props.dirty ? 'bg-secondary' : 'bg-gray-300',
+                        'w-[140px] rounded border border-violet-100 p-3 font-medium text-white transition-colors duration-100'
+                      )}
+                      type='submit'
+                    >
+                      {updateLeagueMutation.isLoading ? (
+                        <div className='flex h-full w-full min-w-[100px] items-center justify-center'>
+                          <Spinner height={20} width={20} />
+                        </div>
+                      ) : (
+                        'Save Changes'
+                      )}
+                    </button>{' '}
+                  </div>
                 </div>
               </Form>
             )}

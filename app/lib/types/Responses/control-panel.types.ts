@@ -3,12 +3,11 @@ import { z } from 'zod';
 import { League } from '@/app/lib/types/Models/League';
 import { basePlayerSchema } from '@/app/lib/types/Models/Player';
 import { baseTeamSchema } from '@/app/lib/types/Models/Team';
-import { Season, seasonSchema } from '../Models/Season';
-import { memberSchema } from '../Models/Member';
-import { Role } from '../Models/Role';
+import { Season, seasonSchema } from '@/app/lib/types/Models/Season';
+import { memberSchema } from '@/app/lib/types/Models/Member';
+import { Role } from '@/app/lib/types/Models/Role';
 import { registrationSchema } from '@/app/lib/types/Responses/registration';
-import { title } from 'process';
-import { create } from 'domain';
+import { statTypeSchema } from '@/app/lib/types/Responses/create-league-types';
 
 // TODO: possibly seperate each region into its own file, follow the requests/control-panel folder structure
 
@@ -22,6 +21,23 @@ export type Seasons = {
   all_seasons: Season[];
   active_season_id: number | null;
 };
+
+// ---- region - settings
+
+export const controlPanelSportSettingsSchema = z.object({
+  info: z.object({
+    name: z.string(),
+    value: z.string(),
+  }),
+  selected_stat_ids: z.array(z.number()),
+  stat_categories: z.array(z.string()).nullable(),
+  stat_options: z.array(statTypeSchema),
+});
+export type ControlPanelSportSettingsSchema = z.infer<
+  typeof controlPanelSportSettingsSchema
+>;
+
+// ---- endregion
 
 // ---- region - seasons
 export type ControlPanelArchivedSeasonsList = z.infer<typeof seasonSchema>;

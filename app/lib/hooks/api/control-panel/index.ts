@@ -7,7 +7,9 @@ import {
   fetchDetailsSeasons,
   generateGameSchedule,
   getSeasonSettings,
+  getSportSettingsRequest,
   leagueControlPanelInformationRequest,
+  updateLeagueSportSettings,
   updateSeasonSettingsRequest,
 } from '@/app/lib/requests/control-panel';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
@@ -127,4 +129,32 @@ export function useDetailedTeams({
   });
 
   return { teams, status };
+}
+
+export function useLeagueSportSettings() {
+  const { token } = useAuth();
+  const { slug } = useLeagueControlPanel();
+
+  const { data: sportSettings, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.SPORT_SETTINGS],
+    queryFn: () => getSportSettingsRequest({ token, slug }),
+  });
+
+  return { sportSettings, status };
+}
+
+export function useUpdateLeagueSportSettings() {
+  const { token } = useAuth();
+  const { slug } = useLeagueControlPanel();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (selected_stat_ids: number[]) =>
+      updateLeagueSportSettings({ token, slug, selected_stat_ids }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CONTROL_PANEL.SPORT_SETTINGS],
+      });
+    },
+  });
 }
