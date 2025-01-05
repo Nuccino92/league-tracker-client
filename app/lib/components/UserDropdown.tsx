@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 import classNames from 'classnames';
 
 import { useAuth } from '@/app/GlobalContext';
-import { DownChevronIcon } from '@/app/lib/SVGs';
 import ROUTES from '@/app/lib/globals/routes';
 import logOut from '@/app/lib/utils/logOut';
+import Image from 'next/image';
 
 type Props = {
   buttonClasses?: string;
@@ -26,71 +26,113 @@ export default function UserDropdown({
 
   if (!user) return <div className='hidden' />;
 
-  //TODO: change name to avatar or placeholder. If part of a league add dropdown item to view league
+  /**
+   * @todo
+   * could possibly add an option if apart of a league/own a league
+   */
 
   return (
     <Menu as={'div'} className={'relative z-40'}>
-      <Menu.Button
-        id='user-menu-button'
-        type='button'
-        className={classNames(
-          buttonClasses,
-          'flex items-center space-x-2 rounded-md border bg-white p-2 text-sm font-medium text-primary'
-        )}
-      >
-        <span className='w-[120px] truncate'>{user.name}</span>{' '}
-        <DownChevronIcon height={22} width={22} />
-      </Menu.Button>
-      <Transition
-        as={Fragment}
-        enter='transition ease-out duration-100'
-        enterFrom='transform opacity-0 scale-95'
-        enterTo='transform opacity-100 scale-100'
-        leave='transition ease-in duration-75'
-        leaveFrom='transform opacity-100 scale-100'
-        leaveTo='transform opacity-0 scale-95'
-      >
-        <Menu.Items
-          className={classNames(
-            containerClasses,
-            'absolute  right-0 mt-2 w-full divide-y divide-gray-100 overflow-hidden rounded-md bg-white p-0 text-start text-sm font-medium shadow-lg'
-          )}
-        >
-          <Menu.Item
-            onClick={() => router.push(ROUTES.CREATE)}
-            as={'button'}
+      {({ open }) => (
+        <>
+          <Menu.Button
+            id='user-menu-button'
             type='button'
             className={classNames(
-              'flex items-center space-x-2',
-              MENU_ITEM_CLASSES
+              buttonClasses,
+              open && 'ring-1 ring-primary/50',
+              'relative flex h-12 w-12 items-center space-x-2 overflow-hidden rounded-full bg-white text-sm font-medium text-secondary hover:opacity-95'
             )}
           >
-            <span>{startLeagueIcon}</span> <span>Start League</span>
-          </Menu.Item>
-          <Menu.Item
-            as={'div'}
-            className={classNames(
-              'flex items-center space-x-2',
-              MENU_ITEM_CLASSES
+            {user.avatar ? (
+              <Image
+                src={user.avatar}
+                alt={`${user.name} avatar`}
+                fill
+                style={{ objectFit: 'cover' }}
+              />
+            ) : (
+              <div className='flex h-full w-full items-center justify-center rounded-full bg-secondary text-lg font-medium capitalize text-white'>
+                {user.name.charAt(0)}
+              </div>
             )}
+          </Menu.Button>
+          <Transition
+            as={Fragment}
+            enter='transition ease-out duration-100'
+            enterFrom='transform opacity-0 scale-95'
+            enterTo='transform opacity-100 scale-100'
+            leave='transition ease-in duration-75'
+            leaveFrom='transform opacity-100 scale-100'
+            leaveTo='transform opacity-0 scale-95'
           >
-            <span>{profileIcon}</span>
-            <Link href={ROUTES.PROFILE}>View Profile</Link>
-          </Menu.Item>
+            <Menu.Items
+              className={classNames(
+                containerClasses,
+                'absolute  right-0 mt-2 w-[250px] divide-y divide-gray-100 overflow-hidden rounded-xl border border-violet-100 bg-white p-0 text-start text-sm font-medium text-gray-700 shadow-lg'
+              )}
+            >
+              <div className='flex items-center gap-2 p-2 py-4'>
+                <div className='relative h-12 min-h-12 w-12 min-w-12'>
+                  {user.avatar ? (
+                    <Image
+                      src={user.avatar}
+                      alt={`${user.name} avatar`}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div className='flex h-full w-full items-center justify-center rounded-full bg-secondary text-lg font-medium capitalize text-white'>
+                      {user.name.charAt(0)}
+                    </div>
+                  )}
+                </div>
 
-          <Menu.Item
-            onClick={() => logOut(user.token)}
-            as={'button'}
-            type='button'
-            className={classNames(
-              'flex items-center space-x-2',
-              MENU_ITEM_CLASSES
-            )}
-          >
-            <span>{logoutIcon}</span> <span>Sign Out</span>
-          </Menu.Item>
-        </Menu.Items>
-      </Transition>
+                <div className='space-y-0.5 truncate'>
+                  <div className='truncate text-base'>{user.name}</div>
+                  <div className='texr-gray-500 truncate font-normal'>
+                    {user.email}
+                  </div>
+                </div>
+              </div>
+
+              <Menu.Item
+                onClick={() => router.push(ROUTES.CREATE)}
+                as={'button'}
+                type='button'
+                className={classNames(
+                  'flex items-center space-x-2',
+                  MENU_ITEM_CLASSES
+                )}
+              >
+                <span>{startLeagueIcon}</span> <span>Start League</span>
+              </Menu.Item>
+              <Menu.Item
+                as={'div'}
+                className={classNames(
+                  'flex items-center space-x-2',
+                  MENU_ITEM_CLASSES
+                )}
+              >
+                <span>{profileIcon}</span>
+                <Link href={ROUTES.PROFILE}>View Profile</Link>
+              </Menu.Item>
+
+              <Menu.Item
+                onClick={() => logOut(user.token)}
+                as={'button'}
+                type='button'
+                className={classNames(
+                  'flex items-center space-x-2',
+                  MENU_ITEM_CLASSES
+                )}
+              >
+                <span>{logoutIcon}</span> <span>Sign Out</span>
+              </Menu.Item>
+            </Menu.Items>
+          </Transition>
+        </>
+      )}
     </Menu>
   );
 }
@@ -102,7 +144,7 @@ const startLeagueIcon = (
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
     viewBox='0 0 24 24'
-    strokeWidth={1.5}
+    strokeWidth={1}
     stroke='currentColor'
     className='h-6 w-6'
   >
@@ -119,7 +161,7 @@ const profileIcon = (
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
     viewBox='0 0 24 24'
-    strokeWidth={1.5}
+    strokeWidth={1}
     stroke='currentColor'
     className='h-6 w-6'
   >
@@ -136,7 +178,7 @@ const logoutIcon = (
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
     viewBox='0 0 24 24'
-    strokeWidth={1.5}
+    strokeWidth={1}
     stroke='currentColor'
     className='h-6 w-6'
   >

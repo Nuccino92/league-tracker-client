@@ -56,6 +56,8 @@ export default function LeagueInformation() {
     });
   }
 
+  const FIELD_LABEL_TOOLTIP_CONTAINER_STYLE_CLASSES = 'flex items-center gap-2';
+
   return (
     <div className='h-full'>
       {leagueData ? (
@@ -78,14 +80,10 @@ export default function LeagueInformation() {
                 </div>
                 <div className='space-y-6 p-8'>
                   <div className={INPUT_CONTAINER_CLASSES}>
-                    <FormLabel label='League Name' htmlFor='name' required />
-                    <div className='flex items-center space-x-2'>
-                      <FastField
-                        className={INPUT_CLASSES}
-                        name='name'
-                        id='name'
-                        placeholder='Enter your league name'
-                      />
+                    <div
+                      className={FIELD_LABEL_TOOLTIP_CONTAINER_STYLE_CLASSES}
+                    >
+                      <FormLabel label='League Name' htmlFor='name' required />{' '}
                       <ControlPanelTooltip
                         content={
                           <div className='max-w-[250px]'>
@@ -97,6 +95,15 @@ export default function LeagueInformation() {
                       />
                     </div>
 
+                    <div className='flex items-center space-x-2'>
+                      <FastField
+                        className={INPUT_CLASSES}
+                        name='name'
+                        id='name'
+                        placeholder='Enter your league name'
+                      />
+                    </div>
+
                     <ErrorMessage
                       component={'span'}
                       className='text-sm text-red-500'
@@ -104,7 +111,23 @@ export default function LeagueInformation() {
                     />
                   </div>
                   <div className={INPUT_CONTAINER_CLASSES}>
-                    <FormLabel label='League Logo' htmlFor='logo' />
+                    <div
+                      className={FIELD_LABEL_TOOLTIP_CONTAINER_STYLE_CLASSES}
+                    >
+                      <FormLabel label='League Logo' htmlFor='logo' />
+
+                      <ControlPanelTooltip
+                        content={
+                          <div className='max-w-[250px]'>
+                            This input will change the logo for this league. If
+                            deleted without replacement the league will use the
+                            default image provided by keepr.
+                          </div>
+                        }
+                        classes='text-white font-medium bg-primary !py-3 text-sm'
+                      />
+                    </div>
+
                     <div className='flex h-[200px] items-center justify-center space-x-2'>
                       {props.values.logo ? (
                         <div className='relative h-[200px] w-full  rounded-md border border-slate-200 bg-white'>
@@ -142,16 +165,6 @@ export default function LeagueInformation() {
                           }
                         />
                       )}
-                      <ControlPanelTooltip
-                        content={
-                          <div className='max-w-[250px]'>
-                            This input will change the logo for this league. If
-                            deleted without replacement the league will use the
-                            default image provided by keepr.
-                          </div>
-                        }
-                        classes='text-white font-medium bg-primary !py-3 text-sm'
-                      />
                     </div>
 
                     {props.errors.logo ? (
@@ -161,7 +174,21 @@ export default function LeagueInformation() {
                     ) : null}
                   </div>
                   <div className={INPUT_CONTAINER_CLASSES}>
-                    <FormLabel label='Name used inside url' htmlFor='slug' />
+                    <div
+                      className={FIELD_LABEL_TOOLTIP_CONTAINER_STYLE_CLASSES}
+                    >
+                      <FormLabel label='Name used inside url' htmlFor='slug' />
+
+                      <ControlPanelTooltip
+                        content={
+                          <div className='max-w-[250px]'>
+                            Request access to change the url path of your league
+                          </div>
+                        }
+                        classes='text-white font-medium bg-primary !py-3 text-sm'
+                      />
+                    </div>
+
                     <div className='flex items-center space-x-2'>
                       <input
                         type='text'
@@ -179,14 +206,6 @@ export default function LeagueInformation() {
                       id='slug'
                       placeholder='Enter your league slug'
                     /> */}
-                      <ControlPanelTooltip
-                        content={
-                          <div className='max-w-[250px]'>
-                            Request access to change the url path of your league
-                          </div>
-                        }
-                        classes='text-white font-medium bg-primary !py-3 text-sm'
-                      />
                     </div>
 
                     <ErrorMessage
@@ -196,20 +215,12 @@ export default function LeagueInformation() {
                     />
                   </div>
                   <div className={INPUT_CONTAINER_CLASSES}>
-                    <FormLabel
-                      label='League Description'
-                      htmlFor='description'
-                    />
-                    <div className='flex items-center space-x-2'>
-                      <FastField
-                        className={classNames(
-                          INPUT_CLASSES,
-                          'min-h-[200px] !py-2'
-                        )}
-                        as='textarea'
-                        name='description'
-                        id='description'
-                        placeholder='Enter your league description'
+                    <div
+                      className={FIELD_LABEL_TOOLTIP_CONTAINER_STYLE_CLASSES}
+                    >
+                      <FormLabel
+                        label='League Description'
+                        htmlFor='description'
                       />
 
                       <ControlPanelTooltip
@@ -223,6 +234,19 @@ export default function LeagueInformation() {
                       />
                     </div>
 
+                    <div className='flex items-center space-x-2'>
+                      <FastField
+                        className={classNames(
+                          INPUT_CLASSES,
+                          'min-h-[200px] !py-2'
+                        )}
+                        as='textarea'
+                        name='description'
+                        id='description'
+                        placeholder='Enter your league description'
+                      />
+                    </div>
+
                     <ErrorMessage
                       component={'span'}
                       className='text-sm text-red-500'
@@ -231,10 +255,25 @@ export default function LeagueInformation() {
                   </div>
 
                   <div className={INPUT_CONTAINER_CLASSES}>
-                    <FormLabel
-                      label='League Primary Color'
-                      htmlFor='primary_color'
-                    />
+                    <div
+                      className={FIELD_LABEL_TOOLTIP_CONTAINER_STYLE_CLASSES}
+                    >
+                      <FormLabel
+                        label='League Primary Color'
+                        htmlFor='primary_color'
+                      />
+
+                      <ControlPanelTooltip
+                        content={
+                          <div className='max-w-[250px]'>
+                            Changing this color will change all the colors where
+                            this default color is used.
+                          </div>
+                        }
+                        classes='text-white font-medium bg-primary !py-3 text-sm'
+                      />
+                    </div>
+
                     <div className='flex w-full items-center justify-between'>
                       <div className='flex items-center space-x-3'>
                         <ColorPicker
@@ -260,6 +299,16 @@ export default function LeagueInformation() {
                           </button>
                         ) : null}
                       </div>
+                    </div>
+                  </div>
+                  <div className={INPUT_CONTAINER_CLASSES}>
+                    <div
+                      className={FIELD_LABEL_TOOLTIP_CONTAINER_STYLE_CLASSES}
+                    >
+                      <FormLabel
+                        label='League Secondary Color'
+                        htmlFor='secondary_color'
+                      />
                       <ControlPanelTooltip
                         content={
                           <div className='max-w-[250px]'>
@@ -270,12 +319,7 @@ export default function LeagueInformation() {
                         classes='text-white font-medium bg-primary !py-3 text-sm'
                       />
                     </div>
-                  </div>
-                  <div className={INPUT_CONTAINER_CLASSES}>
-                    <FormLabel
-                      label='League Secondary Color'
-                      htmlFor='secondary_color'
-                    />
+
                     <div className='flex w-full items-center justify-between'>
                       <div className='flex items-center space-x-3'>
                         <ColorPicker
@@ -302,15 +346,6 @@ export default function LeagueInformation() {
                           </button>
                         ) : null}
                       </div>
-                      <ControlPanelTooltip
-                        content={
-                          <div className='max-w-[250px]'>
-                            Changing this color will change all the colors where
-                            this default color is used.
-                          </div>
-                        }
-                        classes='text-white font-medium bg-primary !py-3 text-sm'
-                      />
                     </div>
                   </div>
 

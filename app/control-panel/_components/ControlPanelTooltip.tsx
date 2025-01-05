@@ -24,7 +24,7 @@ export default function ControlPanelTooltip({
           onClick={(e) => e.preventDefault()}
           className='transition-all duration-75 hover:text-yellow-300'
         >
-          <ToolTipIcon width={24} height={24} />
+          <ToolTipIcon width={22} height={22} />
         </TooltipTrigger>
         <TooltipContent className={classes}>{content}</TooltipContent>
       </Tooltip>

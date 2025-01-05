@@ -19,7 +19,7 @@ export default function Header() {
   };
 
   return (
-    <div className='flex h-[80px] w-screen items-center justify-between border-b p-4'>
+    <div className='flex h-[80px] w-screen items-center justify-between border-b p-4 pr-10'>
       <Link
         href='#'
         onClick={(e) => {
