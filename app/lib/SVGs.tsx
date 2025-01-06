@@ -1050,3 +1050,56 @@ export function IconReturnDownForwardSharp(
     </svg>
   );
 }
+
+export function IconBell(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 16 16'
+      {...props}
+    >
+      <path d='M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6' />
+    </svg>
+  );
+}
+
+export function IconProfile(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg width='1em' height='1em' fill='none' viewBox='0 0 24 24' {...props}>
+      <path
+        fill='currentColor'
+        fillRule='evenodd'
+        d='M16 9a4 4 0 1 1-8 0 4 4 0 0 1 8 0zm-2 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z'
+        clipRule='evenodd'
+      />
+      <path
+        fill='currentColor'
+        fillRule='evenodd'
+        d='M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zM3 12c0 2.09.713 4.014 1.908 5.542A8.986 8.986 0 0 1 12.065 14a8.984 8.984 0 0 1 7.092 3.458A9 9 0 1 0 3 12zm9 9a8.963 8.963 0 0 1-5.672-2.012A6.992 6.992 0 0 1 12.065 16a6.991 6.991 0 0 1 5.689 2.92A8.964 8.964 0 0 1 12 21z'
+        clipRule='evenodd'
+      />
+    </svg>
+  );
+}
+
+export function IconMenu(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 1024 1024'
+      {...props}
+    >
+      <path d='M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0 624H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0-312H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z' />
+    </svg>
+  );
+}

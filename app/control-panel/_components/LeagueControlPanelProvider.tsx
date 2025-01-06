@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useParams, usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Lottie from 'react-lottie';
 
 import animationData from '@/app/assets/animations/horizontal-moving-circles.json';
@@ -140,7 +140,8 @@ export function useLeagueControlPanel() {
       return (accessGranted = true);
     }
 
-    if (page === 'home' || page === 'members') return (accessGranted = false);
+    if (page === 'dashboard' || page === 'members')
+      return (accessGranted = false);
 
     if (role_name === 'admin') {
       return (accessGranted = true);

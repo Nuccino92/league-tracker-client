@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 import AuthGuard from '@/app/lib/components/_auth/AuthGuard';
 import LeagueControlPanelProvider from '@/app/control-panel/_components/LeagueControlPanelProvider';
-import RoleGuard from '../../_components/RoleGuard';
+import RoleGuard from '@/app/control-panel/_components/RoleGuard';
 
 export const metadata: Metadata = {
   title: 'Control Panel - League',

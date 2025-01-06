@@ -57,8 +57,8 @@ export default function RoleGuard({ children }: Props) {
 function useGetControlPanelPage(): ControlPanelLeaguePages {
   const pathname = usePathname();
 
-  if (pathname.includes('home')) {
-    return ControlPanelLeaguePages.HOME;
+  if (pathname.includes('dashboard')) {
+    return ControlPanelLeaguePages.DASHBOARD;
   }
   if (pathname.includes('members')) {
     return ControlPanelLeaguePages.MEMBERS;
@@ -73,14 +73,14 @@ function useGetControlPanelPage(): ControlPanelLeaguePages {
   if (pathname.includes('players')) {
     return ControlPanelLeaguePages.PLAYERS;
   }
-  if (pathname.includes('calendar')) {
-    return ControlPanelLeaguePages.CALENDAR;
+  if (pathname.includes('schedule')) {
+    return ControlPanelLeaguePages.SCHEDULE;
   }
   if (pathname.includes('registrations')) {
     return ControlPanelLeaguePages.REGISTRATIONS;
   }
-  if (pathname.includes('news')) {
-    return ControlPanelLeaguePages.NEWS;
+  if (pathname.includes('notices')) {
+    return ControlPanelLeaguePages.NOTICES;
   }
 
   return ControlPanelLeaguePages.INDEX;

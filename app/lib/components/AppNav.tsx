@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import ROUTES from '@/app/lib/globals/routes';
 import { useAuth } from '@/app/GlobalContext';
 import UserDropdown from '@/app/lib/components/UserDropdown';
+import { IconBell } from '../SVGs';
 
 const leagueOwnerId = 'arandomuserid';
 
@@ -92,12 +93,10 @@ export default function AppNav() {
 
       <div>
         {status === 'authenticated' ? (
-          <div className='flex items-center space-x-4'>
-            {/* {user.id === leagueOwnerId ? (
-              <span className='text-sm font-medium text-white'>
-                ( League Owner )
-              </span>
-            ) : null} */}
+          <div className='flex items-center gap-6 text-white'>
+            <Link href={ROUTES.NOTIFICATIONS}>
+              <IconBell height={21} width={21} />
+            </Link>
             <UserDropdown />
           </div>
         ) : (

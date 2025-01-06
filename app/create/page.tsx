@@ -1,4 +1,4 @@
-import Header from '@/app/create/_components/Header';
+import Header from '@/app/lib/components/Header';
 import CreationSetup from '@/app/create/_components/CreationSetup';
 
 export default function CreatePage() {

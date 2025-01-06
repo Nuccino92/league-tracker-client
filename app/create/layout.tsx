@@ -1,12 +1,12 @@
+import '@/app/globals.css';
 import type { Metadata } from 'next';
 
-import '@/app/globals.css';
 import AuthGuard from '@/app/lib/components/_auth/AuthGuard';
 import AuthProvider from '@/app/lib/components/_auth/AuthProvider';
 
 export const metadata: Metadata = {
-  title: 'Profile',
-  description: 'profile page',
+  title: 'Create League',
+  description: 'Create your league',
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <AuthGuard>
-      <AuthProvider>{children} </AuthProvider>
+      <AuthProvider>{children}</AuthProvider>
     </AuthGuard>
   );
 }

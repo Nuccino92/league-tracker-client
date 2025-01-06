@@ -14,6 +14,7 @@ const ROUTES = {
   PROFILE_SUBROUTES: {
     LEAGUES_ORGS: '/league-and-organizations',
   },
+  NOTIFICATIONS: '/notifications',
   CONTROL_PANEL: '/control-panel',
   CONTROL_PANEL_SUBROUTES: {
     DASHBOARD: '/dashboard',

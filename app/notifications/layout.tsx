@@ -5,8 +5,8 @@ import AuthGuard from '@/app/lib/components/_auth/AuthGuard';
 import AuthProvider from '@/app/lib/components/_auth/AuthProvider';
 
 export const metadata: Metadata = {
-  title: 'Profile',
-  description: 'profile page',
+  title: 'Notifications',
+  description: 'notifications page',
 };
 
 export default function RootLayout({
@@ -16,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <AuthGuard>
-      <AuthProvider>{children} </AuthProvider>
+      <AuthProvider>
+        <div>{children}</div>
+      </AuthProvider>
     </AuthGuard>
   );
 }

@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-import { Button } from '@/app/lib/components/Button';
 import UserDropdown from '@/app/lib/components/UserDropdown';
+import { IconBell } from '@/app/lib/SVGs';
 import ROUTES from '@/app/lib/globals/routes';
 
 export default function Header() {
@@ -30,7 +30,12 @@ export default function Header() {
       >
         keepr
       </Link>
-      <UserDropdown />
+      <div className='flex items-center gap-6'>
+        <Link href={ROUTES.NOTIFICATIONS}>
+          <IconBell height={21} width={21} />
+        </Link>
+        <UserDropdown />
+      </div>
     </div>
   );
 }

@@ -3,6 +3,9 @@
 import UserDropdown from '@/app/lib/components/UserDropdown';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import classNames from 'classnames';
+import { IconBell } from '@/app/lib/SVGs';
+import Link from 'next/link';
+import ROUTES from '@/app/lib/globals/routes';
 
 export default function Header() {
   const { activeSeason } = useLeagueControlPanel();
@@ -27,7 +30,12 @@ export default function Header() {
         )}
       </div>
 
-      <UserDropdown />
+      <div className='flex items-center gap-6'>
+        <Link href={ROUTES.NOTIFICATIONS}>
+          <IconBell height={21} width={21} />
+        </Link>
+        <UserDropdown />
+      </div>
     </header>
   );
 }
