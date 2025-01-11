@@ -16,9 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <AuthGuard>
-      <AuthProvider>
-        <div>{children}</div>
-      </AuthProvider>
+      <AuthProvider>{children}</AuthProvider>
     </AuthGuard>
   );
 }

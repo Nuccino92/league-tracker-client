@@ -1,9 +1,13 @@
 import AuthedContainer from '@/app/lib/components/_auth/AuthedContainer';
 
 export default function NotificationsPage() {
+  /**
+   * @page content
+   *
+   */
   return (
     <AuthedContainer>
-      <main className='border-4'>yo</main>
+      <main className=''>yo</main>
     </AuthedContainer>
   );
 }

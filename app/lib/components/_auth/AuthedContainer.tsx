@@ -9,14 +9,14 @@ import AuthSidebar from '@/app/lib/components/_auth/AuthSidebar';
 import { useAuthed } from '@/app/lib/components/_auth/AuthProvider';
 
 export default function AuthedContainer({ children }: { children: ReactNode }) {
-  const { isOpen } = useAuthed();
+  const { sidebar } = useAuthed();
 
   return (
     <div className='flex min-h-screen w-full'>
       <AuthSidebar />
       <div
         className={classNames(
-          isOpen ? 'ml-64' : 'ml-16',
+          sidebar.isOpen ? 'ml-64' : 'ml-16',
           'flex w-full flex-1 flex-col'
         )}
       >
@@ -24,7 +24,7 @@ export default function AuthedContainer({ children }: { children: ReactNode }) {
           <AuthHeader />
         </div>
 
-        <main className='flex-1 p-6'>{children}</main>
+        <main className='flex-1 bg-slate-50 p-6'>{children}</main>
         <AuthFooter />
       </div>
     </div>

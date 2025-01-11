@@ -12,6 +12,19 @@ import { IS_AUTH_SIDEBAR_OPEN } from '@/app/lib/globals/localStorage';
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const { isOpen, toggleSidebar } = useAuthSidebar();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className='flex h-screen w-full items-center justify-center'>
+        {/* Optional loading state */}
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ isOpen, toggleSidebar }}>
@@ -36,7 +49,7 @@ export function useAuthed() {
 
   const { isOpen, toggleSidebar } = context;
 
-  return { isOpen, toggleSidebar };
+  return { sidebar: { isOpen, toggleSidebar } };
 }
 
 const getInitialState = (): boolean => {

@@ -5,18 +5,26 @@ import { FastField, Form, Formik, FormikValues, ErrorMessage } from 'formik';
 import { z } from 'zod';
 import { toFormikValidate } from 'zod-formik-adapter';
 import classNames from 'classnames';
+import Image from 'next/image';
 
 import { useAuth } from '@/app/GlobalContext';
 import AuthFormInput from '@/app/lib/components/_auth/AuthFormInput';
-import { eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
+import { DeleteIcon, eyeClosedIcon, eyeOpenIcon } from '@/app/lib/SVGs';
 import {
   INPUT_CLASSES,
   INPUT_CONTAINER_CLASSES,
 } from '@/app/lib/globals/styles';
+import FileUpload from '@/app/lib/components/FileUpload';
 
 const AccountInformationSchema = z.object({
   name: z.string().min(1, { message: 'A name is required' }),
   email: z.string().email({ message: 'The new email is invalid' }),
+  avatar: z
+    .string()
+    .min(5)
+    .max(255)
+    .url({ message: 'The avatar must be a URL' })
+    .nullable(),
 });
 
 const NewPasswordSchema = z
@@ -51,6 +59,7 @@ export default function UserProfileForms() {
         initialValues={{
           name: user.name,
           email: user.email,
+          avatar: user?.avatar ?? null,
         }}
         validateOnChange={false}
         validateOnBlur={false}
@@ -60,6 +69,57 @@ export default function UserProfileForms() {
         {(props) => (
           <Form className='flex w-full flex-col space-y-6 rounded-xl border border-violet-100 bg-white p-6 md:w-[650px]'>
             <h2 className='text-xl font-bold'>Account information</h2>
+
+            <div className={INPUT_CONTAINER_CLASSES}>
+              <FormLabel name='Profile Picture' htmlFor='avatar' />
+
+              <div className='flex h-[135px] space-x-2'>
+                {props.values.avatar ? (
+                  <div className='relative h-[135px] w-[135px] rounded-full border border-slate-200 bg-white'>
+                    <Image
+                      src={props.values.avatar}
+                      alt='Your league icon'
+                      style={{ objectFit: 'contain' }}
+                      fill
+                    />
+
+                    <button
+                      onClick={async () => {
+                        /*
+                         * TODO:
+                         * await delete from s3
+                         */
+                        props.setFieldValue('avatar', null);
+                      }}
+                      className='absolute right-0 -mx-5 transition-colors hover:text-red-500'
+                      type='button'
+                    >
+                      <DeleteIcon width={24} height={24} />
+                    </button>
+                  </div>
+                ) : (
+                  <FileUpload
+                    name='avatar'
+                    view='profile'
+                    labelText='Click to Upload'
+                    maxFileSize={500 * 1024}
+                    changeEvent={(value) =>
+                      props.setFieldValue('avatar', value)
+                    }
+                    errorEvent={(message) =>
+                      props.setFieldError('avatar', message)
+                    }
+                  />
+                )}
+              </div>
+
+              <ErrorMessage
+                name={'avatar'}
+                component='div'
+                className='ml-2 mt-1 text-sm text-red-400'
+              />
+            </div>
+
             <div className={INPUT_CONTAINER_CLASSES}>
               <FormLabel name='Username' htmlFor='name' />
               <FastField
@@ -89,6 +149,7 @@ export default function UserProfileForms() {
                 className='ml-2 mt-1 text-sm text-red-400'
               />
             </div>
+
             <button
               disabled={!props.dirty}
               className={classNames(

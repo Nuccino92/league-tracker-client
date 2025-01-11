@@ -6,11 +6,8 @@ import Link from 'next/link';
 import UserDropdown from '@/app/lib/components/UserDropdown';
 import { IconBell } from '@/app/lib/SVGs';
 import ROUTES from '@/app/lib/globals/routes';
-import { useAuthed } from '@/app/lib/components/_auth/AuthProvider';
 
 export default function AuthHeader() {
-  const { isOpen } = useAuthed();
-
   const router = useRouter();
 
   const handleBack = () => {
