@@ -28,7 +28,7 @@ export default function BillingToggle({
           type='button'
           onClick={() => onChange('yearly')}
           className={classNames(
-            'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+            'rounded-full px-4 py-2 text-sm font-medium transition-colors duration-75',
             billingPeriod === 'yearly'
               ? 'bg-primary text-white'
               : 'text-gray-500 hover:text-gray-700'

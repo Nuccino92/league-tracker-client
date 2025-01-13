@@ -3,10 +3,10 @@
 import Image from 'next/image';
 
 import { useAuth } from '@/app/GlobalContext';
-import { useLeagueControlPanel } from './LeagueControlPanelProvider';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import getEnumKeyByEnumValue from '@/app/lib/utils/getEnumKeyByEnumValue';
 import { MemberRolesEnum } from '@/app/lib/enums';
-import PageHeader from './PageHeader';
+import PageHeader from '@/app/control-panel/_components/PageHeader';
 
 export default function IndexContent() {
   const { user } = useAuth();

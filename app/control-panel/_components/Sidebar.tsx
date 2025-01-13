@@ -11,6 +11,7 @@ import { useLeagueControlPanel } from './LeagueControlPanelProvider';
 import generateNavLinkWithParams from '@/app/lib/utils/generateNavLinkWithParams';
 import { SIDEBAR_LINK_CLASSES } from '@/app/lib/globals/styles';
 import { ControlPanelLeaguePages } from '@/app/lib/enums';
+import { HeroChevronRight } from '@/app/lib/SVGs';
 
 // Have to get features from backend (maybe not depending on business model)
 
@@ -149,12 +150,16 @@ function ControlPanelRoutes({ pathname, view }: ControlPanelTypes) {
                 : link.href
             }
             className={classNames(
-              sidebar.isSidebarExpanded ? 'justify-start' : '',
+              sidebar.isSidebarExpanded ? 'justify-between' : '',
               SIDEBAR_LINK_CLASSES
             )}
           >
-            <span className=''>{link.icon}</span>{' '}
-            {sidebar.isSidebarExpanded ? <span>{link.label}</span> : null}
+            <div className='flex items-center gap-x-3'>
+              <span className=''>{link.icon}</span>{' '}
+              {sidebar.isSidebarExpanded ? <span>{link.label}</span> : null}
+            </div>
+
+            <HeroChevronRight height={12} width={12} />
           </Link>
         </li>
       ))}

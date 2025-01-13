@@ -43,6 +43,9 @@ const QUERY_KEYS = {
 
   CREATE_LEAGUE_SPORTS: 'create-league-sports',
   SUBSCRIPTION_PLANS: 'subscription-plans',
+
+  FOLLOWED_LEAGUES: 'followed-leagues',
+  LEAGUES_FOR_BOOKMARK: 'leagues-for-bookmark',
 };
 
 export default QUERY_KEYS;

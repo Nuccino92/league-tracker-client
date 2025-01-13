@@ -10,18 +10,22 @@ type Props = {
   placeholder?: string;
   searchIconSize?: number;
   closeIconSize?: number;
+  rootClasses?: string;
 };
 
 export default function SearchBar({
   inputValue,
   setInputValue,
   containerClasses,
+  rootClasses,
   placeholder,
   searchIconSize = 16,
   closeIconSize = 16,
 }: Props) {
   return (
-    <div className='relative flex w-max items-center'>
+    <div
+      className={classNames(rootClasses, 'relative flex w-max items-center')}
+    >
       <IconSearch
         height={searchIconSize}
         width={searchIconSize}

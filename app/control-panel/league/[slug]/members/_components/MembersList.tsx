@@ -31,6 +31,8 @@ type Props = {};
  * - UI for each of the members cards, have a settings button on the right
  *
  * - Add member modal
+ *
+ * - need to add a accept/decline pending status when sending ut the members invite, need to validate if the email exists as well when creating a member
  */
 
 export default function MembersList({}: Props) {

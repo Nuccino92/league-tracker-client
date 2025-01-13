@@ -25,7 +25,7 @@ import {
 import { SportType } from '@/app/lib/types/sport.types';
 import { StatType } from '@/app/lib/types/Responses/create-league-types';
 import { useIsFreeTrialAvailable } from '@/app/GlobalContext';
-import SubscriptionCard from './SubscriptionCard';
+import SubscriptionCard from '@/app/create/_components/SubscriptionCard';
 import { useGetSubscriptionPlans } from '@/app/lib/hooks/api/billing';
 import { getMonthlyPriceInAnnualPlan } from '@/app/lib/utils/subscriptionHelpers';
 import BillingToggle from '@/app/create/_components/BillingToggle';

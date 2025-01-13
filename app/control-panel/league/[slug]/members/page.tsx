@@ -14,7 +14,7 @@ export default function MembersPage({
       <div className='space-y-4'>
         <MembersHeader />
         <main className='h-[calc(100%-104px)]'>
-          <MembersList slug={params.slug} />
+          <MembersList />
         </main>
       </div>
     </Container>

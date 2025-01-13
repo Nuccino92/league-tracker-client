@@ -95,6 +95,20 @@ export const IconEllipsisVertical: FC<SVGProps<SVGSVGElement>> = (props) => {
   );
 };
 
+export const IconEllipsisH: FC<SVGProps<SVGSVGElement>> = (props) => {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 24 24'
+      {...props}
+    >
+      <path d='M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-7 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm14 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z' />
+    </svg>
+  );
+};
+
 export const IconPlus: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
@@ -1143,7 +1157,7 @@ export function InformationCircle(
   );
 }
 
-export function RectangleGroup(
+export function HeartIcon(
   props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
 ) {
   return (
@@ -1157,8 +1171,117 @@ export function RectangleGroup(
       <path
         strokeLinecap='round'
         strokeLinejoin='round'
-        d='M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z'
+        d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'
       />
+    </svg>
+  );
+}
+
+export function HeroChevronRight(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      {...props}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='m8.25 4.5 7.5 7.5-7.5 7.5'
+      />
+    </svg>
+  );
+}
+
+export function IconExternalLink(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 24 24'
+      {...props}
+    >
+      <path d='M19 6.41 8.7 16.71a1 1 0 1 1-1.4-1.42L17.58 5H14a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V6.41zM17 14a1 1 0 0 1 2 0v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7c0-1.1.9-2 2-2h5a1 1 0 0 1 0 2H5v12h12v-5z' />
+    </svg>
+  );
+}
+
+export function IconBillLine(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 24 24'
+      {...props}
+    >
+      <path d='M20 22H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1zm-1-2V4H5v16h14zM8 9h8v2H8V9zm0 4h8v2H8v-2z' />
+    </svg>
+  );
+}
+
+export function IconStar(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 576 512'
+      {...props}
+    >
+      <path d='M316.9 18c-5.3-11-16.5-18-28.8-18s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329l-24.6 145.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329l104.2-103.1c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7l-143.7-21.2L316.9 18z' />
+    </svg>
+  );
+}
+
+export function IconWebsite(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg width='1em' height='1em' fill='none' viewBox='0 0 24 24' {...props}>
+      <path
+        fill='currentColor'
+        fillRule='evenodd'
+        d='M14 7a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-4zm3 2h-2v6h2V9z'
+        clipRule='evenodd'
+      />
+      <path
+        fill='currentColor'
+        d='M6 7a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2H6zm0 4a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2H6zm-1 5a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z'
+      />
+      <path
+        fill='currentColor'
+        fillRule='evenodd'
+        d='M4 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H4zm16 2H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z'
+        clipRule='evenodd'
+      />
+    </svg>
+  );
+}
+
+export function IconHeartbreakFill(
+  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) {
+  return (
+    <svg
+      width='1em'
+      height='1em'
+      fill='currentColor'
+      viewBox='0 0 16 16'
+      {...props}
+    >
+      <path d='M8.931.586 7 3l1.5 4-2 3L8 15C22.534 5.396 13.757-2.21 8.931.586M7.358.77 5.5 3 7 7l-1.5 3 1.815 4.537C-6.533 4.96 2.685-2.467 7.358.77' />
     </svg>
   );
 }

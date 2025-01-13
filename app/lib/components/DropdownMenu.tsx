@@ -4,7 +4,7 @@ import { Fragment, ReactNode } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from 'classnames';
 
-import { IconEllipsisV, IconOptionsOutline } from '@/app/lib/SVGs';
+import { IconEllipsisV } from '@/app/lib/SVGs';
 
 type Props = {
   items: {

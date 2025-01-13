@@ -11,7 +11,8 @@ import {
   IconMenu,
   InformationCircle,
   NotificationBell,
-  RectangleGroup,
+  HeartIcon,
+  HeroChevronRight,
 } from '@/app/lib/SVGs';
 import { useAuthed } from '@/app/lib/components/_auth/AuthProvider';
 
@@ -26,15 +27,23 @@ export default function AuthSidebar() {
       href: ROUTES.PROFILE,
     },
     {
+      icon: (
+        <HeartIcon
+          height={24}
+          width={24}
+          strokeWidth={1.5}
+          className='min-h-6 min-w-6'
+        />
+      ),
+      label: 'Your Leagues',
+      href: ROUTES.FOLLOWED_LEAGUES,
+    },
+    {
       icon: <NotificationBell height={24} width={24} strokeWidth={1.5} />,
       label: 'Notifications',
       href: ROUTES.NOTIFICATIONS,
     },
-    {
-      icon: <RectangleGroup height={24} width={24} strokeWidth={1.5} />,
-      label: 'Your Leagues',
-      href: ROUTES.FOLLOWED_LEAGUES,
-    },
+
     {
       icon: <InformationCircle height={24} width={24} strokeWidth={1.5} />,
       label: 'Help',
@@ -67,28 +76,31 @@ export default function AuthSidebar() {
               key={item.href}
               href={item.href}
               className={classNames(
-                'group relative flex h-12 items-center px-[18px]',
+                'group relative flex h-12 items-center justify-between px-[18px]',
                 isActive
-                  ? 'bg-gray-100 text-primary'
+                  ? 'bg-gray-100 text-secondary'
                   : 'text-gray-700 hover:bg-gray-50'
               )}
             >
-              <div
-                className={classNames(
-                  'flex items-center',
-                  sidebar.isOpen ? '' : 'mx-auto'
-                )}
-              >
-                {item.icon}
+              <div>
+                <div
+                  className={classNames(
+                    'flex items-center',
+                    sidebar.isOpen ? '' : 'mx-auto'
+                  )}
+                >
+                  {item.icon}
+                  <span
+                    className={classNames(
+                      'ml-3 text-sm font-medium',
+                      sidebar.isOpen ? 'opacity-100' : 'opacity-0'
+                    )}
+                  >
+                    {item.label}
+                  </span>{' '}
+                </div>
               </div>
-              <span
-                className={classNames(
-                  'ml-3 text-sm font-medium',
-                  sidebar.isOpen ? 'opacity-100' : 'opacity-0'
-                )}
-              >
-                {item.label}
-              </span>
+              <HeroChevronRight height={12} width={12} />
             </Link>
           );
         })}
