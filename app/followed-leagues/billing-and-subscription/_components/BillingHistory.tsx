@@ -1,16 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { format, parseISO } from 'date-fns';
 
 import SearchBar from '@/app/lib/components/SearchBar';
 import StyledBox from '@/app/lib/components/StyledBox';
 import { useLeagueBillingHistory } from '@/app/lib/hooks/api/followed-leagues';
 import { Button } from '@/app/lib/components/Button';
 import { IconDownload, IconEye, Spinner } from '@/app/lib/SVGs';
-import { format, parseISO } from 'date-fns';
 import { BillingStatus } from '@/app/lib/types/followed-leagues.types';
 import formatCurrency from '@/app/lib/utils/formatCurrency';
 import Pagination from '@/app/lib/components/Pagination';
+import useDebounce from '@/app/lib/hooks/useDebounce';
 
 type Props = {
   leagueID: string;
@@ -23,8 +24,10 @@ export default function BillingHistory({ leagueID }: Props) {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
 
+  const debouncedSearch = useDebounce(query, 350);
+
   const { response, status } = useLeagueBillingHistory(leagueID, {
-    query,
+    query: debouncedSearch,
     page,
   });
 

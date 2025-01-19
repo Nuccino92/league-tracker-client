@@ -97,7 +97,7 @@ export default function Pagination({
       {/* Next */}
       <Button
         variant={'outline'}
-        onClick={() => onPageChange('next', currentPage)}
+        onClick={() => onPageChange('next', currentPage + 1)}
         disabled={currentPage === totalPages}
         className={classNames(
           'flex items-center justify-center gap-2 rounded-md transition-colors',
