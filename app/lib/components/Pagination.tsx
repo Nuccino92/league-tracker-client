@@ -49,7 +49,7 @@ export default function Pagination({
       {/* Previous */}
       <Button
         variant={'outline'}
-        onClick={() => onPageChange('prev', currentPage)}
+        onClick={() => onPageChange('prev', currentPage - 1)}
         disabled={currentPage === 1}
         className={classNames(
           'flex items-center justify-center gap-2 rounded-md transition-colors',
