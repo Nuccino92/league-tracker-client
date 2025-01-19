@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { ControlPanelDetailedSeasonsListItem } from '@/app/lib/types/Responses/control-panel.types';
@@ -165,7 +165,7 @@ function SeasonItem({
         </Link>
         <div>{season.teams}</div>
         <div>{season.players}</div>
-        <div>{format(season.created_at, 'PPP')}</div>
+        <div>{format(parseISO(season.created_at), 'PPP')}</div>
 
         <div className='flex justify-end gap-2'>
           <DropdownMenu

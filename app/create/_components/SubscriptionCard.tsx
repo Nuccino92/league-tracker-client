@@ -61,7 +61,7 @@ export default function SubscriptionCard({
             highlight
               ? 'border-white bg-white text-primary'
               : 'border-primary bg-primary text-white',
-            'flex h-9 w-full items-center justify-center rounded-md text-sm font-medium '
+            'flex h-10 w-full items-center justify-center rounded-md text-sm font-medium '
           )}
         >
           {actionButton.label}

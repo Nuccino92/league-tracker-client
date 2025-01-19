@@ -4,6 +4,7 @@ import { useAuth } from '@/app/GlobalContext';
 import {
   addBookmarkedLeague,
   getFollowedLeagues,
+  getLeagueBillingHistory,
   getLeaguesForBookmark,
   getLeagueSubscriptionInformation,
   removeBookmarkedLeague,
@@ -136,4 +137,23 @@ export function useToggleAutoRenewSubscription(leagueID: string) {
       });
     },
   });
+}
+
+export function useLeagueBillingHistory(
+  leagueID: string,
+  filters: { page: number; query: string }
+) {
+  const { token } = useAuth();
+
+  console.log(filters);
+
+  //todo: create params
+
+  const { data: response, status } = useQuery({
+    queryKey: [QUERY_KEYS.LEAGUE_BILLING_HISTORY],
+    queryFn: () => getLeagueBillingHistory({ token }),
+    staleTime: 60000,
+  });
+
+  return { response, status };
 }

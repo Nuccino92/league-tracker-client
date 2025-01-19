@@ -19,7 +19,7 @@ import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import { MENU_ITEM_CLASSES } from '@/app/lib/globals/styles';
 import TeamForm from '@/app/control-panel/league/[slug]/teams/_components/TeamForm';
 import { ControlPanelDetailedSeasonTeams } from '@/app/lib/types/Responses/control-panel.types';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 type Props = {
   slug: string;
@@ -143,7 +143,7 @@ function TeamCard({
         </div>
 
         <div>{team.players}</div>
-        <div>{format(team.created_at, 'PPP')}</div>
+        <div>{format(parseISO(team.created_at), 'PPP')}</div>
 
         <div className='flex justify-end gap-2'>
           <DropdownMenu

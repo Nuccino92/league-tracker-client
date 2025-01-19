@@ -3,6 +3,7 @@
 import { Fragment, useState } from 'react';
 import { Switch, Transition } from '@headlessui/react';
 import classNames from 'classnames';
+import { differenceInDays, format } from 'date-fns';
 
 import { useGetSubscriptionPlans } from '@/app/lib/hooks/api/billing';
 import BillingToggle from '@/app/create/_components/BillingToggle';
@@ -13,8 +14,6 @@ import {
   useLeagueSubscriptionInformation,
   useToggleAutoRenewSubscription,
 } from '@/app/lib/hooks/api/followed-leagues';
-import { Button } from '@/app/lib/components/Button';
-import { differenceInDays, format } from 'date-fns';
 
 type Props = {
   leagueID: string;
@@ -69,7 +68,7 @@ export default function SubscriptionPlans({ leagueID }: Props) {
             {/* Sub plans */}
             {plansStatus === 'success' && data && (
               <div>
-                <header className='mb-6 flex items-center justify-between'>
+                <header className='mb-8 flex items-center justify-between'>
                   <div>
                     <div className='text-lg font-bold'>
                       Billing & Subscription
@@ -98,7 +97,11 @@ export default function SubscriptionPlans({ leagueID }: Props) {
                       actionButton={{
                         label: subInformationResponse.subscription
                           ? subInformationResponse.subscription?.id === plan.id
-                            ? 'Current Plan'
+                            ? selectedBilling ===
+                              subInformationResponse.subscription
+                                .billing_frequency
+                              ? 'Current Plan'
+                              : 'Change Plan'
                             : (data?.plans?.find(
                                   (p) =>
                                     p.id ===
@@ -106,18 +109,23 @@ export default function SubscriptionPlans({ leagueID }: Props) {
                                 )?.pricing?.monthly ?? 0) <
                                 (plan?.pricing?.monthly ?? 0)
                               ? 'Upgrade'
-                              : 'Switch'
+                              : 'Change Plan'
                           : 'Choose Plan',
                         action: () => {
                           console.log('hihihi');
                         },
                         disabled:
-                          subInformationResponse.subscription?.id === plan.id
+                          subInformationResponse.subscription?.id === plan.id &&
+                          selectedBilling ===
+                            subInformationResponse.subscription
+                              .billing_frequency
                             ? true
                             : false,
                       }}
                       highlight={
-                        subInformationResponse.subscription?.id === plan.id
+                        subInformationResponse.subscription?.id === plan.id &&
+                        selectedBilling ===
+                          subInformationResponse.subscription.billing_frequency
                       }
                     />
                   ))}

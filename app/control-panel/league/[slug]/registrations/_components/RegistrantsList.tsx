@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 import StyledBox from '@/app/lib/components/StyledBox';
@@ -141,7 +141,7 @@ function Registrant({
         </div>
         <div>{registrant.email}</div>
         <div>{registrant.season.name}</div>
-        <div>{format(registrant.created_at, 'PPP')}</div>
+        <div>{format(parseISO(registrant.created_at), 'PPP')}</div>
 
         <div className='flex justify-end gap-2'>
           <button

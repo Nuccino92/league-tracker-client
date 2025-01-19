@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import classNames from 'classnames';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
@@ -149,7 +149,7 @@ function AnnouncementsListItem({ notice }: { notice: NoticeItem }) {
         <div className='space-y-1'>
           <h3 className='font-medium'>{notice.title}</h3>
           <div className='text-sm text-gray-500'>
-            {format(new Date(notice.created_at), 'MMM d, yyyy')}
+            {format(parseISO(notice.created_at), 'MMM d, yyyy')}
           </div>{' '}
           {notice.season && (
             <div className='text-sm font-medium text-gray-500'>

@@ -45,6 +45,7 @@ const QUERY_KEYS = {
   SUBSCRIPTION_PLANS: 'subscription-plans',
 
   LEAGUE_SUBSCRIPTION_INFORMATION: 'league-subscription-information',
+  LEAGUE_BILLING_HISTORY: 'league-billing-history',
   FOLLOWED_LEAGUES: 'followed-leagues',
   LEAGUES_FOR_BOOKMARK: 'leagues-for-bookmark',
 };

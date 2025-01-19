@@ -1,6 +1,8 @@
 import {
   FollowedLeagueResponse,
   followedLeaguesResponseSchema,
+  LeagueBillingHistoryItemResponse,
+  leagueBillingHistoryItemResponseSchema,
   LeaguesForBookmarkResponse,
   leaguesForBookmarkResponseSchema,
   LeagueSubscriptionInformation,
@@ -187,6 +189,8 @@ const mockSubInfoData = {
     id: 'pro',
     name: 'Starter',
     start_date: '2025-03-09 04:15:13',
+    amount: 3213,
+    currency: 'USD',
     end_date: '2025-01-19 04:15:13',
     billing_frequency: 'monthly',
   },
@@ -209,3 +213,82 @@ export async function toggleLeagueSubscriptionAutoRenewal({
     }, 330);
   });
 }
+
+export async function getLeagueBillingHistory({ token }: { token: string }) {
+  return new Promise<LeagueBillingHistoryItemResponse>((resolve) => {
+    setTimeout(() => {
+      const result =
+        leagueBillingHistoryItemResponseSchema.parse(mockBillingHis);
+      resolve(result);
+    }, 430);
+  });
+}
+
+const mockBillingHis = {
+  data: [
+    {
+      id: 1001,
+      status: 'succeeded',
+      amount: 3213,
+      currency: 'USD',
+      end_date: '2024-02-18T23:59:59Z',
+      product_name: 'Professional',
+      purchase_date: '2024-01-18T15:30:22Z',
+    },
+    {
+      id: 982,
+      status: 'processing',
+      amount: 3521,
+      currency: 'USD',
+      end_date: '2024-01-18T23:59:59Z',
+      product_name: 'Professional',
+      purchase_date: '2023-12-18T14:22:45Z',
+    },
+    {
+      id: 845,
+      status: 'pending',
+      amount: 71135,
+      currency: 'USD',
+      end_date: '2023-12-18T23:59:59Z',
+      product_name: 'Starter',
+      purchase_date: '2023-11-18T09:15:30Z',
+    },
+    {
+      id: 723,
+      status: 'failed',
+      amount: 75413,
+      currency: 'MXN',
+      end_date: '2023-11-18T23:59:59Z',
+      product_name: 'Starter',
+      purchase_date: '2023-10-18T11:45:12Z',
+    },
+    {
+      id: 654,
+      status: 'refunded',
+      amount: 1553,
+      currency: 'EUR',
+      end_date: '2023-10-18T23:59:59Z',
+      product_name: 'Professional',
+      purchase_date: '2023-09-18T16:20:00Z',
+    },
+    {
+      id: 532,
+      status: 'cancelled',
+      amount: 5833,
+      currency: 'CAD',
+      end_date: '2023-09-18T23:59:59Z',
+      product_name: 'Starter',
+      purchase_date: '2023-08-18T10:05:33Z',
+    },
+  ],
+  meta: {
+    current_page: 1,
+    last_page: 4,
+    to: 0,
+    from: 0,
+    path: '',
+    per_page: 0,
+    total: 11,
+    links: [],
+  },
+};
