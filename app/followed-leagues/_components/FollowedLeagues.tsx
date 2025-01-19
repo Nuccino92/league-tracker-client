@@ -48,7 +48,6 @@ export default function FollowedLeagues() {
   );
 }
 
-// USE: https://dribbble.com/shots/6970082-Bookmarking-App
 function InvolvedLeagues({
   joinedLeagues,
 }: {
@@ -249,7 +248,6 @@ function InvolvedLeagues({
   );
 }
 
-// USE: https://dribbble.com/shots/6970082-Bookmarking-App
 function BookmarkedLeagues({
   bookmarks,
 }: {

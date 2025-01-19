@@ -231,10 +231,15 @@ export const createRegistrationFormSchema = z
       .string()
       .max(500, { message: 'The description must be less than 500 characters' })
       .optional(),
+    max_registrants: z
+      .number()
+      .min(1, { message: 'The registration limit must be greater than 0' })
+      .nullish(),
     price: z
       .number()
       .min(0, 'Price must be greater than or equal to 0')
-      .or(z.string().regex(/^\d+$/).transform(Number)),
+      .or(z.string().regex(/^\d+$/).transform(Number))
+      .nullish(),
     openDate: z.date({ message: 'Please select a starting date' }),
     closeDate: z.date().nullable(),
   })

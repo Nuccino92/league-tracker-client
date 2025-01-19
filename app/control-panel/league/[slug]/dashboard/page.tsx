@@ -12,6 +12,7 @@ import NoticeStats from '@/app/control-panel/league/[slug]/notices/_components/N
  * notice statistics
  * website views?
  * registrations to new season?
+ * revenue earned
  * create a game
  */
 

@@ -18,7 +18,12 @@ export const registrationSchema = z.object({
     .number({
       required_error: 'Price is required',
     })
-    .min(0, 'Price must be greater than or equal to 0'),
+    .min(0, 'Price must be greater than or equal to 0')
+    .nullish(),
+  max_registrants: z
+    .number()
+    .min(1, { message: 'The registration limit must be greater than 0' })
+    .nullish(),
   openDate: z.string().refine((date) => {
     if (!date) return true;
     return !isNaN(Date.parse(date));

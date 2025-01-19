@@ -9,9 +9,8 @@ import RegistrantsList from '@/app/control-panel/league/[slug]/registrations/_co
  * https://www.jerseywatch.com/demo
  * TOOD: possibly add a dashboard type of thing w/ stats like pageviews money collected, program gristrants, messages,
  *
- * TODO: create stripe registration (first day, last day, details, registration limit, payments, questions). view jerseywatch
  *
- * Add registration link on website side (where league stats are etc.) if they have online registration forms
+ * registrants, add stats like total registrants, total revenue. Could also put the season select at the top and select season so it only shows the form + registrants for that season
  *
  * possibly add contact list
  */
@@ -20,16 +19,6 @@ import RegistrantsList from '@/app/control-panel/league/[slug]/registrations/_co
  *
  * @returns
  * TODO: have a button to create a dynamic form (builder)
- *
- * TODO: display the list of registration forms
- *
- * TODO: view registrants section?? look to find out what else to put
- *
- * TODO: go back to the seasons onces registrations is complete
- *
- * TODO: have a link to existing player button to tie the registration to an existing player. Ask if you want to delete the old player associated with this email
- *
- *
  */
 
 export default function RegistrationsPage({

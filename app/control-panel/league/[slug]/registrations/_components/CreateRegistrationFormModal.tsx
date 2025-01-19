@@ -46,6 +46,7 @@ export default function CreateRegistrationFormModal({
         seasonId: '',
         price: 0,
         description: '',
+        max_registrants: null,
         openDate: new Date(),
         closeDate: null,
       };
@@ -73,6 +74,8 @@ export default function CreateRegistrationFormModal({
     close();
   }
 
+  console.log(initialValues);
+
   return (
     <Modal
       panelClasses={classNames(
@@ -95,6 +98,14 @@ export default function CreateRegistrationFormModal({
       >
         {({ setFieldValue, values, errors }) => (
           <Form className='space-y-4 text-sm'>
+            <button
+              type='button'
+              onClick={() => {
+                console.log(values);
+              }}
+            >
+              check vals
+            </button>
             <div className='space-y-1'>
               <FormLabel label='Season' htmlFor='seasonId' required />
               <ListBox
@@ -141,6 +152,7 @@ export default function CreateRegistrationFormModal({
               <Field name='price'>
                 {({ field }: FieldProps) => (
                   <input
+                    placeholder='Enter registration price...'
                     {...field}
                     type='text'
                     className={INPUT_CLASSES}
@@ -161,6 +173,25 @@ export default function CreateRegistrationFormModal({
               </Field>
               <ErrorMessage
                 name='price'
+                component='div'
+                className='text-sm text-red-500'
+              />
+            </div>
+
+            <div className='flex flex-col gap-y-1'>
+              <FormLabel
+                label='Registration Limit (optional)'
+                htmlFor='max_registrants'
+              />
+              <Field
+                type='number'
+                value={values.max_registrants ?? ''}
+                className={classNames('', INPUT_CLASSES)}
+                name='max_registrants'
+                placeholder='Add a registration limit...'
+              />
+              <ErrorMessage
+                name='max_registrants'
                 component='div'
                 className='text-sm text-red-500'
               />

@@ -50,6 +50,7 @@ const mockRegistrationFormList = {
         name: 'Spring 2024',
       },
       price: 99.99,
+      max_registrants: 102,
       openDate: '2024-03-09 04:15:13',
       closeDate: null,
       description:
@@ -66,6 +67,7 @@ const mockRegistrationFormList = {
         name: 'Spring 2023',
       },
       price: 99.99,
+      max_registrants: 206,
       openDate: '2024-03-09 04:15:13',
       closeDate: null,
       description:
@@ -81,7 +83,8 @@ const mockRegistrationFormList = {
         id: 3,
         name: 'Spring 2022',
       },
-      price: 99.99,
+      price: null,
+      max_registrants: null,
       openDate: '2024-03-09 04:15:13',
       closeDate: '2024-04-09 04:15:13',
       description:

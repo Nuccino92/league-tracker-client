@@ -49,7 +49,15 @@ function Form({ form, slug }: { form: RegistrationItem; slug: string }) {
     <>
       <div className='grid grid-cols-5 items-center gap-4 p-4 text-sm'>
         <div>{form.season.name}</div>
-        <div>{form.price === 0 ? 'Free' : `$${form.price.toFixed(2)}`}</div>
+
+        <div>
+          {!form.price || form.price === 0 ? (
+            <span className='font-medium italic text-zinc-500'>Free</span>
+          ) : (
+            `$${form.price.toFixed(2)}`
+          )}
+        </div>
+
         <div>{formatDate(form.openDate)}</div>
         <div
           className={classNames(
@@ -94,6 +102,7 @@ function Form({ form, slug }: { form: RegistrationItem; slug: string }) {
               id: form.id,
               seasonId: form.season.id.toString(),
               price: form.price,
+              max_registrants: form.max_registrants,
               description: form.description,
               openDate: new Date(form.openDate),
               closeDate: form.closeDate ? new Date(form.closeDate) : null,
