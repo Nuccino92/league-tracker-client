@@ -214,7 +214,13 @@ export async function toggleLeagueSubscriptionAutoRenewal({
   });
 }
 
-export async function getLeagueBillingHistory({ token }: { token: string }) {
+export async function getLeagueBillingHistory({
+  token,
+  params,
+}: {
+  token: string;
+  params: string;
+}) {
   return new Promise<LeagueBillingHistoryItemResponse>((resolve) => {
     setTimeout(() => {
       const result =

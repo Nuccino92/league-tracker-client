@@ -145,13 +145,15 @@ export function useLeagueBillingHistory(
 ) {
   const { token } = useAuth();
 
-  console.log(filters);
-
-  //todo: create params
+  const params = new URLSearchParams({
+    page: filters.page.toString(),
+    ...(filters.query && { search: filters.query }),
+    league_id: leagueID,
+  }).toString();
 
   const { data: response, status } = useQuery({
-    queryKey: [QUERY_KEYS.LEAGUE_BILLING_HISTORY],
-    queryFn: () => getLeagueBillingHistory({ token }),
+    queryKey: [QUERY_KEYS.LEAGUE_BILLING_HISTORY, leagueID, filters],
+    queryFn: () => getLeagueBillingHistory({ token, params }),
     staleTime: 60000,
   });
 

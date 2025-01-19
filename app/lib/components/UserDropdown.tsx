@@ -97,7 +97,6 @@ export default function UserDropdown({
               </div>
 
               <Menu.Item
-                onClick={() => router.push(ROUTES.CREATE)}
                 as={'button'}
                 type='button'
                 className={classNames(
@@ -105,7 +104,12 @@ export default function UserDropdown({
                   MENU_ITEM_CLASSES
                 )}
               >
-                <span>{startLeagueIcon}</span> <span>Start League</span>
+                <Link
+                  href={ROUTES.CREATE}
+                  className='flex w-full items-center gap-2 p-2'
+                >
+                  <span>{startLeagueIcon}</span> <span>Start League</span>{' '}
+                </Link>
               </Menu.Item>
               <Menu.Item
                 as={'div'}
@@ -114,8 +118,13 @@ export default function UserDropdown({
                   MENU_ITEM_CLASSES
                 )}
               >
-                <span>{profileIcon}</span>
-                <Link href={ROUTES.PROFILE}>View Profile</Link>
+                <Link
+                  href={ROUTES.PROFILE}
+                  className='flex w-full items-center gap-2 p-2'
+                >
+                  <span>{profileIcon}</span>
+                  <span>View Profile</span>
+                </Link>
               </Menu.Item>
 
               <Menu.Item
@@ -123,7 +132,7 @@ export default function UserDropdown({
                 as={'button'}
                 type='button'
                 className={classNames(
-                  'flex items-center space-x-2',
+                  'flex items-center space-x-2 p-2',
                   MENU_ITEM_CLASSES
                 )}
               >
@@ -137,7 +146,7 @@ export default function UserDropdown({
   );
 }
 
-const MENU_ITEM_CLASSES = `hover:bg-secondary hover:text-white w-full p-2 text-start`;
+const MENU_ITEM_CLASSES = `hover:bg-secondary hover:text-white w-full text-start`;
 
 const startLeagueIcon = (
   <svg

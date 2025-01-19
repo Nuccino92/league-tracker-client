@@ -69,7 +69,7 @@ export async function getSubscriptionPlans({ token }: { token: string }) {
         mockSubscriptionPlansResponse
       );
       resolve(result);
-    }, 413);
+    }, 513);
   });
 
   // const response = await fetch(

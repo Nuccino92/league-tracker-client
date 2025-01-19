@@ -14,6 +14,8 @@ import {
   useLeagueSubscriptionInformation,
   useToggleAutoRenewSubscription,
 } from '@/app/lib/hooks/api/followed-leagues';
+import SelectPlanModal from './SekectPlanModal';
+import { Spinner } from '@/app/lib/SVGs';
 
 type Props = {
   leagueID: string;
@@ -31,6 +33,8 @@ export default function SubscriptionPlans({ leagueID }: Props) {
   const [selectedBilling, setSelectedBilling] = useState<'monthly' | 'yearly'>(
     'monthly'
   );
+
+  const [showSelectPlanModal, setShowSelectPlanModal] = useState(false);
 
   /**
    * @todos
@@ -66,25 +70,27 @@ export default function SubscriptionPlans({ leagueID }: Props) {
           )}
           <StyledBox classes='p-6'>
             {/* Sub plans */}
-            {plansStatus === 'success' && data && (
-              <div>
-                <header className='mb-8 flex items-center justify-between'>
-                  <div>
-                    <div className='text-lg font-bold'>
-                      Billing & Subscription
-                    </div>
-                    <p className='text-sm text-gray-500'>
-                      Select or manage your league&apos;s subscription plan
-                    </p>
-                  </div>
-                  <BillingToggle
-                    billingPeriod={selectedBilling}
-                    onChange={(period) => setSelectedBilling(period)}
-                  />
-                </header>
 
-                <main className='flex flex-col items-center justify-center gap-4  sm:flex-row'>
-                  {data.plans.map((plan) => (
+            <div>
+              <header className='mb-8 flex items-center justify-between'>
+                <div>
+                  <div className='text-lg font-bold'>
+                    Billing & Subscription
+                  </div>
+                  <p className='text-sm text-gray-500'>
+                    Select or manage your league&apos;s subscription plan
+                  </p>
+                </div>
+                <BillingToggle
+                  billingPeriod={selectedBilling}
+                  onChange={(period) => setSelectedBilling(period)}
+                />
+              </header>
+
+              <main className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
+                {plansStatus === 'success' &&
+                  data &&
+                  data.plans.map((plan) => (
                     <SubscriptionCard
                       key={plan.id}
                       title={plan.title}
@@ -112,7 +118,7 @@ export default function SubscriptionPlans({ leagueID }: Props) {
                               : 'Change Plan'
                           : 'Choose Plan',
                         action: () => {
-                          console.log('hihihi');
+                          setShowSelectPlanModal(true);
                         },
                         disabled:
                           subInformationResponse.subscription?.id === plan.id &&
@@ -129,13 +135,10 @@ export default function SubscriptionPlans({ leagueID }: Props) {
                       }
                     />
                   ))}
-                </main>
-              </div>
-            )}
 
-            {plansStatus === 'loading' && (
-              <div>i am loading, possible skeleton</div>
-            )}
+                {plansStatus === 'loading' && <SubscriptionSkeleton />}
+              </main>
+            </div>
           </StyledBox>{' '}
           {subInformationResponse.subscription && (
             <StyledBox classes='p-6 flex items-end flex items-center justify-between'>
@@ -158,6 +161,17 @@ export default function SubscriptionPlans({ leagueID }: Props) {
           )}
         </>
       )}
+
+      {status === 'loading' && (
+        <StyledBox classes='p-6 flex items-center justify-center py-14 h-[150px]'>
+          <Spinner height={29} width={29} />
+        </StyledBox>
+      )}
+
+      <SelectPlanModal
+        isOpen={showSelectPlanModal}
+        close={() => setShowSelectPlanModal(false)}
+      />
     </div>
   );
 }
@@ -286,4 +300,44 @@ function getSubAlertIcon(experationDate: string, autoRenews: boolean) {
     : daysUntilExpiration <= 7
       ? cautionIcon
       : healthyIcon;
+}
+
+function SubscriptionSkeleton() {
+  return (
+    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+      {[1, 2].map((item) => (
+        <div
+          key={item}
+          className='animate-pulse space-y-6 rounded-lg border border-gray-200 bg-white p-6'
+        >
+          {/* Title Skeleton */}
+          <div className='h-8 w-32 rounded-md bg-gray-200' />
+
+          {/* Price Skeleton */}
+          <div className='space-y-1'>
+            <div className='flex items-baseline gap-1'>
+              <div className='h-8 w-4 rounded-md bg-gray-200' /> {/* $ sign */}
+              <div className='h-12 w-20 rounded-md bg-gray-200' /> {/* Price */}
+            </div>
+            <div className='h-4 w-16 rounded-md bg-gray-200' /> {/* /month */}
+          </div>
+
+          {/* Button Skeleton */}
+          <div className='h-10 w-full rounded-md bg-gray-200' />
+
+          {/* Features Skeleton */}
+          <div className='space-y-3'>
+            {[1, 2, 3, 4].map((feature) => (
+              <div key={feature} className='flex items-start gap-2'>
+                <div className='mt-0.5 h-4 w-4 rounded-full bg-gray-200' />{' '}
+                {/* Checkmark */}
+                <div className='h-4 w-48 rounded-md bg-gray-200' />{' '}
+                {/* Feature text */}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
