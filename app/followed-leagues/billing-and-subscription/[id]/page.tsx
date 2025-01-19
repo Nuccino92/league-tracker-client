@@ -4,12 +4,16 @@ import SubscriptionPlans from '@/app/followed-leagues/billing-and-subscription/_
 import BillingHistory from '@/app/followed-leagues/billing-and-subscription/_components/BillingHistory';
 
 //https://dribbble.com/shots/24946404-Billing-Subscription-page-CRM-Dashboard
-export default function BillingAndSubscriptionPage() {
+export default function BillingAndSubscriptionPage({
+  params,
+}: {
+  params: { ['id']: string };
+}) {
   return (
     <AuthedContainer>
       <StyledBox classes='p-6 space-y-6'>
-        <SubscriptionPlans />
-        <BillingHistory />
+        <SubscriptionPlans leagueID={params.id} />
+        <BillingHistory leagueID={params.id} />
       </StyledBox>
     </AuthedContainer>
   );

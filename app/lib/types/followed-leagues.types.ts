@@ -28,3 +28,21 @@ export const leaguesForBookmarkResponseSchema = z.array(leagueSchema);
 export type LeaguesForBookmarkResponse = z.infer<
   typeof leaguesForBookmarkResponseSchema
 >;
+
+export const leagueSubscriptionInformationSchema = z.object({
+  subscription: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      start_date: z.string(),
+      end_date: z.string(),
+      billing_frequency: z.enum(['monthly', 'yearly']),
+    })
+    .nullable(),
+
+  has_subscription_autorenewal: z.boolean(),
+});
+
+export type LeagueSubscriptionInformation = z.infer<
+  typeof leagueSubscriptionInformationSchema
+>;

@@ -8,6 +8,11 @@ interface SubscriptionCardProps {
   price: number;
   features: string[];
   highlight?: boolean;
+  actionButton?: {
+    label: string;
+    action: () => void;
+    disabled: boolean;
+  };
 }
 
 export default function SubscriptionCard({
@@ -15,12 +20,16 @@ export default function SubscriptionCard({
   price,
   features,
   highlight = false,
+  actionButton,
 }: SubscriptionCardProps) {
   return (
     <StyledBox
       classes={classNames(
-        'space-y-6 p-6 hover:bg-slate-50',
-        highlight ? '!bg-primary text-white !border-primary' : 'bg-white'
+        'space-y-6 p-6',
+        highlight
+          ? 'bg-gradient-to-br from-primary to-primary/80 text-white !border-primary'
+          : 'bg-white',
+        !actionButton && !highlight && 'hover:bg-slate-50'
       )}
     >
       {/* Title */}
@@ -41,6 +50,23 @@ export default function SubscriptionCard({
         </div>
         <div className={classNames(!highlight && 'text-gray-500')}>/ month</div>
       </div>
+
+      {actionButton && (
+        <button
+          disabled={actionButton.disabled}
+          type='button'
+          onClick={actionButton.action}
+          className={classNames(
+            !actionButton.disabled && 'hover:opacity-85',
+            highlight
+              ? 'border-white bg-white text-primary'
+              : 'border-primary bg-primary text-white',
+            'flex h-9 w-full items-center justify-center rounded-md text-sm font-medium '
+          )}
+        >
+          {actionButton.label}
+        </button>
+      )}
 
       {/* Features */}
       <div className='space-y-3 text-sm'>

@@ -2,7 +2,11 @@
 
 import StyledBox from '@/app/lib/components/StyledBox';
 
-export default function BillingHistory() {
+type Props = {
+  leagueID: string;
+};
+
+export default function BillingHistory({ leagueID }: Props) {
   return (
     <StyledBox classes='p-6'>
       <div className='text-lg font-bold'>Billing History</div>

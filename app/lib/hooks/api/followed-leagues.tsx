@@ -5,8 +5,10 @@ import {
   addBookmarkedLeague,
   getFollowedLeagues,
   getLeaguesForBookmark,
+  getLeagueSubscriptionInformation,
   removeBookmarkedLeague,
   removeJoinedLeague,
+  toggleLeagueSubscriptionAutoRenewal,
 } from '@/app/lib/requests/followed-leagues';
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 
@@ -82,14 +84,56 @@ export function useAddBookmarkedLeague() {
   });
 }
 
-export function useLeagueSubscriptionInformation() {
+export function useLeagueSubscriptionInformation(leagueID: string) {
   const { token } = useAuth();
 
   const { data: response, status } = useQuery({
-    queryKey: [QUERY_KEYS.FOLLOWED_LEAGUES],
-    queryFn: () => getFollowedLeagues({ token }),
+    queryKey: [QUERY_KEYS.LEAGUE_SUBSCRIPTION_INFORMATION, leagueID],
+    queryFn: () => getLeagueSubscriptionInformation({ token, leagueID }),
     staleTime: 60000,
   });
 
   return { response, status };
+}
+
+export function useToggleAutoRenewSubscription(leagueID: string) {
+  const { token } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (isRenewed: boolean) =>
+      toggleLeagueSubscriptionAutoRenewal({ token, leagueID, isRenewed }),
+    onMutate: async (newValue: boolean) => {
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.LEAGUE_SUBSCRIPTION_INFORMATION, leagueID],
+      });
+
+      const previousData = queryClient.getQueryData([
+        QUERY_KEYS.LEAGUE_SUBSCRIPTION_INFORMATION,
+        leagueID,
+      ]);
+
+      queryClient.setQueryData(
+        [QUERY_KEYS.LEAGUE_SUBSCRIPTION_INFORMATION, leagueID],
+        (old: any) => ({
+          ...old,
+          has_subscription_autorenewal: newValue,
+        })
+      );
+
+      return { previousData };
+    },
+
+    onError: (err, newValue, context) => {
+      queryClient.setQueryData(
+        [QUERY_KEYS.LEAGUE_SUBSCRIPTION_INFORMATION, leagueID],
+        context?.previousData
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.LEAGUE_SUBSCRIPTION_INFORMATION, leagueID],
+      });
+    },
+  });
 }

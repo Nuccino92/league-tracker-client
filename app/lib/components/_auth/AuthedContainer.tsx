@@ -20,7 +20,7 @@ export default function AuthedContainer({ children }: { children: ReactNode }) {
           'flex w-full flex-1 flex-col'
         )}
       >
-        <div>
+        <div className='sticky top-0 bg-white'>
           <AuthHeader />
         </div>
 

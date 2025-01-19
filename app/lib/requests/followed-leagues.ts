@@ -3,6 +3,8 @@ import {
   followedLeaguesResponseSchema,
   LeaguesForBookmarkResponse,
   leaguesForBookmarkResponseSchema,
+  LeagueSubscriptionInformation,
+  leagueSubscriptionInformationSchema,
 } from '@/app/lib/types/followed-leagues.types';
 
 export async function getFollowedLeagues({ token }: { token: string }) {
@@ -162,5 +164,48 @@ export async function addBookmarkedLeague({
     setTimeout(() => {
       resolve(true);
     }, 430);
+  });
+}
+
+export async function getLeagueSubscriptionInformation({
+  token,
+  leagueID,
+}: {
+  token: string;
+  leagueID: string;
+}) {
+  return new Promise<LeagueSubscriptionInformation>((resolve) => {
+    setTimeout(() => {
+      const result = leagueSubscriptionInformationSchema.parse(mockSubInfoData);
+      resolve(result);
+    }, 430);
+  });
+}
+
+const mockSubInfoData = {
+  subscription: {
+    id: 'pro',
+    name: 'Starter',
+    start_date: '2025-03-09 04:15:13',
+    end_date: '2025-01-19 04:15:13',
+    billing_frequency: 'monthly',
+  },
+
+  has_subscription_autorenewal: true,
+};
+
+export async function toggleLeagueSubscriptionAutoRenewal({
+  leagueID,
+  token,
+  isRenewed,
+}: {
+  leagueID: string;
+  token: string;
+  isRenewed: boolean;
+}) {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 330);
   });
 }

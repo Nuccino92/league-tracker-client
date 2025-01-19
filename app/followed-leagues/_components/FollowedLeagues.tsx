@@ -134,7 +134,10 @@ function InvolvedLeagues({
                                   <Tooltip delayDuration={75}>
                                     <TooltipTrigger>
                                       <Link
-                                        href={ROUTES.BILLING_AND_SUBSCRIPTION}
+                                        href={
+                                          ROUTES.BILLING_AND_SUBSCRIPTION +
+                                          `/${league.id}`
+                                        }
                                         className='hover:opacity-50'
                                       >
                                         <IconBillLine
