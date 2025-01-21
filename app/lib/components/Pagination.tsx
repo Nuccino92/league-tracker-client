@@ -10,12 +10,14 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (type: 'next' | 'prev' | 'number', page: number) => void;
+  renderPrevAndNext?: boolean;
 }
 
 export default function Pagination({
   currentPage,
   totalPages,
   onPageChange,
+  renderPrevAndNext = true,
 }: PaginationProps) {
   const getPaginationRange = (currentPage: number, totalPages: number) => {
     const delta = 2;
@@ -47,19 +49,22 @@ export default function Pagination({
   return (
     <nav className='flex items-center justify-center gap-3'>
       {/* Previous */}
-      <Button
-        variant={'outline'}
-        onClick={() => onPageChange('prev', currentPage - 1)}
-        disabled={currentPage === 1}
-        className={classNames(
-          'flex items-center justify-center gap-2 rounded-md transition-colors',
-          currentPage === 1
-            ? 'cursor-not-allowed text-gray-300'
-            : 'text-gray-600 hover:bg-gray-100'
-        )}
-      >
-        <IconReturnDownBackSharp /> <span>Previous</span>
-      </Button>
+
+      {renderPrevAndNext && (
+        <Button
+          variant={'outline'}
+          onClick={() => onPageChange('prev', currentPage - 1)}
+          disabled={currentPage === 1}
+          className={classNames(
+            'flex items-center justify-center gap-2 rounded-md transition-colors',
+            currentPage === 1
+              ? 'cursor-not-allowed text-gray-300'
+              : 'text-gray-600 hover:bg-gray-100'
+          )}
+        >
+          <IconReturnDownBackSharp /> <span>Previous</span>
+        </Button>
+      )}
 
       {/* Pages */}
       <div className='flex items-center gap-1'>
@@ -95,19 +100,22 @@ export default function Pagination({
       </div>
 
       {/* Next */}
-      <Button
-        variant={'outline'}
-        onClick={() => onPageChange('next', currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className={classNames(
-          'flex items-center justify-center gap-2 rounded-md transition-colors',
-          currentPage === totalPages
-            ? 'cursor-not-allowed text-gray-300'
-            : 'text-gray-600 hover:bg-gray-100'
-        )}
-      >
-        <span>Next</span> <IconReturnDownForwardSharp />
-      </Button>
+
+      {renderPrevAndNext && (
+        <Button
+          variant={'outline'}
+          onClick={() => onPageChange('next', currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={classNames(
+            'flex items-center justify-center gap-2 rounded-md transition-colors',
+            currentPage === totalPages
+              ? 'cursor-not-allowed text-gray-300'
+              : 'text-gray-600 hover:bg-gray-100'
+          )}
+        >
+          <span>Next</span> <IconReturnDownForwardSharp />
+        </Button>
+      )}
     </nav>
   );
 }
