@@ -19,6 +19,16 @@ import Pagination from '@/app/lib/components/Pagination';
 import { NotificationItem } from '@/app/lib/types/notification.types';
 import Checkbox from '@/app/lib/components/Checkbox';
 
+/**
+ *
+ * @todos
+ *
+ * 1. figure out backend tables
+ * 2. figure out api response for useNotifications (types)
+ * 3. cleanup current ui
+ * 4. implement notification item ui
+ */
+
 export default function Notifications() {
   const [selectedTab, setSelectedTab] = useState<NotificationTabOptions>('all');
   const [showOnlyUnreads, setShowOnlyUnreads] = useState(false);
