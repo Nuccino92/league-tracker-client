@@ -130,7 +130,7 @@ export default function BillingHistory({ leagueID }: Props) {
         <div className='mt-4 flex items-center justify-end'>
           <Pagination
             currentPage={response.meta.current_page}
-            totalPages={response.meta.total}
+            totalPages={response.meta.last_page}
             onPageChange={(type, page) => {
               setPage(page);
             }}

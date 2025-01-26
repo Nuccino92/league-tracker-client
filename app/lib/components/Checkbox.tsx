@@ -19,7 +19,10 @@ export default function Checkbox({
     <button
       name={name}
       disabled={disabled}
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
       type='button'
       className={classNames(
         classes,

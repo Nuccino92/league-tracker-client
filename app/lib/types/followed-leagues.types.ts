@@ -15,7 +15,14 @@ export type FollowedLeague = z.infer<typeof leagueSchema>;
 export const followedLeaguesResponseSchema = z.object({
   joined_leagues: z.array(
     leagueSchema.extend({
-      role: z.enum(['owner', 'super-admin', 'admin', 'member', 'player']), // todo: make/get enum
+      role: z.enum([
+        'owner',
+        'super-admin',
+        'admin',
+        'member',
+        'player',
+        'invitation',
+      ]), // todo: make/get enum
     })
   ),
   bookmarked_leagues: z.array(leagueSchema),

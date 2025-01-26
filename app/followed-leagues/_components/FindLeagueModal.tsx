@@ -194,11 +194,11 @@ export default function FindLeagueModal({
         <div
           className={classNames(
             CONTENT_HEIGHT,
-            'flex h-full w-full flex-col items-center justify-center gap-4'
+            'flex h-full w-full flex-col items-center justify-center gap-4 py-12'
           )}
         >
           <IconSearch height={50} width={50} color='rgb(156 163 175)' />
-          <div className='text-lg font-medium italic text-gray-400'>
+          <div className=' text-lg font-medium italic text-gray-400'>
             Search for a league
           </div>
         </div>

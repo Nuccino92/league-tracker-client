@@ -99,7 +99,7 @@ export default function AnnouncementsList() {
           <div className='!mt-4'>
             <Pagination
               currentPage={response.meta.current_page}
-              totalPages={response.meta.total}
+              totalPages={response.meta.last_page}
               onPageChange={(type, page) => {
                 if (type === 'next') {
                   router.push(
@@ -479,7 +479,7 @@ function DeliveryDetailsModal({
             <div className='mt-6 flex w-full items-center justify-end'>
               <Pagination
                 currentPage={page}
-                totalPages={response.meta.total}
+                totalPages={response.meta.last_page}
                 onPageChange={(type, page) => {
                   if (type === 'next') {
                     setPage((prev) => prev + 1);

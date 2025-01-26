@@ -6,16 +6,29 @@ import {
   deleteAllNotificationsRequest,
   deleteNotificationsRequest,
   getNotifications,
+  getNotificationSettings,
   markAllNotificationsAsReadRequest,
   markNotificationsAsReadRequest,
+  toggleNotification,
 } from '@/app/lib/requests/notifications';
+import { NotificationType } from '@/app/lib/types/notification.types';
+import { NotificationTabOptions } from '@/app/notifications/types';
 
-export function useNotifications() {
+export function useNotifications({
+  page,
+  selectedTab,
+  showOnlyUnreads,
+}: {
+  page: number;
+  selectedTab: NotificationTabOptions;
+  showOnlyUnreads: boolean;
+}) {
   const { token } = useAuth();
 
   const { data: response, status } = useQuery({
-    queryKey: [QUERY_KEYS.NOTIFICATIONS],
-    queryFn: () => getNotifications({ token }),
+    queryKey: [QUERY_KEYS.NOTIFICATIONS, page, selectedTab, showOnlyUnreads],
+    queryFn: () =>
+      getNotifications({ token, page, selectedTab, showOnlyUnreads }),
     staleTime: 60000,
   });
 
@@ -74,6 +87,38 @@ export function useDeleteSelectedNotifications() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.NOTIFICATIONS],
+      });
+    },
+  });
+}
+
+export function useNotificationSettings() {
+  const { token } = useAuth();
+
+  const { data: response, status } = useQuery({
+    queryKey: [QUERY_KEYS.NOTIFICATION_SETTINGS],
+    queryFn: () => getNotificationSettings({ token }),
+    staleTime: 60000,
+  });
+
+  return { response, status };
+}
+
+export function useNotificationSettingsToggle() {
+  const { token } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      type,
+      isChecked,
+    }: {
+      type: NotificationType;
+      isChecked: boolean;
+    }) => toggleNotification({ token, type, isChecked }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.NOTIFICATION_SETTINGS],
       });
     },
   });

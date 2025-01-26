@@ -1,8 +1,8 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
-import { Menu, Switch, Transition } from '@headlessui/react';
+import { Switch } from '@headlessui/react';
 
 import StyledBox from '@/app/lib/components/StyledBox';
 import {
@@ -12,12 +12,12 @@ import {
   useMarkNotificationsAsRead,
   useNotifications,
 } from '@/app/lib/hooks/api/notifications';
-import { DeleteIcon, IconSettingsOutline, Spinner } from '@/app/lib/SVGs';
+import { DeleteIcon, Spinner } from '@/app/lib/SVGs';
 import { NotificationTabOptions } from '@/app/notifications/types';
 import { Button } from '@/app/lib/components/Button';
 import Pagination from '@/app/lib/components/Pagination';
-import { NotificationItem } from '@/app/lib/types/notification.types';
-import Checkbox from '@/app/lib/components/Checkbox';
+import Notification from '@/app/notifications/_components/Notification';
+import NotificationSettings from '@/app/notifications/_components/NotificationSettings';
 
 /**
  *
@@ -34,8 +34,11 @@ export default function Notifications() {
   const [showOnlyUnreads, setShowOnlyUnreads] = useState(false);
   const [page, setPage] = useState(1);
 
-  //todo: pass the tab, onlyshow & page into hook
-  const { response, status } = useNotifications();
+  const { response, status } = useNotifications({
+    page,
+    selectedTab,
+    showOnlyUnreads,
+  });
 
   const markAllAsReadMutation = useMarkAllNotificationsAsRead();
   const deleteAllNotificationsMutation = useDeleteAllNotifications();
@@ -93,32 +96,8 @@ export default function Notifications() {
           </div>
 
           {/* Settings/Only show unreads */}
-          <div className='flex items-center gap-6 text-sm'>
-            <Menu as='div' className='relative'>
-              {({ open }) => (
-                <>
-                  <Menu.Button className='flex items-center gap-2'>
-                    <span>
-                      <IconSettingsOutline height={20} width={20} />
-                    </span>
-                    <span>Settings</span>
-                  </Menu.Button>
-                  <Transition
-                    as={Fragment}
-                    enter='transition ease-out duration-100'
-                    enterFrom='transform opacity-0 scale-95'
-                    enterTo='transform opacity-100 scale-100'
-                    leave='transition ease-in duration-75'
-                    leaveFrom='transform opacity-100 scale-100'
-                    leaveTo='transform opacity-0 scale-95'
-                  >
-                    <Menu.Items className='absolute'>
-                      <Menu.Item as='div'> dsadsaadss</Menu.Item>
-                    </Menu.Items>
-                  </Transition>
-                </>
-              )}
-            </Menu>
+          <div className=' flex items-center gap-6 text-sm'>
+            <NotificationSettings />
 
             <div className='flex items-center gap-2'>
               <span>Show only unread</span>
@@ -142,30 +121,50 @@ export default function Notifications() {
           </div>
         </div>
         {/*Mark all as read/delete all */}
-        <div className='flex items-center justify-end gap-6'>
-          <Button
-            disabled={deleteAllNotificationsMutation.isLoading}
-            variant={'ghost'}
-            className='flex items-center gap-1 !p-0 text-gray-500 hover:text-gray-900'
-            onClick={async () => {
-              await deleteAllNotificationsMutation.mutateAsync();
-            }}
-          >
-            <span>All</span>
-            <span>
-              <DeleteIcon height={16} width={16} />
-            </span>
-          </Button>
-          <Button
-            disabled={markAllAsReadMutation.isLoading}
-            onClick={async () => {
-              await markAllAsReadMutation.mutateAsync();
-            }}
-            variant={'ghost'}
-            className='!p-0 text-blue-600'
-          >
-            Mark all as read
-          </Button>
+        <div className='flex items-center justify-end gap-6 p-4'>
+          <div className='flex items-center'>
+            <div className='flex w-[140px] items-center justify-center'>
+              <Button
+                disabled={
+                  markAllAsReadMutation.isLoading ||
+                  !response ||
+                  response.data.length === 0
+                }
+                onClick={async () => {
+                  await markAllAsReadMutation.mutateAsync();
+                }}
+                variant={'ghost'}
+                className='!p-0 text-blue-600'
+              >
+                Mark all as read
+              </Button>{' '}
+            </div>
+
+            <div
+              aria-hidden
+              className='flex w-[45px] items-center justify-center'
+            />
+
+            <div className='mr-2 flex w-[45px] items-center justify-center'>
+              <Button
+                disabled={
+                  deleteAllNotificationsMutation.isLoading ||
+                  !response ||
+                  response.data.length === 0
+                }
+                variant={'ghost'}
+                className='flex items-center gap-1 !p-0 text-gray-500 hover:text-gray-900'
+                onClick={async () => {
+                  await deleteAllNotificationsMutation.mutateAsync();
+                }}
+              >
+                <span>All</span>
+                <span>
+                  <DeleteIcon height={20} width={20} />
+                </span>
+              </Button>
+            </div>
+          </div>
         </div>
         {/* Conditional Selected Notifications bar */}
         {selectedNotificationIds.length > 0 && (
@@ -205,7 +204,7 @@ export default function Notifications() {
         )}
         {/* Notifications */}
         {status === 'success' && response && (
-          <div className='space-y-2'>
+          <div className='space-y-4'>
             {response.data.map((notification) => (
               <Notification
                 key={notification.id}
@@ -236,7 +235,7 @@ export default function Notifications() {
             {response && (
               <Pagination
                 currentPage={response.meta.current_page}
-                totalPages={response.meta.total}
+                totalPages={response.meta.last_page}
                 onPageChange={(type, page) => {
                   setPage(page);
                 }}
@@ -252,49 +251,5 @@ export default function Notifications() {
         </div>
       )}
     </StyledBox>
-  );
-}
-
-function Notification({
-  notification,
-  selected,
-  onSelect,
-  onDelete,
-  onMarkAsRead,
-}: {
-  notification: NotificationItem;
-  selected: boolean;
-  onSelect: (id: number) => void;
-  onDelete: (id: number) => void;
-  onMarkAsRead: (id: number) => void;
-}) {
-  return (
-    <div className='p-4'>
-      <Checkbox
-        isChecked={selected}
-        onClick={() => onSelect(notification.id)}
-      />
-
-      <div>
-        <Button
-          variant={'ghost'}
-          className='flex items-center gap-1 !p-0 text-gray-500 hover:text-gray-900'
-          onClick={async () => {
-            onDelete(notification.id);
-          }}
-        >
-          <DeleteIcon height={16} width={16} />
-        </Button>
-        <Button
-          onClick={async () => {
-            onMarkAsRead(notification.id);
-          }}
-          variant={'ghost'}
-          className='!p-0 text-blue-600'
-        >
-          Mark as read
-        </Button>
-      </div>
-    </div>
   );
 }

@@ -15,11 +15,13 @@ import {
 import {
   DeleteIcon,
   DownChevronIcon,
+  HeartIcon,
   IconBillLine,
   IconExternalLink,
   IconHeartbreakFill,
   IconStar,
   IconWebsite,
+  InviteLine,
 } from '@/app/lib/SVGs';
 import { FollowedLeagueResponse } from '@/app/lib/types/followed-leagues.types';
 import getInitials from '@/app/lib/utils/getInitials';
@@ -176,31 +178,62 @@ function InvolvedLeagues({
                                 </TooltipProvider>
                               )}
                               {/* todo: POSSIBLY MAKE THE HREF DEPENDANT ON THE ROLE. */}
-                              <TooltipProvider>
-                                <Tooltip delayDuration={75}>
-                                  <TooltipTrigger>
-                                    <Link
-                                      href={
-                                        ROUTES.CONTROL_PANEL +
-                                        ROUTES.LEAGUE +
-                                        `/${league.slug}` +
-                                        ROUTES.CONTROL_PANEL_SUBROUTES.DASHBOARD
-                                      }
-                                      className='hover:opacity-50'
-                                    >
-                                      <IconExternalLink
-                                        height={22}
-                                        width={22}
-                                        color='#aeafb0'
-                                      />
-                                    </Link>
-                                  </TooltipTrigger>
-                                  <TooltipContent className='text-white'>
-                                    Visit Admin Panel
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
 
+                              {league.role !== 'invitation' && (
+                                <TooltipProvider>
+                                  <Tooltip delayDuration={75}>
+                                    <TooltipTrigger>
+                                      <Link
+                                        href={
+                                          ROUTES.CONTROL_PANEL +
+                                          ROUTES.LEAGUE +
+                                          `/${league.slug}` +
+                                          ROUTES.CONTROL_PANEL_SUBROUTES
+                                            .DASHBOARD
+                                        }
+                                        className='hover:opacity-50'
+                                      >
+                                        <IconExternalLink
+                                          height={22}
+                                          width={22}
+                                          color='#aeafb0'
+                                        />
+                                      </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent className='text-white'>
+                                      Visit Admin Panel
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+
+                              {league.role === 'invitation' && (
+                                <TooltipProvider>
+                                  <Tooltip delayDuration={75}>
+                                    <TooltipTrigger>
+                                      <Link
+                                        href={
+                                          ROUTES.CONTROL_PANEL +
+                                          ROUTES.LEAGUE +
+                                          `/${league.slug}` +
+                                          ROUTES.CONTROL_PANEL_SUBROUTES
+                                            .DASHBOARD
+                                        }
+                                        className='hover:opacity-50'
+                                      >
+                                        <InviteLine
+                                          height={22}
+                                          width={22}
+                                          color='#aeafb0'
+                                        />
+                                      </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent className='text-white'>
+                                      Accept league invitation
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
                               <TooltipProvider>
                                 <Tooltip delayDuration={75}>
                                   <TooltipTrigger>

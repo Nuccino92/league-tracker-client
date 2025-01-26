@@ -48,6 +48,7 @@ const QUERY_KEYS = {
   LEAGUE_BILLING_HISTORY: 'league-billing-history',
   FOLLOWED_LEAGUES: 'followed-leagues',
   NOTIFICATIONS: 'notifications',
+  NOTIFICATION_SETTINGS: 'notification-settings',
   LEAGUES_FOR_BOOKMARK: 'leagues-for-bookmark',
 };
 
