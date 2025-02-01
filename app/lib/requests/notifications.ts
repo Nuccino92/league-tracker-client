@@ -28,7 +28,7 @@ export async function getNotifications({
 const mockNotifications: NotificationResponse = {
   meta: {
     current_page: 1,
-    last_page: 1,
+    last_page: 11,
     to: 0,
     from: 0,
     path: '',

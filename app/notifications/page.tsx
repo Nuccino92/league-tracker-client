@@ -1,5 +1,4 @@
 import AuthedContainer from '@/app/lib/components/_auth/AuthedContainer';
-import PageHeader from '@/app/control-panel/_components/PageHeader';
 import Notifications from '@/app/notifications/_components/Notifications';
 
 export default function NotificationsPage() {
@@ -33,7 +32,6 @@ export default function NotificationsPage() {
   //https://claude.ai/chat/5e98a37a-e695-4601-ba99-8f57003a95fe
   return (
     <AuthedContainer>
-      <PageHeader text='Notifications' />
       <main className=''>
         <Notifications />
       </main>

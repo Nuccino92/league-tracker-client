@@ -93,7 +93,7 @@ export default function AuthSidebar() {
                   <span
                     className={classNames(
                       'ml-3 text-sm font-medium',
-                      sidebar.isOpen ? 'opacity-100' : 'opacity-0'
+                      sidebar.isOpen ? '' : 'hidden'
                     )}
                   >
                     {item.label}

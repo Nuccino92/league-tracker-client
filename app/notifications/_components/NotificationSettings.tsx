@@ -40,7 +40,7 @@ export default function NotificationSettings() {
             leaveFrom='transform opacity-100 scale-100'
             leaveTo='transform opacity-0 scale-95'
           >
-            <Menu.Items className='absolute right-0 z-10'>
+            <Menu.Items className='absolute right-0 z-10 mt-4'>
               <StyledBox classes='p-6 sm:w-[435px] w-[350px]'>
                 <div className='mb-6'>
                   <div className='text-xl font-bold'>Notification Settings</div>

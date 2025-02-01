@@ -4,33 +4,36 @@ import Link from 'next/link';
 
 import { Button } from '@/app/lib/components/Button';
 import Checkbox from '@/app/lib/components/Checkbox';
-import { DeleteIcon, IconLink45deg } from '@/app/lib/SVGs';
+import { DeleteIcon, IconExternalLink } from '@/app/lib/SVGs';
 import {
   NotificationItem,
   notificationTypeLabels,
 } from '@/app/lib/types/notification.types';
+import {
+  useDeleteSelectedNotifications,
+  useMarkNotificationsAsRead,
+} from '@/app/lib/hooks/api/notifications';
 
 type Props = {
   notification: NotificationItem;
   selected: boolean;
   onSelect: (id: number) => void;
-  onDelete: (id: number) => void;
-  onMarkAsRead: (id: number) => void;
 };
 
 export default function Notification({
   notification,
   selected,
   onSelect,
-  onDelete,
-  onMarkAsRead,
 }: Props) {
+  const markAsReadMutation = useMarkNotificationsAsRead();
+  const deleteSelectedNotificationsMutation = useDeleteSelectedNotifications();
+
   const typeTagLabel = notificationTypeLabels[notification.type];
   const { tagColor, bgColor, borderColor } =
     NOTIFICATION_STYLES[notification.type];
 
   return (
-    <div className='border-t pt-4'>
+    <div>
       <div className='grid grid-cols-[1fr_auto_auto] items-center rounded-xl px-4 py-2'>
         <div className='flex items-center gap-4'>
           <Checkbox
@@ -66,9 +69,10 @@ export default function Notification({
           <div className='flex w-[140px] items-center justify-center'>
             {!notification.is_read && (
               <Button
+                disabled={markAsReadMutation.isLoading}
                 onClick={async (e) => {
                   e.stopPropagation();
-                  onMarkAsRead(notification.id);
+                  markAsReadMutation.mutateAsync([notification.id]);
                 }}
                 variant={'ghost'}
                 className='!p-0 text-blue-600'
@@ -84,18 +88,21 @@ export default function Notification({
                 href={notification.url}
                 className='flex items-center gap-1 !p-0 text-gray-500 hover:text-gray-900'
               >
-                <IconLink45deg height={22} width={22} />
+                <IconExternalLink height={22} width={22} />
               </Link>
             )}{' '}
           </div>
 
           <div className='flex w-[45px] items-center justify-center'>
             <Button
+              disabled={deleteSelectedNotificationsMutation.isLoading}
               variant={'ghost'}
               className='flex items-center gap-1 !p-0 text-gray-500 hover:text-gray-900'
               onClick={async (e) => {
                 e.stopPropagation();
-                onDelete(notification.id);
+                deleteSelectedNotificationsMutation.mutateAsync([
+                  notification.id,
+                ]);
               }}
             >
               <DeleteIcon height={20} width={20} />
