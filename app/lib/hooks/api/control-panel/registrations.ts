@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import {
   createRegistrationForm,
   fetchRegistrantsList,
   fetchRegistrationForms,
+  fetchRegistrationStats,
   linkRegistrationToPlayer,
 } from '@/app/lib/requests/control-panel/registrations';
 import { SearchParamScope } from '@/app/lib/types/filters.types';
@@ -21,7 +23,6 @@ export function useRegistrationForms({
   paginate?: boolean;
 }) {
   const { token } = useAuth();
-  const { scopeQueryParams } = useQueryString();
 
   const { data: response, status } = useQuery({
     queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTRATIONS, slug, paginate],
@@ -116,4 +117,22 @@ export function useLinkRegistrantToPlayer({ slug }: { slug: string }) {
       });
     },
   });
+}
+
+export function useRegistrantStats() {
+  const { token } = useAuth();
+  const searchParams = useSearchParams();
+
+  const { slug } = useLeagueControlPanel();
+
+  const seasonId = searchParams.get('season');
+
+  const { data: response, status } = useQuery({
+    queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTATION_STATS, slug, seasonId],
+    queryFn: () => fetchRegistrationStats({ token, slug, seasonId }),
+    retry: false,
+    staleTime: 180000,
+  });
+
+  return { response, status };
 }

@@ -5,6 +5,8 @@ import {
   RegistrantItem,
   registrantItemSchema,
   CreateRegistrationFormValues,
+  registrationStatsResponseSchema,
+  ReigstrationStatsResponse,
 } from '@/app/lib/types/Responses/control-panel.types';
 import { PaginationMetaSchema } from '@/app/lib/types/pagination.types';
 
@@ -247,3 +249,29 @@ export async function linkRegistrationToPlayer({
     }, 700);
   });
 }
+
+export async function fetchRegistrationStats({
+  token,
+  slug,
+  seasonId,
+}: {
+  token: string;
+  slug: string;
+  seasonId: string | null;
+}) {
+  return new Promise<ReigstrationStatsResponse>((resolve) => {
+    setTimeout(() => {
+      const result = registrationStatsResponseSchema.parse(
+        mockRegistrationStats
+      );
+      resolve(result);
+    }, 400);
+  });
+}
+
+const mockRegistrationStats = {
+  total_registrants: 58,
+  total_revenue_formatted: '6,732',
+  total_weekly_registrants: 12,
+  total_weekly_revenue_formatted: '1,743',
+};

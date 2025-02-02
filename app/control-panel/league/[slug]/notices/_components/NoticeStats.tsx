@@ -11,8 +11,8 @@ export default function NoticeStats() {
     : {};
 
   return (
-    <div className='grid grid-cols-4 gap-4'>
-      <StyledBox classes='p-4'>
+    <StyledBox classes='p-4 grid grid-cols-4 gap-4'>
+      <StyledBox classes='p-4 bg-white' boxShadow>
         <div className='text-sm text-gray-500'>Messages Sent (This Month)</div>
         {status === 'success' && messages_sent && (
           <div className='h-8 text-2xl font-bold'>{messages_sent.total}</div>
@@ -21,7 +21,7 @@ export default function NoticeStats() {
           <div className='mt-1 h-7 w-28 animate-pulse rounded-md bg-gray-200 text-2xl font-bold' />
         )}
       </StyledBox>
-      <StyledBox classes='p-4'>
+      <StyledBox classes='p-4 bg-white' boxShadow>
         <div className='text-sm text-gray-500'>SMS Credits Left</div>
         {status === 'success' && credits_remaining && (
           <div className='h-8 text-2xl font-bold'>
@@ -32,7 +32,7 @@ export default function NoticeStats() {
           <div className='mt-1 h-7 w-28 animate-pulse rounded-md bg-gray-200 text-2xl font-bold' />
         )}
       </StyledBox>
-      <StyledBox classes='p-4'>
+      <StyledBox classes='p-4 bg-white' boxShadow>
         <div className='text-sm text-gray-500'>Email Credits Left</div>
         {status === 'success' && credits_remaining && (
           <div className='h-8 text-2xl font-bold'>
@@ -43,7 +43,7 @@ export default function NoticeStats() {
           <div className='mt-1 h-7 w-28 animate-pulse rounded-md bg-gray-200 text-2xl font-bold' />
         )}
       </StyledBox>
-      <StyledBox classes='p-4'>
+      <StyledBox classes='p-4 bg-white' boxShadow>
         <div className='text-sm text-gray-500'>Active Announcements</div>
         {status === 'success' && active_announcements && (
           <div className='h-8 text-2xl font-bold'>
@@ -53,7 +53,7 @@ export default function NoticeStats() {
         {status === 'loading' && (
           <div className='mt-1 h-7 w-28 animate-pulse rounded-md bg-gray-200 text-2xl font-bold' />
         )}
-      </StyledBox>
-    </div>
+      </StyledBox>{' '}
+    </StyledBox>
   );
 }

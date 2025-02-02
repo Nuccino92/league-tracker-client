@@ -260,6 +260,16 @@ export const createRegistrationFormSchema = z
 export type CreateRegistrationFormValues = z.infer<
   typeof createRegistrationFormSchema
 >;
+
+export const registrationStatsResponseSchema = z.object({
+  total_registrants: z.number(),
+  total_revenue_formatted: z.string(),
+  total_weekly_registrants: z.number(),
+  total_weekly_revenue_formatted: z.string(),
+});
+export type ReigstrationStatsResponse = z.infer<
+  typeof registrationStatsResponseSchema
+>;
 // ---- endregion
 
 // ---- region - notices

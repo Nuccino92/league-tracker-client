@@ -87,7 +87,9 @@ export default function AnnouncementsList() {
         <div className='space-y-2 p-4'>
           {response.data.length > 0 &&
             response.data.map((notice) => (
-              <AnnouncementsListItem notice={notice} key={notice.id} />
+              <div key={notice.id}>
+                <AnnouncementsListItem notice={notice} />
+              </div>
             ))}
 
           {response.data.length === 0 && (
@@ -143,7 +145,10 @@ function AnnouncementsListItem({ notice }: { notice: NoticeItem }) {
   const retryNoticeMutation = useRetryNotices();
 
   return (
-    <div className='space-y-4 rounded-lg border p-4 pb-0'>
+    <StyledBox
+      classes='space-y-4 overflow-hidden rounded-lg border bg-white p-4 pb-0'
+      boxShadow
+    >
       {/* Header */}
       <div className='flex items-start justify-between'>
         <div className='space-y-1'>
@@ -249,7 +254,7 @@ function AnnouncementsListItem({ notice }: { notice: NoticeItem }) {
           notice={notice}
         />
       )}
-    </div>
+    </StyledBox>
   );
 }
 

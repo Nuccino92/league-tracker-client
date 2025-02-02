@@ -16,6 +16,7 @@ import SearchBar from '@/app/lib/components/SearchBar';
 import ListBox from '@/app/lib/components/Listbox';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
+import RegistrantStats from '@/app/control-panel/league/[slug]/registrations/_components/RegistrantStats';
 
 type Props = {
   slug: string;
@@ -93,6 +94,13 @@ export default function RegistrantsList({ slug }: Props) {
           />
         </div>
       </div>
+
+      {searchParams.get('season') && (
+        <div className='mb-4 overflow-hidden'>
+          <RegistrantStats />
+        </div>
+      )}
+
       {response && status === 'success' && (
         <div>
           <div className='grid grid-cols-5 gap-4 border-b p-4 text-sm font-medium'>
