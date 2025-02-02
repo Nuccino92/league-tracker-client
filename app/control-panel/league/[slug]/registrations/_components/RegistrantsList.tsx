@@ -108,7 +108,7 @@ export default function RegistrantsList({ slug }: Props) {
             <div>Email</div>
             <div>Season</div>
             <div>Registraion Date</div>
-            <div></div>
+            <div />
           </div>
           <div className='divide-y'>
             {response.data.map((registrant) => (

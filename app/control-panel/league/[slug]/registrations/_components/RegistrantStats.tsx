@@ -4,6 +4,10 @@ import { useRegistrantStats } from '@/app/lib/hooks/api/control-panel/registrati
 export default function RegistrantStats() {
   const { response, status } = useRegistrantStats();
 
+  {
+    /* todo: add currency select, possibly set in local storage */
+  }
+
   return (
     <StyledBox
       classes='border-none p-4 mx-4 flex items-center justify-between gap-4'
