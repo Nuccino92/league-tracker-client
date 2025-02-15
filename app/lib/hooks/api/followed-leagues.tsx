@@ -85,7 +85,7 @@ export function useAddBookmarkedLeague() {
   });
 }
 
-export function useLeagueSubscriptionInformation(leagueID: string) {
+export function useLeagueSubscriptionInformation(leagueID: string | number) {
   const { token } = useAuth();
 
   const { data: response, status } = useQuery({

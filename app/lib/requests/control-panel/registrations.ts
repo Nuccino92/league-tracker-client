@@ -9,6 +9,7 @@ import {
   ReigstrationStatsResponse,
 } from '@/app/lib/types/Responses/control-panel.types';
 import { PaginationMetaSchema } from '@/app/lib/types/pagination.types';
+import { CurrencyCode } from '@/app/lib/collections/currencies';
 
 export async function fetchRegistrationForms({
   token,
@@ -254,10 +255,12 @@ export async function fetchRegistrationStats({
   token,
   slug,
   seasonId,
+  currency,
 }: {
   token: string;
   slug: string;
-  seasonId: string | null;
+  seasonId: string;
+  currency: CurrencyCode;
 }) {
   return new Promise<ReigstrationStatsResponse>((resolve) => {
     setTimeout(() => {

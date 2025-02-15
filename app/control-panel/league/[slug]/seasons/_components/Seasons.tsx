@@ -36,7 +36,7 @@ export default function Seasons({ slug }: { slug: string }) {
     ...(hasSeasons && !activeSeason
       ? [
           {
-            label: 'Start Season',
+            label: 'Start A Season',
             action: () => setShowSelectSeasonModal(true),
             icon: <IconBxCalendarStar height={20} width={20} />,
           },
@@ -113,6 +113,8 @@ export default function Seasons({ slug }: { slug: string }) {
             panelClasses='sm:w-[450px] w-full overflow-visible'
             close={() => setShowSelectSeasonModal(false)}
             selectSeason={() => {
+              //TODO: create endpoint to activate a season
+              //share with SeasonsList component
               setShowSelectSeasonModal(false);
             }}
           />

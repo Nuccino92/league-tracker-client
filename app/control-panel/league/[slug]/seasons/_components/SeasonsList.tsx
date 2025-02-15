@@ -8,6 +8,7 @@ import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueCon
 import { ControlPanelDetailedSeasonsListItem } from '@/app/lib/types/Responses/control-panel.types';
 import {
   IconBxCalendarMinus,
+  IconBxCalendarStar,
   IconEllipsisVertical,
   IconLeaf,
   IconPersonCircle,
@@ -94,7 +95,7 @@ function SeasonItem({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const { activeSeason, slug, hasSeasons } = useLeagueControlPanel();
+  const { activeSeason, slug } = useLeagueControlPanel();
 
   const seasonParam = searchParams.get('season');
 
@@ -102,6 +103,18 @@ function SeasonItem({
   const [showSeasonSettingsModal, setShowSeasonSettingsModal] = useState(false);
 
   const dropdownOptions = [
+    ...(!activeSeason
+      ? [
+          {
+            label: 'Activate Season',
+            action: () => {
+              //TODO: create endpoint to activate a season
+              //share with Seasons component
+            },
+            icon: <IconBxCalendarStar height={16} width={16} />,
+          },
+        ]
+      : []),
     {
       label: 'Registrants',
       action: () => {

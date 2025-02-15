@@ -11,7 +11,7 @@ export default function StyledBox({ classes, boxShadow, children }: Props) {
   return (
     <div
       className={classNames(
-        boxShadow && 'shadow-[0px_10px_55px_0px_rgba(0,0,0,0.05)]',
+        boxShadow && 'shadow-[0px_4px_24px_-1px_rgba(0,0,0,0.08)]',
         'rounded-xl border border-violet-100 bg-white',
         classes
       )}

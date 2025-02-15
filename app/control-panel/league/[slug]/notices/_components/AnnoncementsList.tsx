@@ -189,11 +189,11 @@ function AnnouncementsListItem({ notice }: { notice: NoticeItem }) {
         <div className='flex h-12 items-center gap-4 border-t text-sm text-gray-500'>
           <div>
             <span className='font-medium'>Starts:</span>{' '}
-            {format(new Date(notice.start_date), 'MMM d, yyyy')}
+            {format(parseISO(notice.start_date), 'MMM d, yyyy')}
           </div>
           <div>
             <span className='font-medium'>Ends:</span>{' '}
-            {format(new Date(notice.end_date), 'MMM d, yyyy')}
+            {format(parseISO(notice.end_date), 'MMM d, yyyy')}
           </div>
         </div>
       )}
@@ -301,10 +301,10 @@ function DeliveryDetailsModal({
       // Handle date fields
       if (sortField.endsWith('_delivered_at')) {
         const aDate = a[sortField]
-          ? new Date(a[sortField] as string).getTime()
+          ? parseISO(a[sortField] as string).getTime()
           : 0;
         const bDate = b[sortField]
-          ? new Date(b[sortField] as string).getTime()
+          ? parseISO(b[sortField] as string).getTime()
           : 0;
         return sortDirection === 'asc' ? aDate - bDate : bDate - aDate;
       }
@@ -450,7 +450,7 @@ function DeliveryDetailsModal({
                         <td className='p-2'>
                           {detail.email_delivered_at
                             ? format(
-                                new Date(detail.email_delivered_at),
+                                parseISO(detail.email_delivered_at),
                                 'MMM d, yyyy h:mm a'
                               )
                             : '-'}
@@ -470,7 +470,7 @@ function DeliveryDetailsModal({
                         <td className='p-2'>
                           {detail.sms_delivered_at
                             ? format(
-                                new Date(detail.sms_delivered_at),
+                                parseISO(detail.sms_delivered_at),
                                 'MMM d, yyyy h:mm a'
                               )
                             : '-'}

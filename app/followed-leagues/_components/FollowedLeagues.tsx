@@ -177,8 +177,8 @@ function InvolvedLeagues({
                                   </Tooltip>
                                 </TooltipProvider>
                               )}
-                              {/* todo: POSSIBLY MAKE THE HREF DEPENDANT ON THE ROLE. */}
 
+                              {/* todo: POSSIBLY MAKE THE HREF DEPENDANT ON THE ROLE. */}
                               {league.role !== 'invitation' && (
                                 <TooltipProvider>
                                   <Tooltip delayDuration={75}>

@@ -182,6 +182,9 @@ export default function CreationSetup() {
       {/* Main Content */}
       <div className='flex flex-1 items-center justify-center pl-2 sm:pl-6 lg:p-6'>
         <Formik
+          validateOnMount={false}
+          validateOnBlur={false}
+          validateOnChange={false}
           initialValues={initialValues}
           onSubmit={(values) => {
             // must map over the sports stats and include the locked at of the selected sport!!! :)

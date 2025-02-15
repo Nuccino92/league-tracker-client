@@ -3,7 +3,7 @@
 import { Fragment, useState } from 'react';
 import { Switch, Transition } from '@headlessui/react';
 import classNames from 'classnames';
-import { differenceInDays, format } from 'date-fns';
+import { differenceInDays, format, parseISO } from 'date-fns';
 
 import { useGetSubscriptionPlans } from '@/app/lib/hooks/api/billing';
 import BillingToggle from '@/app/create/_components/BillingToggle';
@@ -62,7 +62,7 @@ export default function SubscriptionPlans({ leagueID }: Props) {
                   : 'expires'}{' '}
                 on{' '}
                 {format(
-                  new Date(subInformationResponse.subscription?.end_date),
+                  parseISO(subInformationResponse.subscription?.end_date),
                   'PPP'
                 )}
               </p>

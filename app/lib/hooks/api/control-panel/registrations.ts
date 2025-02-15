@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import {
@@ -14,6 +13,7 @@ import { useAuth } from '@/app/GlobalContext';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import { CreateRegistrationFormValues } from '@/app/lib/types/Responses/control-panel.types';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
+import { CurrencyCode } from '@/app/lib/collections/currencies';
 
 export function useRegistrationForms({
   slug,
@@ -119,19 +119,31 @@ export function useLinkRegistrantToPlayer({ slug }: { slug: string }) {
   });
 }
 
-export function useRegistrantStats() {
+export function useRegistrantStats({
+  seasonId,
+  currency,
+}: {
+  seasonId?: string;
+  currency: CurrencyCode;
+}) {
   const { token } = useAuth();
-  const searchParams = useSearchParams();
 
   const { slug } = useLeagueControlPanel();
 
-  const seasonId = searchParams.get('season');
-
   const { data: response, status } = useQuery({
-    queryKey: [QUERY_KEYS.CONTROL_PANEL.REGISTATION_STATS, slug, seasonId],
-    queryFn: () => fetchRegistrationStats({ token, slug, seasonId }),
+    queryKey: [
+      QUERY_KEYS.CONTROL_PANEL.REGISTATION_STATS,
+      slug,
+      seasonId,
+      currency,
+    ],
+    queryFn: () => {
+      if (seasonId)
+        return fetchRegistrationStats({ token, slug, seasonId, currency });
+    },
     retry: false,
     staleTime: 180000,
+    enabled: seasonId ? true : false,
   });
 
   return { response, status };

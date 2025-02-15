@@ -8,7 +8,9 @@ import Providers from '@/app/providers';
 import { authOptions } from '@/app/api/auth/auth';
 import { Toaster } from '@/app/lib/components/_toast/toaster';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
   title: 'keepr',

@@ -104,8 +104,8 @@ function Form({ form, slug }: { form: RegistrationItem; slug: string }) {
               price: form.price,
               max_registrants: form.max_registrants,
               description: form.description,
-              openDate: new Date(form.openDate),
-              closeDate: form.closeDate ? new Date(form.closeDate) : null,
+              openDate: parseISO(form.openDate),
+              closeDate: form.closeDate ? parseISO(form.closeDate) : null,
             },
           }}
         />

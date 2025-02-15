@@ -57,10 +57,10 @@ export default function RegistrantsList({ slug }: Props) {
 
   return (
     <StyledBox classes=''>
-      <div className='flex items-center justify-between p-4'>
+      <div className='flex flex-col justify-between gap-4 p-4 md:flex-row md:items-center'>
         <div className='font-bold'>Registrants</div>
 
-        <div className='flex items-center gap-4'>
+        <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
           <div className='flex items-center space-x-6'>
             <SearchBar
               inputValue={searchInputValue}
@@ -96,8 +96,8 @@ export default function RegistrantsList({ slug }: Props) {
       </div>
 
       {searchParams.get('season') && (
-        <div className='mb-4 overflow-hidden'>
-          <RegistrantStats />
+        <div className='mx-4 mb-4'>
+          <RegistrantStats seasonId={searchParams.get('season') ?? undefined} />
         </div>
       )}
 

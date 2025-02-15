@@ -174,7 +174,7 @@ export async function getLeagueSubscriptionInformation({
   leagueID,
 }: {
   token: string;
-  leagueID: string;
+  leagueID: string | number;
 }) {
   return new Promise<LeagueSubscriptionInformation>((resolve) => {
     setTimeout(() => {
