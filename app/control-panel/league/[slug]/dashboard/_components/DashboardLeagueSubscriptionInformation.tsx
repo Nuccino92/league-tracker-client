@@ -9,19 +9,19 @@ import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueCon
 import { useLeagueSubscriptionInformation } from '@/app/lib/hooks/api/followed-leagues';
 
 export default function DashboardLeagueSubscriptionInformation() {
-  const {
-    leagueData: { league_info },
-  } = useLeagueControlPanel();
+  const { leagueData } = useLeagueControlPanel();
 
   const { response: subInformationResponse, status } =
-    useLeagueSubscriptionInformation(league_info.id);
+    useLeagueSubscriptionInformation(leagueData.league_info.id);
+
+  if (leagueData.role.role_name !== 'owner') return <></>;
 
   return (
     <StyledBox classes='flex flex-col gap-2 p-4' boxShadow>
       <div className='mb-4 flex items-center justify-between'>
         <div className='text-sm text-gray-500'>Subscription Info</div>{' '}
         <Link
-          href={`${ROUTES.BILLING_AND_SUBSCRIPTION}/${league_info.id}`}
+          href={`${ROUTES.BILLING_AND_SUBSCRIPTION}/${leagueData.league_info.id}`}
           className='text-xs font-light underline hover:text-secondary'
         >
           Manage

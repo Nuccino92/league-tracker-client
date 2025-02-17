@@ -25,14 +25,14 @@ export default function DashboardSeasonContainer() {
 
   return (
     <div>
-      {activeSeason && <WithActiveBusiness />}
-      {!activeSeason && <WithoutActiveBusiness />}
+      {activeSeason && <WithActiveSeason />}
+      {!activeSeason && <WithoutActiveSeason />}
     </div>
   );
 }
 
-function WithActiveBusiness() {
-  const { activeSeason, slug } = useLeagueControlPanel();
+function WithActiveSeason() {
+  const { activeSeason, slug, isAdministrator } = useLeagueControlPanel();
 
   if (!activeSeason) return <></>;
 
@@ -41,12 +41,14 @@ function WithActiveBusiness() {
       <div className=''>
         <div className='mb-6 flex items-center justify-between'>
           <div className='text-sm text-gray-500'>Active Season</div>{' '}
-          <Link
-            href={`/control-panel/league/${slug}/${ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS}?season=${activeSeason.id}`}
-            className='text-xs font-light underline hover:text-secondary'
-          >
-            Manage
-          </Link>
+          {isAdministrator() && (
+            <Link
+              href={`/control-panel/league/${slug}/${ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS}?season=${activeSeason.id}`}
+              className='text-xs font-light underline hover:text-secondary'
+            >
+              Manage
+            </Link>
+          )}
         </div>
 
         <Live24Filled
@@ -69,19 +71,21 @@ function WithActiveBusiness() {
   );
 }
 
-function WithoutActiveBusiness() {
-  const { slug } = useLeagueControlPanel();
+function WithoutActiveSeason() {
+  const { slug, isAdministrator } = useLeagueControlPanel();
 
   return (
     <StyledBox classes='p-4 flex flex-col justify-between' boxShadow>
       <div className='mb-6 flex items-center justify-between'>
         <div className='text-sm text-gray-500'>Active Season</div>{' '}
-        <Link
-          href={`/control-panel/league/${slug}/${ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS}`}
-          className='text-xs font-light underline hover:text-secondary'
-        >
-          Manage
-        </Link>
+        {isAdministrator() && (
+          <Link
+            href={`/control-panel/league/${slug}/${ROUTES.CONTROL_PANEL_SUBROUTES.SEASONS}`}
+            className='text-xs font-light underline hover:text-secondary'
+          >
+            Manage
+          </Link>
+        )}
       </div>
 
       <LiveOff24Filled

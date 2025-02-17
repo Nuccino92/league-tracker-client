@@ -19,8 +19,8 @@ export const followedLeaguesResponseSchema = z.object({
         'owner',
         'super-admin',
         'admin',
-        'member',
-        'player',
+        'team-manager',
+        'scorekeeper',
         'invitation',
       ]), // todo: make/get enum
     })

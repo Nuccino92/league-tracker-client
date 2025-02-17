@@ -16,6 +16,14 @@ export default function DashboardAccountInfo() {
    * could have different icons for different roles
    */
 
+  const roleLabels = {
+    owner: 'Owner',
+    'super-admin': 'Super Admin',
+    admin: 'Admin',
+    'team-manager': 'Team Manager',
+    scorekeeper: 'Scorekeeper',
+  };
+
   return (
     <StyledBox classes='flex flex-col gap-2 p-4' boxShadow>
       <div className='mb-4 flex items-center justify-between'>
@@ -31,7 +39,7 @@ export default function DashboardAccountInfo() {
       <div className='flex flex-col items-center gap-2'>
         <AdminOutlined height={50} width={50} className='w-full text-red-900' />
         <div className='text-gray-6000 mt-4 text-center text-sm capitalize'>
-          {leagueData.role.role_name}
+          {roleLabels[leagueData.role.role_name]}
         </div>{' '}
       </div>
     </StyledBox>

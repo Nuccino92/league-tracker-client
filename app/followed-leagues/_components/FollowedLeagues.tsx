@@ -59,6 +59,15 @@ function InvolvedLeagues({
 
   const removeJoinedLeagueMut = useRemoveJoinedLeague();
 
+  const roleLabels = {
+    owner: 'Owner',
+    'super-admin': 'Super Admin',
+    admin: 'Admin',
+    'team-manager': 'Team Manager',
+    scorekeeper: 'Scorekeeper',
+    invitation: 'Invitation',
+  };
+
   return (
     <StyledBox classes=''>
       <Disclosure defaultOpen={joinedLeagues.length > 0 ? true : false}>
@@ -110,7 +119,7 @@ function InvolvedLeagues({
                                 <div className='flex items-center gap-2 text-lg font-medium'>
                                   <span>{league.name}</span> -{' '}
                                   <span className='text-sm capitalize text-gray-600'>
-                                    {league.role}
+                                    {roleLabels[league.role]}
                                   </span>
                                   {league.role === 'owner' && (
                                     <span>
@@ -179,6 +188,7 @@ function InvolvedLeagues({
                               )}
 
                               {/* todo: POSSIBLY MAKE THE HREF DEPENDANT ON THE ROLE. */}
+                              {/* Need to handle scorekeeper role */}
                               {league.role !== 'invitation' && (
                                 <TooltipProvider>
                                   <Tooltip delayDuration={75}>

@@ -189,6 +189,8 @@ export async function validateEmailForMembersRequest({
   email: string;
   token: string;
 }) {
+  // need to also validate if the email is already a member of the league
+
   return new Promise<{ is_valid_email: boolean }>((resolve) => {
     setTimeout(() => {
       resolve({ is_valid_email: true });

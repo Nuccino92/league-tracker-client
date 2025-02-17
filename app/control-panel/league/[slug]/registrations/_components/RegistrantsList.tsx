@@ -32,7 +32,7 @@ export default function RegistrantsList({ slug }: Props) {
   });
 
   const { leagueData } = useLeagueControlPanel();
-  const { seasons } = leagueData;
+  const { seasons, role } = leagueData;
 
   const selectedSeason = searchParams.get('season')
     ? seasons.all_seasons.find(
@@ -95,7 +95,7 @@ export default function RegistrantsList({ slug }: Props) {
         </div>
       </div>
 
-      {searchParams.get('season') && (
+      {searchParams.get('season') && role.role_name === 'owner' && (
         <div className='mx-4 mb-4'>
           <RegistrantStats seasonId={searchParams.get('season') ?? undefined} />
         </div>

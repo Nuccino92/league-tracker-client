@@ -25,7 +25,7 @@ export default function FreeAgentsModal({
   });
 
   const [mutableFreeAgents, setMutableFreeAgents] = useState<BasePlayer[]>(
-    freeAgents ?? []
+    freeAgents?.data ?? []
   );
   const [selectedFreeAgents, setSelectedFreeAgents] = useState<BasePlayer[]>(
     []
@@ -44,7 +44,7 @@ export default function FreeAgentsModal({
         );
 
   useEffect(() => {
-    freeAgents && setMutableFreeAgents(freeAgents);
+    freeAgents && setMutableFreeAgents(freeAgents.data);
   }, [freeAgents]);
 
   function handleAddFreeAgent(selectedFreeAgent: BasePlayer) {

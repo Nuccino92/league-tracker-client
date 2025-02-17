@@ -229,10 +229,19 @@ export default function MemberForm({
 
                     {!memberId || member.role !== props.values.role ? (
                       <div className='mt-8 flex w-full items-center justify-end'>
-                        <Button>
-                          {memberId
-                            ? 'Modify Member'
-                            : 'Generate Member Invitation'}
+                        <Button
+                          disabled={
+                            addMemberMut.isLoading || modifyMemberMut.isLoading
+                          }
+                        >
+                          {addMemberMut.isLoading ||
+                          modifyMemberMut.isLoading ? (
+                            <Spinner height={16} width={16} />
+                          ) : memberId ? (
+                            'Modify Member'
+                          ) : (
+                            'Generate Member Invitation'
+                          )}
                         </Button>
                       </div>
                     ) : null}

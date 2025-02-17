@@ -1,3 +1,5 @@
+'use client';
+
 import Container from '@/app/control-panel/_components/Container';
 import WebsiteStatistics from '@/app/control-panel/league/[slug]/dashboard/_components/WebsiteStatistics';
 import NoticeStats from '@/app/control-panel/league/[slug]/notices/_components/NoticeStats';
@@ -7,6 +9,7 @@ import DashboardHeader from '@/app/control-panel/league/[slug]/dashboard/_compon
 import DashboardAccountInfo from '@/app/control-panel/league/[slug]/dashboard/_components/DashboardAccountInfo';
 import StyledBox from '@/app/lib/components/StyledBox';
 import DashboardLeagueSubscriptionInformation from '@/app/control-panel/league/[slug]/dashboard/_components/DashboardLeagueSubscriptionInformation';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 /**
  *
@@ -27,11 +30,13 @@ import DashboardLeagueSubscriptionInformation from '@/app/control-panel/league/[
 // todo: handle when no active season
 // todo: put the website subscription informatin in
 
-export default async function DashboardPage({
+export default function DashboardPage({
   params,
 }: {
   params: { ['slug']: string };
 }) {
+  const { isAdministrator, leagueData } = useLeagueControlPanel();
+
   return (
     <Container view='league'>
       <div className='mb-6'>
@@ -41,10 +46,13 @@ export default async function DashboardPage({
       <div className='flex justify-between gap-6'>
         {/* Main content */}
         <div className='w-full space-y-6'>
-          <StyledBox classes='p-6 w-full space-y-6' boxShadow>
-            <NoticeStats />
-            <DashboardRegistrationStatistics />{' '}
-          </StyledBox>{' '}
+          {isAdministrator() && (
+            <StyledBox classes='p-6 w-full space-y-6' boxShadow>
+              <NoticeStats />
+              <DashboardRegistrationStatistics />
+            </StyledBox>
+          )}
+
           <WebsiteStatistics />
         </div>
 

@@ -1,9 +1,18 @@
 'use client';
 
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import StyledBox from '@/app/lib/components/StyledBox';
 import { useNoticeStatistics } from '@/app/lib/hooks/api/control-panel/notices';
 
-export default function NoticeStats() {
+export default function AdminGuard() {
+  const { isAdministrator } = useLeagueControlPanel();
+
+  if (!isAdministrator()) return <></>;
+
+  return <NoticeStats />;
+}
+
+function NoticeStats() {
   const { data, status } = useNoticeStatistics();
 
   const { active_announcements, credits_remaining, messages_sent } = data

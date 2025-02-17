@@ -97,13 +97,13 @@ export default function TeamSchdule({ slug }: Props) {
 
         setEventFormData({
           title: generateEventTitles({
-            eventType: isAdministrator() ? 'game' : 'practice',
+            eventType: 'game',
             teamNames: [team.name],
           }),
           description: '',
           start_date: new Date(start_date + 'T00:00:00'),
           start_time,
-          event_type: isAdministrator() ? 'game' : 'practice',
+          event_type: 'game',
           end_date: new Date(end_date + 'T00:00:00'),
           end_time,
           location: '',

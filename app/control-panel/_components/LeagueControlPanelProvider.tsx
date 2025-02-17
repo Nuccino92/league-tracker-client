@@ -15,6 +15,7 @@ import { ControlPanelInformation } from '@/app/lib/types/Responses/control-panel
 import { useLeague } from '@/app/lib/hooks/api/control-panel/index';
 import { ControlPanelLeaguePages } from '@/app/lib/enums';
 import { IS_CONTROL_PANEL_SIDEBAR_OPEN } from '@/app/lib/globals/localStorage';
+import { MemberRole } from '@/app/lib/types/Models/Member';
 
 export default function LeagueControlPanelProvider({
   children,
@@ -69,6 +70,23 @@ interface LeagueControlPanelContextType {
 export const LeagueControlPanelContext =
   createContext<LeagueControlPanelContextType | null>(null);
 
+export type FeatureAccess = {
+  dashboard: boolean;
+  members: boolean;
+  seasons: boolean;
+  teams: boolean;
+  players: boolean;
+  schedule: boolean;
+  registrations: boolean;
+  notices: boolean;
+  settings: boolean;
+  submitScore: boolean;
+};
+
+type RolePermissions = {
+  [K in MemberRole]: FeatureAccess;
+};
+
 export function useLeagueControlPanel() {
   const context = useContext(LeagueControlPanelContext);
   if (!context) {
@@ -120,57 +138,83 @@ export function useLeagueControlPanel() {
     return false;
   }
 
-  // TODO: possibly add a new page for league information, have an about page for league so any member can access it's control panel (possily remove access from player role and have them edit their information another way)
-
-  // so... default to /control-panel/slug which shows the about or w/e
-  // then... on the sidebar wheh click home, go to /control-panel/slug/home, which shows the league information which is role blocked
+  const rolePermissions: RolePermissions = {
+    owner: {
+      dashboard: true,
+      members: true,
+      seasons: true,
+      teams: true,
+      players: true,
+      schedule: true,
+      registrations: true,
+      notices: true,
+      settings: true,
+      submitScore: true,
+    },
+    'super-admin': {
+      dashboard: true,
+      members: true,
+      seasons: true,
+      teams: true,
+      players: true,
+      schedule: true,
+      registrations: true,
+      notices: true,
+      settings: true,
+      submitScore: true,
+    },
+    admin: {
+      dashboard: true,
+      members: false,
+      seasons: true,
+      teams: true,
+      players: true,
+      schedule: true,
+      registrations: false,
+      notices: true,
+      settings: false,
+      submitScore: true,
+    },
+    'team-manager': {
+      dashboard: true,
+      members: false,
+      seasons: false,
+      teams: true,
+      players: true,
+      schedule: true,
+      registrations: false,
+      notices: false,
+      settings: false,
+      submitScore: true,
+    },
+    scorekeeper: {
+      dashboard: false,
+      members: false,
+      seasons: false,
+      teams: false,
+      players: false,
+      schedule: false,
+      registrations: false,
+      notices: false,
+      settings: false,
+      submitScore: true,
+    },
+  };
 
   function hasPageAccess(page: ControlPanelLeaguePages): boolean {
     const {
-      role: { role_name, permissions },
+      role: { role_name },
     } = leagueData;
 
-    let accessGranted = false;
+    if (page === 'index') return true;
 
-    if (Object.keys(permissions).length < 1) return (accessGranted = false);
+    const currentRolePermissions =
+      rolePermissions[role_name as keyof typeof rolePermissions];
 
-    if (page === 'index') return (accessGranted = true);
-
-    if (role_name === 'owner' || role_name === 'super-admin') {
-      return (accessGranted = true);
-    }
-
-    if (page === 'dashboard' || page === 'members')
-      return (accessGranted = false);
-
-    if (role_name === 'admin') {
-      return (accessGranted = true);
-    }
-
-    if (page === 'registrations') return (accessGranted = false);
-
-    switch (page) {
-      case 'seasons':
-        if (permissions['manage_seasons'] || permissions['manage_roster'])
-          return (accessGranted = true);
-        break;
-      case 'teams':
-        if (permissions['manage_teams']) return (accessGranted = true);
-        break;
-      case 'players':
-        if (permissions['manage_players']) return (accessGranted = true);
-        break;
-      case 'schedule':
-        if (permissions['manage_schedule']) return (accessGranted = true);
-        break;
-      case 'notices':
-        if (permissions['manage_notices']) return (accessGranted = true);
-        break;
-      default:
-        return (accessGranted = false);
-    }
-
-    return accessGranted;
+    return (
+      currentRolePermissions[page as keyof typeof currentRolePermissions] ??
+      false
+    );
   }
 
   return {
@@ -180,6 +224,7 @@ export function useLeagueControlPanel() {
     slug,
     hasPageAccess,
     isAdministrator,
+    rolePermissions,
     sidebar: { isSidebarExpanded, toggleSidebar },
   };
 }

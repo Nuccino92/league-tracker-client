@@ -3,23 +3,10 @@ import { SVGProps } from 'react';
 import FormLabel from '@/app/control-panel/_components/FormLabel';
 import { MemberRole } from '@/app/lib/types/Models/Member';
 import { cn } from '@/app/lib/utils';
-
-type FeatureAccess = {
-  dashboard: boolean;
-  members: boolean;
-  seasons: boolean;
-  teams: boolean;
-  players: boolean;
-  schedule: boolean;
-  registrations: boolean;
-  notices: boolean;
-  settings: boolean;
-  submitScore: boolean;
-};
-
-type RolePermissions = {
-  [K in MemberRole]: FeatureAccess;
-};
+import {
+  FeatureAccess,
+  useLeagueControlPanel,
+} from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 interface AccessControlProps {
   role: MemberRole;
@@ -41,7 +28,7 @@ const FEATURE_DESCRIPTIONS = {
   },
   teams: {
     title: 'Teams',
-    description: "Access to Teams page and it's features",
+    description: 'Access to Teams page Calendar feature',
   },
   players: {
     title: 'Players',
@@ -69,70 +56,9 @@ const FEATURE_DESCRIPTIONS = {
   },
 };
 
-const permissions: RolePermissions = {
-  owner: {
-    dashboard: true,
-    members: true,
-    seasons: true,
-    teams: true,
-    players: true,
-    schedule: true,
-    registrations: true,
-    notices: true,
-    settings: true,
-    submitScore: true,
-  },
-  'super-admin': {
-    dashboard: true,
-    members: true,
-    seasons: true,
-    teams: true,
-    players: true,
-    schedule: true,
-    registrations: true,
-    notices: true,
-    settings: true,
-    submitScore: true,
-  },
-  admin: {
-    dashboard: true,
-    members: false,
-    seasons: true,
-    teams: true,
-    players: true,
-    schedule: true,
-    registrations: false,
-    notices: true,
-    settings: false,
-    submitScore: true,
-  },
-  'team-manager': {
-    dashboard: true,
-    members: false,
-    seasons: false,
-    teams: true,
-    players: true,
-    schedule: true,
-    registrations: false,
-    notices: false,
-    settings: false,
-    submitScore: true,
-  },
-  scorekeeper: {
-    dashboard: false,
-    members: false,
-    seasons: false,
-    teams: false,
-    players: false,
-    schedule: false,
-    registrations: false,
-    notices: false,
-    settings: false,
-    submitScore: true,
-  },
-};
-
 const MemberAccessControl: React.FC<AccessControlProps> = ({ role }) => {
+  const { rolePermissions } = useLeagueControlPanel();
+
   return (
     <div className=''>
       <div className='mb-4 mt-4 border-b pb-2'>
@@ -144,7 +70,7 @@ const MemberAccessControl: React.FC<AccessControlProps> = ({ role }) => {
       </div>
 
       <div className='space-y-2'>
-        {Object.entries(permissions[role]).map(([feature, hasAccess]) => {
+        {Object.entries(rolePermissions[role]).map(([feature, hasAccess]) => {
           return (
             <div
               key={feature}

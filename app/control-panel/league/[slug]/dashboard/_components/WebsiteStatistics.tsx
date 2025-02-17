@@ -12,12 +12,17 @@ import {
   ChartTooltipContent,
 } from '@/app/lib/components/ui/chart';
 import { Button } from '@/app/lib/components/Button';
+import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 
 export default function WebsiteStatistics() {
   // TODO: create dashboard statistics endpoint
+
+  const { isAdministrator } = useLeagueControlPanel();
+
   return (
     <div className='relative flex gap-6 pl-0'>
-      <WebsiteVisitsChart />
+      {isAdministrator() && <WebsiteVisitsChart />}
+
       <WebsiteCreatedTotals />
     </div>
   );

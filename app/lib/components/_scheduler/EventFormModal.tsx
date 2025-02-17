@@ -2,8 +2,6 @@ import { useState } from 'react';
 
 import { addYears, format, isSameDay } from 'date-fns';
 import { Popover } from '@headlessui/react';
-import { useParams } from 'next/navigation';
-import classNames from 'classnames';
 import {
   ErrorMessage,
   FastField,
@@ -30,7 +28,6 @@ import {
   createEventSchema,
   EventForm,
 } from '@/app/lib/types/Resources/CreateEventResource';
-import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import {
   IconCalendar,
   IconCategory,
@@ -49,6 +46,7 @@ import { EventRecurrenceEnum, EventType } from '@/app/lib/enums/index';
 import CustomRecurrenceForm from '@/app/lib/components/_scheduler/CustomRecurrenceForm';
 import generateFormattedRecurrenceLabel from '@/app/lib/utils/generateFormattedRecurrenceLabel';
 import { ModalType } from '@/app/types';
+import { cn } from '@/app/lib/utils';
 
 type Props = {
   eventFormData: EventForm;
@@ -64,20 +62,14 @@ export default function EventFormModal({
   formType,
   panelClasses,
 }: Props & ModalType) {
-  const { isAdministrator } = useLeagueControlPanel();
-
   const [showCustomRecurrenceForm, setShowCustomRecurrenceForm] =
     useState(false);
 
   const eventOptions = [
-    ...(isAdministrator()
-      ? [
-          {
-            label: 'Game',
-            value: 'game',
-          },
-        ]
-      : []),
+    {
+      label: 'Game',
+      value: 'game',
+    },
     {
       label: 'Practice',
       value: 'practice',
@@ -113,7 +105,7 @@ export default function EventFormModal({
 
   return (
     <Modal
-      panelClasses={classNames(
+      panelClasses={cn(
         panelClasses,
         'sm:min-w-[640px] w-full overflow-visible w-max'
       )}
@@ -212,7 +204,7 @@ export default function EventFormModal({
           <>
             <Form className='space-y-4'>
               <div className='h-10'>
-                <div className='text-lg font-bold'>Event Form</div>
+                <div className='text-lg font-bold'>Schedule An Event</div>
               </div>
 
               <div className='top-section space-y-4'>
@@ -500,7 +492,7 @@ export default function EventFormModal({
                           disabled={formType === 'edit' ? true : false}
                           key={option.value}
                           type='button'
-                          className={classNames(
+                          className={cn(
                             props.values.event_type === option.value
                               ? '!bg-secondary/10 text-secondary hover:!bg-secondary/10'
                               : '!bg-white opacity-50',
@@ -538,10 +530,16 @@ export default function EventFormModal({
               <div className='flex w-full justify-end'>
                 <Button
                   type='submit'
-                  className={classNames(props.dirty ? 'animate-wiggle' : '')}
+                  className={cn(
+                    props.dirty ? 'animate-wiggle' : '',
+                    'capitalize'
+                  )}
                   variant={'secondary'}
                 >
-                  Save Event
+                  Save{' '}
+                  {props.values.event_type === 'custom_event'
+                    ? 'Custom Event'
+                    : props.values.event_type}
                 </Button>{' '}
               </div>
             </Form>
@@ -610,7 +608,7 @@ function FormSectionBelowType({
                       buttonText={team.name}
                       chevron={false}
                       rootClasses='w-max min-w-max'
-                      buttonClasses={classNames(
+                      buttonClasses={cn(
                         'opacity-50 italic hover:',
                         GRAY_BOX_CLASSES
                       )}
@@ -618,7 +616,7 @@ function FormSectionBelowType({
 
                     {props.values.event_type === 'game' ? (
                       <span
-                        className={classNames(
+                        className={cn(
                           formType === 'edit' ? 'opacity-50' : '',
                           '!ml-1 text-xs font-medium italic text-zinc-600'
                         )}
@@ -678,7 +676,7 @@ function FormSectionBelowType({
                               : 'Select Team'
                           }
                           rootClasses='w-max min-w-max'
-                          buttonClasses={classNames(
+                          buttonClasses={cn(
                             props.errors.teams && !props.values.teams[1]
                               ? '!border-red-500 !text-red-500'
                               : '',
@@ -725,7 +723,7 @@ function FormSectionBelowType({
                 />
                 {props.values.event_type === 'game' ? (
                   <span
-                    className={classNames(
+                    className={cn(
                       formType === 'edit' ? 'opacity-50' : '',
                       '!ml-1 text-xs font-medium italic text-zinc-600'
                     )}
@@ -756,7 +754,7 @@ function FormSectionBelowType({
 
                     {props.values.event_type === 'game' ? (
                       <span
-                        className={classNames(
+                        className={cn(
                           formType === 'edit' ? 'opacity-50' : '',
                           '!ml-1 text-xs font-medium italic text-zinc-600'
                         )}
@@ -786,7 +784,7 @@ function FormSectionBelowType({
               disabled={
                 props.values.event_type === 'custom_event' ? false : true
               }
-              className={classNames(
+              className={cn(
                 props.errors.title ? '!border-red-500' : '',
                 '!py-2 !text-sm disabled:!text-zinc-400 ' + INPUT_CLASSES
               )}
@@ -809,7 +807,7 @@ function FormSectionBelowType({
           <IconTextLeft height={22} width={22} className='mt-2' />{' '}
           <div className='w-full space-y-0.5'>
             <FastField
-              className={classNames(
+              className={cn(
                 props.errors.description ? '!border-red-500' : '',
                 'min-h-[110px] py-2 !text-sm ' + INPUT_CLASSES
               )}

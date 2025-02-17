@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Lottie from 'react-lottie';
 
@@ -15,6 +15,16 @@ type Props = {
   slug: string;
 };
 
+/**
+ *
+ * @param param0
+ * @returns
+ *
+ * @TODOs
+ * Only allow generation if there hasn't been a league game played.
+ * If there has been a game played we block it, if there has been a game created, we warn them about the others games created being erages
+ */
+
 export default function GenerateSchedule({ slug }: Props) {
   const searchParams = useSearchParams();
 
@@ -25,6 +35,7 @@ export default function GenerateSchedule({ slug }: Props) {
   const {
     activeSeason,
     leagueData: { seasons },
+    isAdministrator,
   } = useLeagueControlPanel();
 
   const focusedSeason = seasons.all_seasons.find(

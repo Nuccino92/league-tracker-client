@@ -129,7 +129,8 @@ function ControlPanelRoutes({ pathname, view }: ControlPanelTypes) {
           key={link.label}
           className={classNames(
             pathname === link.href ? 'text-secondary' : '',
-            navigationLinks.length - 1 === index && 'border-t pt-2',
+            link.href === baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.SETTINGS &&
+              'border-t pt-2',
             'text-sm'
           )}
         >

@@ -4,8 +4,13 @@ import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueCon
 import RegistrantStats from '@/app/control-panel/league/[slug]/registrations/_components/RegistrantStats';
 
 export default function DashboardRegistrationStatistics() {
-  const { activeSeason } = useLeagueControlPanel();
+  const {
+    activeSeason,
+    leagueData: {
+      role: { role_name },
+    },
+  } = useLeagueControlPanel();
 
-  if (activeSeason)
+  if (activeSeason && role_name === 'owner')
     return <RegistrantStats seasonId={activeSeason.id.toString()} />;
 }

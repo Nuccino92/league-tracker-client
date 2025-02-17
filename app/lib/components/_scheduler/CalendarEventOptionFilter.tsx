@@ -2,18 +2,15 @@
 
 import { useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import classNames from 'classnames';
 
-import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import { EventType } from '@/app/lib/enums';
 import useQueryString from '@/app/lib/hooks/useQueryString';
+import { cn } from '@/app/lib/utils';
 
 export default function CalendarEventOptionFilter() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
-  const { isAdministrator } = useLeagueControlPanel();
 
   const { createQueryString } = useQueryString();
 
@@ -63,14 +60,10 @@ export default function CalendarEventOptionFilter() {
   }
 
   const eventOptions = [
-    ...(isAdministrator()
-      ? [
-          {
-            label: 'Game',
-            value: 'game',
-          },
-        ]
-      : []),
+    {
+      label: 'Game',
+      value: 'game',
+    },
     {
       label: 'Practice',
       value: 'practice',
@@ -91,7 +84,7 @@ export default function CalendarEventOptionFilter() {
             onClick={() => handleEventOptionClick(event.value as EventType)}
             type='button'
             key={event.value}
-            className={classNames(
+            className={cn(
               isEventTypeSelected
                 ? '!bg-secondary/10 text-secondary hover:!bg-secondary/10'
                 : 'opacity-50',
