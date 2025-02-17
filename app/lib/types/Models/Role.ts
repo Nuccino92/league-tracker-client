@@ -7,7 +7,7 @@ export const permissionSchema = z.object({
   scope: z.array(z.number()),
 });
 
-const memberRolesValues = Object.values(MemberRolesEnum);
+export const memberRolesValues = Object.values(MemberRolesEnum);
 
 export const roleSchema = z.object({
   role_name: z.enum(

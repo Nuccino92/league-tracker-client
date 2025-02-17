@@ -1,15 +1,23 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import QUERY_KEYS from '@/app/lib/globals/queryKeys';
 import { useAuth } from '@/app/GlobalContext';
 import {
+  addMemberRequest,
   fetchControlPanelMember,
   fetchControlPanelMembers,
+  modifyMemberRequest,
+  removeMemberRequest,
+  validateEmailForMembersRequest,
 } from '@/app/lib/requests/control-panel/members';
 import { SearchParamScope } from '@/app/lib/types/filters.types';
 import useQueryString from '@/app/lib/hooks/useQueryString';
 import { ControlPanelMemberForEdit } from '@/app/lib/types/Responses/control-panel.types';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
+import {
+  AddMemberSaveValues,
+  ModifyMemberSaveValues,
+} from '@/app/lib/types/Resources/CreateMemberResource';
 
 export function useMembers({
   enabled = true,
@@ -58,8 +66,10 @@ export function useMember({
       if (!memberId) {
         return {
           id: null,
-          role: 'member',
           name: 'Jerry Smith',
+          email: '',
+          role: 'admin',
+          status: 'pending',
         } as ControlPanelMemberForEdit;
       } else {
         return fetchControlPanelMember({ token, slug, memberId });
@@ -69,4 +79,43 @@ export function useMember({
   });
 
   return { member, status };
+}
+
+export function useValidateUserEmailForMembers() {
+  const { token } = useAuth();
+
+  return useMutation({
+    mutationFn: (email: string) =>
+      validateEmailForMembersRequest({ email, token }),
+    onSuccess: (data) => {},
+  });
+}
+
+export function useAddTeamMember() {
+  const { token } = useAuth();
+
+  return useMutation({
+    mutationFn: (values: AddMemberSaveValues) =>
+      addMemberRequest({ token, values }),
+    onSuccess: (data) => {},
+  });
+}
+
+export function useModifyTeamMember() {
+  const { token } = useAuth();
+
+  return useMutation({
+    mutationFn: (values: ModifyMemberSaveValues) =>
+      modifyMemberRequest({ token, values }),
+    onSuccess: (data) => {},
+  });
+}
+
+export function useRemoveMember() {
+  const { token } = useAuth();
+
+  return useMutation({
+    mutationFn: (id: number) => removeMemberRequest({ token, id }),
+    onSuccess: (data) => {},
+  });
 }

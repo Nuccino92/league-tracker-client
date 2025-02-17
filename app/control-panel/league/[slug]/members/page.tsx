@@ -1,6 +1,6 @@
 import Container from '@/app/control-panel/_components/Container';
-import MembersList from './_components/MembersList';
-import MembersHeader from './_components/MembersHeader';
+import MembersList from '@/app/control-panel/league/[slug]/members/_components/MembersList';
+import MembersHeader from '@/app/control-panel/league/[slug]/members/_components/MembersHeader';
 
 /**
  *
@@ -9,6 +9,14 @@ import MembersHeader from './_components/MembersHeader';
  *
  * @todo
  * explain what each role is capable of, also explain that the super admins are able to see the stats of the season
+ */
+
+// will have member statuses, pending, accepted, declined etc
+
+/**
+ * @flow
+ *
+ *
  */
 
 export default function MembersPage({

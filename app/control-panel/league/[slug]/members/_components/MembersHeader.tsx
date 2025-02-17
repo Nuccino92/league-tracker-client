@@ -8,12 +8,11 @@ import { IconOptionsOutline, IconUsergroupAdd } from '@/app/lib/SVGs';
 import DropdownMenu from '@/app/lib/components/DropdownMenu';
 import SearchBar from '@/app/lib/components/SearchBar';
 import useDebounce from '@/app/lib/hooks/useDebounce';
-import useQueryString from '@/app/lib/hooks/useQueryString';
 import { MemberRolesEnum } from '@/app/lib/enums';
 import getEnumKeyByEnumValue from '@/app/lib/utils/getEnumKeyByEnumValue';
 import ListBox from '@/app/lib/components/Listbox';
 import transformIntoOptions from '@/app/lib/utils/transformIntoOptions';
-import MemberForm from './MemberForm';
+import MemberForm from '@/app/control-panel/league/[slug]/members/_components/MemberForm';
 
 export default function MembersHeader() {
   const searchParams = useSearchParams();
@@ -30,11 +29,14 @@ export default function MembersHeader() {
 
   const debouncedSearch = useDebounce(searchInputValue, 750);
 
-  const { createQueryString } = useQueryString();
-
   useEffect(() => {
-    router.push(pathname + '?' + createQueryString('search', debouncedSearch));
-  }, [createQueryString, debouncedSearch, pathname, router]);
+    const searchParams = new URLSearchParams(window.location.search);
+
+    searchParams.set('search', debouncedSearch);
+    searchParams.set('page', '1'); // Reset to page 1 when searching
+
+    router.push(`${pathname}?${searchParams.toString()}`);
+  }, [debouncedSearch, pathname, router]);
 
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const pageOptions = [
@@ -69,11 +71,13 @@ export default function MembersHeader() {
 
           <ListBox
             value={selectedRole}
-            onChange={(value) =>
-              router.push(
-                pathname + '?' + createQueryString('role', value?.toString())
-              )
-            }
+            onChange={(value) => {
+              const params = new URLSearchParams(window.location.search);
+              params.set('role', value?.toString() || '');
+              params.set('page', '1'); // Reset to page 1 when changing role filter
+
+              router.push(`${pathname}?${params.toString()}`);
+            }}
             buttonText={
               selectedRole
                 ? (getEnumKeyByEnumValue(

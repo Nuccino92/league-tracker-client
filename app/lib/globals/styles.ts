@@ -41,6 +41,7 @@ export const INPUT_CONTAINER_CLASSES = `flex flex-col space-y-3`;
  * app\control-panel\league\[slug]\seasons\_components\SeasonSettingsModal.tsx
  * app\create\_components\CreationSetup.tsx
  * app\control-panel\league\[slug]\notices\_components\CreateAnnouncements.tsx
+ * app\control-panel\league\[slug]\members\_components\MemberForm.tsx
  */
 
 export const INPUT_CLASSES =

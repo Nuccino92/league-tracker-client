@@ -64,7 +64,8 @@ function ControlPanelRoutes({ pathname, view }: ControlPanelTypes) {
       access: hasPageAccess(ControlPanelLeaguePages.DASHBOARD),
     },
     {
-      href: baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.MEMBERS,
+      href:
+        baseRoute + ROUTES.CONTROL_PANEL_SUBROUTES.MEMBERS + `?search=&page=1`,
       label: 'Members',
       icon: membersIcon,
       withSeasonParam: false,

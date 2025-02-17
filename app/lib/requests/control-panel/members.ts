@@ -6,9 +6,13 @@ import {
   ControlPanelMemberForEdit,
   ControlPanelMembersList,
   ErrorType,
-} from '../../types/Responses/control-panel.types';
+} from '@/app/lib/types/Responses/control-panel.types';
 import { memberSchema } from '@/app/lib/types/Models/Member';
 import { PaginationMetaSchema } from '@/app/lib/types/pagination.types';
+import {
+  AddMemberSaveValues,
+  ModifyMemberSaveValues,
+} from '@/app/lib/types/Resources/CreateMemberResource';
 
 export async function fetchControlPanelMembers({
   token,
@@ -62,14 +66,74 @@ export async function fetchControlPanelMembers({
 
 // TODO: possibly sort by role, super admin -> admin -> member
 const mockMembersList = {
-  meta: null,
+  meta: {
+    current_page: 1,
+    last_page: 4,
+    to: 0,
+    from: 0,
+    path: '',
+    per_page: 0,
+    total: 11,
+    links: [],
+  },
   data: [
-    { id: 1234, name: 'Johnny Bravoso', role: 'member' },
-    { id: 1237, name: 'Carl Weathers', role: 'member' },
-    { id: 1334, name: 'Victor Jones', role: 'member' },
-    { id: 1884, name: 'Larry Terry', role: 'admin' },
-    { id: 6066, name: 'Antonio Barbosa', role: 'super-admin' },
-    { id: 1, name: 'Anthony Nucci', role: 'owner' },
+    {
+      id: 1234,
+      user_id: 3,
+      name: 'Johnny Bravoso',
+      role: 'admin',
+      avatar: null,
+      email: 'skibidi@hotmail.com',
+      status: 'accepted',
+    },
+    {
+      id: 1237,
+      user_id: 4,
+      name: 'Carl Weathers',
+      role: 'admin',
+      avatar: null,
+      email: 'skibidi@hotmail.com',
+      status: 'suspended',
+    },
+    {
+      id: 1334,
+      user_id: 5,
+      name: 'Victor Jones',
+      role: 'scorekeeper',
+      avatar:
+        'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+      email: 'skibidi@hotmail.com',
+      status: 'pending',
+    },
+    {
+      id: 1884,
+      user_id: 6,
+      name: 'Larry Terry',
+      role: 'admin',
+      avatar: null,
+      email: 'skibidi@hotmail.com',
+      status: 'accepted',
+    },
+    {
+      id: 6066,
+      user_id: 7,
+      name: 'Antonio Barbosa',
+      role: 'super-admin',
+      avatar:
+        'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+      email: 'skibidi@hotmail.com',
+      status: 'pending',
+    },
+    {
+      id: 1,
+      user_id: 8,
+      name: 'Anthony Nucci',
+      role: 'owner',
+      avatar:
+        'https://images.firstwefeast.com/complex/image/upload/c_limit,fl_progressive,q_80,w_1030/omox9xypgbi5mzqgo8rf.png',
+      email: 'skibidi@hotmail.com',
+      status: 'declined',
+    },
   ],
 };
 
@@ -112,6 +176,66 @@ export async function fetchControlPanelMember({
 
 const mockMember = {
   id: 432413,
-  role: 'super-admin',
   name: 'Antonio Barbosa',
+  role: 'admin',
+  email: 'anthony@hotmail.com',
+  status: 'accepted',
 } as ControlPanelMemberForEdit;
+
+export async function validateEmailForMembersRequest({
+  email,
+  token,
+}: {
+  email: string;
+  token: string;
+}) {
+  return new Promise<{ is_valid_email: boolean }>((resolve) => {
+    setTimeout(() => {
+      resolve({ is_valid_email: true });
+    }, 630);
+  });
+}
+
+export async function addMemberRequest({
+  token,
+  values,
+}: {
+  token: string;
+  values: AddMemberSaveValues;
+}) {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(() => {
+      console.log('add member values', values);
+      resolve(true);
+    }, 810);
+  });
+}
+
+export async function modifyMemberRequest({
+  token,
+  values,
+}: {
+  token: string;
+  values: ModifyMemberSaveValues;
+}) {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(() => {
+      console.log('modify member values', values);
+      resolve(true);
+    }, 810);
+  });
+}
+
+export async function removeMemberRequest({
+  token,
+  id,
+}: {
+  token: string;
+  id: number;
+}) {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 810);
+  });
+}

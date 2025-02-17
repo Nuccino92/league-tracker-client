@@ -9,8 +9,8 @@ export enum MemberRolesEnum {
   Owner = 'owner',
   'Super Admin' = 'super-admin',
   Admin = 'admin',
-  Member = 'member',
-  Player = 'player',
+  'Team Manager' = 'team-manager',
+  Scorekeeper = 'scorekeeper',
 }
 
 export enum RolePermissions {

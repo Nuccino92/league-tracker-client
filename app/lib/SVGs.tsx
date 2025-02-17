@@ -888,6 +888,42 @@ export function IconCheckmarkCircleOutline(
   );
 }
 
+export function CloseCircleSolid(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      width='1em'
+      height='1em'
+      {...props}
+    >
+      <path
+        fill='currentColor'
+        fillRule='evenodd'
+        d='M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586z'
+        clipRule='evenodd'
+      ></path>
+    </svg>
+  );
+}
+
+export function CheckmarkCircle(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 512 512'
+      width='1em'
+      height='1em'
+      {...props}
+    >
+      <path
+        fill='currentColor'
+        d='M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208s208-93.31 208-208S370.69 48 256 48m108.25 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58'
+      ></path>
+    </svg>
+  );
+}
+
 export function IconEmailOutline(
   props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
 ) {

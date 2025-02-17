@@ -4,7 +4,11 @@ import { League } from '@/app/lib/types/Models/League';
 import { basePlayerSchema } from '@/app/lib/types/Models/Player';
 import { baseTeamSchema } from '@/app/lib/types/Models/Team';
 import { Season, seasonSchema } from '@/app/lib/types/Models/Season';
-import { memberSchema } from '@/app/lib/types/Models/Member';
+import {
+  memberRoleSchema,
+  memberSchema,
+  memberStatusSchema,
+} from '@/app/lib/types/Models/Member';
 import { Role } from '@/app/lib/types/Models/Role';
 import { registrationSchema } from '@/app/lib/types/Responses/registration';
 import { statTypeSchema } from '@/app/lib/types/Responses/create-league-types';
@@ -147,8 +151,12 @@ export type OrganizationInformationFormSchema = z.infer<
 >;
 
 // ---- region - members
-export const controlPanelMemberForEdit = memberSchema.extend({
+export const controlPanelMemberForEdit = z.object({
   id: z.number().nullable(),
+  name: z.string(),
+  email: z.string(),
+  role: memberRoleSchema,
+  status: memberStatusSchema,
 });
 
 export type ControlPanelMembersList = z.infer<typeof memberSchema>;
