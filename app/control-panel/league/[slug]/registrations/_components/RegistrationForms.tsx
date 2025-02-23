@@ -9,6 +9,7 @@ import { useRegistrationForms } from '@/app/lib/hooks/api/control-panel/registra
 import { IconPlus, Spinner } from '@/app/lib/SVGs';
 import CreateRegistrationFormModal from '@/app/control-panel/league/[slug]/registrations/_components/CreateRegistrationFormModal';
 import RegistrationFormsList from '@/app/control-panel/league/[slug]/registrations/_components/RegistrationFormsList';
+import PageHeader from '@/app/control-panel/_components/PageHeader';
 
 type Props = {
   slug: string;
@@ -29,6 +30,7 @@ export default function RegistrationForms({ slug }: Props) {
     <div className='space-y-6'>
       <StyledBox classes='flex items-center justify-end p-4'>
         {/* TODO: disable if the season isn't on a paid subscription */}
+
         <Button
           className='flex !h-10 items-center gap-2'
           disabled={leagueData.seasons.all_seasons.length === 0 || !response}

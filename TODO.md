@@ -1,3 +1,93 @@
+Table seasons {
+id int [pk, increment]
+name varchar
+status varhcar // active, new, closed
+league_id int [ref: > leagues.id]
+created_at timestamp
+updated_at timestamp
+}
+
+Table tournaments {
+id integer [primary key]
+season_id integer
+name varchar
+format varchar // single elimination, double elimination, round robin
+start_date date
+end_date date
+status varchar
+max_teams integer // enforce tournament size
+current_round integer // track progress
+created_at timestamp
+updated_at timestamp
+}
+
+Table tournament_matches {
+id integer [primary key]
+tournament_id integer
+round_number integer
+match_number integer
+next_match_id integer // for tournament progression
+team_1_id integer
+team_2_id integer
+winner_id integer
+game_date datetime
+location varchar
+home_score integer
+away_score integer
+status varchar
+created_at timestamp
+updated_at timestamp
+}
+
+Table tournament_teams {
+id integer [primary key]
+tournament_id integer [ref: > tournaments.id]
+team_id integer [ref: > teams.id]
+seed integer
+status varchar(20) // active, eliminated, champion
+created_at timestamp
+updated_at timestamp
+}
+
+Table tournament_rounds {
+id integer [primary key]
+tournament_id integer [ref: > tournaments.id]
+round_number integer
+start_date date
+end_date date
+status varchar(20) // pending, active, completed
+created_at timestamp
+updated_at timestamp
+}
+
+Table players {
+id integer [primary key]
+name varchar
+email varchar
+created_at timestamp
+updated_at timestamp
+}
+
+Table player_tournament_stats {
+id integer [primary key]
+player_id integer
+tournament_id integer
+games_played integer
+stats jsonb  
+created_at timestamp
+updated_at timestamp
+}
+
+------- tournament refactors -------
+
+league site:
+
+1. create tournaments tab beside stangs on league website
+2. inside tournaments tab, have list of tournaments displaying their names with a link to the tournament page
+3. inside tournaments page, have tabs to select tournament viewer (the graphs connecting), games, player stats, maybe an about. (THIS COULD REPLACE THE REGULAR SEASON BLUE NAV LINKS, PUT A WAY TO GO BACK TO REGULAR SEASON, TOURNAMENT COLORS COULD BE GOLD OR SOMETHING ELSE)
+
+---
+
 https://www.getapp.ca/directory/747/sports-league/software
 https://www.ezfacility.com/features/league-scheduling-management/
 

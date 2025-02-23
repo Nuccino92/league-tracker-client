@@ -12,6 +12,8 @@ import {
 import { Role } from '@/app/lib/types/Models/Role';
 import { registrationSchema } from '@/app/lib/types/Responses/registration';
 import { statTypeSchema } from '@/app/lib/types/Responses/create-league-types';
+import { tournamentListItemSchema } from '../Models/Tournament';
+import { PaginationMetaSchema } from '../pagination.types';
 
 // TODO: possibly seperate each region into its own file, follow the requests/control-panel folder structure
 
@@ -380,5 +382,16 @@ export const selectionScopeTotalCountsSchema = z.object({
 
 export type SelectionScopeTotalCounts = z.infer<
   typeof selectionScopeTotalCountsSchema
+>;
+// ---- endregion
+
+// ---- tournaments
+export const tournamentListResponseSchema = z.object({
+  data: z.array(tournamentListItemSchema),
+  meta: PaginationMetaSchema,
+});
+
+export type TournamentListResponse = z.infer<
+  typeof tournamentListResponseSchema
 >;
 // ---- endregion

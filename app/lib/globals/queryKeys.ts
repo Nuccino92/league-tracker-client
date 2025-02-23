@@ -7,6 +7,8 @@ const QUERY_KEYS = {
     DETAILED_SEASONS: 'detailed-seasons',
     DETAILED_SEASON_TEAMS: 'detailed-season-teams',
 
+    TOURNAMENTS: 'tournaments-control-panel',
+
     TEAMS: 'teams-control-panel',
     TEAM: 'team-control-panel',
     TEAMS_FOR_DROPDOWN: 'teams-for-dropdown-control-panel',

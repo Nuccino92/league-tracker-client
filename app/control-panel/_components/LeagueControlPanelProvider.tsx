@@ -74,6 +74,7 @@ export type FeatureAccess = {
   dashboard: boolean;
   members: boolean;
   seasons: boolean;
+  tournaments: boolean;
   teams: boolean;
   players: boolean;
   schedule: boolean;
@@ -143,6 +144,7 @@ export function useLeagueControlPanel() {
       dashboard: true,
       members: true,
       seasons: true,
+      tournaments: true,
       teams: true,
       players: true,
       schedule: true,
@@ -155,6 +157,7 @@ export function useLeagueControlPanel() {
       dashboard: true,
       members: true,
       seasons: true,
+      tournaments: true,
       teams: true,
       players: true,
       schedule: true,
@@ -167,6 +170,7 @@ export function useLeagueControlPanel() {
       dashboard: true,
       members: false,
       seasons: true,
+      tournaments: true,
       teams: true,
       players: true,
       schedule: true,
@@ -179,6 +183,7 @@ export function useLeagueControlPanel() {
       dashboard: true,
       members: false,
       seasons: false,
+      tournaments: false,
       teams: true,
       players: true,
       schedule: true,
@@ -191,6 +196,7 @@ export function useLeagueControlPanel() {
       dashboard: false,
       members: false,
       seasons: false,
+      tournaments: false,
       teams: false,
       players: false,
       schedule: false,

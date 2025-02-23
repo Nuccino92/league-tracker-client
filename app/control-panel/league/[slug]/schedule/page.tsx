@@ -41,7 +41,6 @@ export default function CalendarPage({
   return (
     <Container view='league'>
       <div className='space-y-6'>
-        add a tournament adder/tournamnet list here
         <GenerateSchedule slug={params.slug} />
         <main className='bg-white text-sm'>
           <LeagueCalendarFilters />

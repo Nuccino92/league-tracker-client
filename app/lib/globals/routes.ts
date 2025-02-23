@@ -27,6 +27,7 @@ const ROUTES = {
     DASHBOARD: '/dashboard',
     MEMBERS: '/members',
     SEASONS: '/seasons',
+    TOURNAMENTS: '/tournaments',
     SCHEDULE: '/schedule',
     REGISTRATIONS: '/registrations',
     PLAYERS: '/players',

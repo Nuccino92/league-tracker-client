@@ -18,6 +18,7 @@ export enum ControlPanelLeaguePages {
   DASHBOARD = 'dashboard',
   MEMBERS = 'members',
   SEASONS = 'seasons',
+  TOURNAMENTS = 'tournaments',
   TEAMS = 'teams',
   PLAYERS = 'players',
   SCHEDULE = 'schedule',

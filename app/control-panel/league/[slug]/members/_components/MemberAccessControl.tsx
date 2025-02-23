@@ -26,6 +26,10 @@ const FEATURE_DESCRIPTIONS = {
     title: 'Seasons',
     description: "Access to Seasons page and it's features",
   },
+  tournaments: {
+    title: 'Tournaments',
+    description: "Access to Tournaments page and it's features",
+  },
   teams: {
     title: 'Teams',
     description: 'Access to Teams page Calendar feature',
