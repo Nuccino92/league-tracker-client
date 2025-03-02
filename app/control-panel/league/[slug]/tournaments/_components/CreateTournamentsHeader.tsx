@@ -14,7 +14,7 @@ export default function CreateTournaments() {
     <StyledBox classes='flex items-center justify-end p-4'>
       <Link href={'#'}>
         <Button className='flex !h-10 items-center gap-2'>
-          <IconPlus /> Create Registration Form
+          <IconPlus /> Create Tournament
         </Button>
       </Link>
     </StyledBox>

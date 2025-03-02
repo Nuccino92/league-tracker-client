@@ -9,7 +9,6 @@ import {
 } from 'next/navigation';
 import classNames from 'classnames';
 
-import { useFreeAgents } from '@/app/lib/hooks/api/control-panel/players';
 import TeamRoster from '@/app/control-panel/league/[slug]/teams/[id]/_components/TeamRoster';
 import TeamSchedule from '@/app/control-panel/league/[slug]/teams/[id]/_components/TeamSchedule';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';

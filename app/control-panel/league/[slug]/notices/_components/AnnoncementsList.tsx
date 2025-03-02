@@ -50,7 +50,6 @@ export default function AnnouncementsList() {
 
   return (
     <StyledBox>
-      {' '}
       <div className='flex items-center justify-between gap-4 p-6 pb-2'>
         <div className='text-lg font-bold'>Your Notices</div>
         <div className='flex items-center gap-4'>

@@ -6,7 +6,15 @@ import {
 } from '@/app/lib/types/Responses/control-panel.types';
 import { TournamentListItem } from '../../types/Models/Tournament';
 
-export async function fetchTournaments({ token }: { token: string }) {
+export async function fetchTournaments({
+  token,
+  slug,
+  params,
+}: {
+  token: string;
+  slug: string;
+  params?: string;
+}) {
   return new Promise<TournamentListResponse>((resolve) => {
     setTimeout(() => {
       const result = tournamentListResponseSchema.parse(mockTournamentsList);
