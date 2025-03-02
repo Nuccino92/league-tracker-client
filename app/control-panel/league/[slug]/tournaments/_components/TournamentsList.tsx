@@ -9,7 +9,12 @@ import StyledBox from '@/app/lib/components/StyledBox';
 import { useTournaments } from '@/app/lib/hooks/api/control-panel/tournaments';
 import { TournamentListItem } from '@/app/lib/types/Models/Tournament';
 import { cn } from '@/app/lib/utils';
-import { EditIcon, HeroChevronRight, Spinner } from '@/app/lib/SVGs';
+import {
+  EditIcon,
+  HeroChevronRight,
+  IconCalendar,
+  Spinner,
+} from '@/app/lib/SVGs';
 import ROUTES from '@/app/lib/globals/routes';
 import { useLeagueControlPanel } from '@/app/control-panel/_components/LeagueControlPanelProvider';
 import useDebounce from '@/app/lib/hooks/useDebounce';
@@ -186,7 +191,8 @@ function Tournament({ tournament }: { tournament: TournamentListItem }) {
           </Link>
 
           {attachedSeason && (
-            <div className='mt-1 text-sm font-medium text-gray-600'>
+            <div className='mt-1.5 flex items-center gap-1 text-sm font-medium leading-none text-gray-600'>
+              <IconCalendar height={18} width={18} />
               {attachedSeason.name}
             </div>
           )}
